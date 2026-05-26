@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>東京 6天5夜｜2024年4月</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #fdf6ee;
+    --warm-white: #fff9f3;
+    --sand: #e8d5b7;
+    --terracotta: #c4714a;
+    --terracotta-light: #d98a63;
+    --terracotta-dark: #a05535;
+    --amber: #e8a645;
+    --amber-light: #f5c878;
+    --text-main: #3d2b1f;
+    --text-sub: #7d5a47;
+    --text-light: #a88070;
+    --border: #e8d5b7;
+    --shadow: rgba(92, 61, 46, 0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--cream);
+    color: var(--text-main);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 300;
+    line-height: 1.8;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(160deg, #c4714a 0%, #e8a645 60%, #f5c878 100%);
+    padding: 70px 24px 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .hero-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    font-size: 12px;
+    letter-spacing: 3px;
+    padding: 5px 16px;
+    border-radius: 20px;
+    margin-bottom: 18px;
+    backdrop-filter: blur(4px);
+  }
+  .hero h1 {
+    font-family: 'Noto Serif TC', serif;
+    font-size: clamp(2.2rem, 6vw, 3.5rem);
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 4px;
+    margin-bottom: 12px;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  }
+  .hero-sub {
+    color: rgba(255,255,255,0.88);
+    font-size: 15px;
+    letter-spacing: 1px;
+    margin-bottom: 32px;
+  }
+  .hero-meta {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .hero-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.18);
+    padding: 8px 18px;
+    border-radius: 30px;
+    color: #fff;
+    font-size: 13px;
+    backdrop-filter: blur(4px);
+  }
+
+  /* LAYOUT */
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--terracotta-dark);
+    letter-spacing: 2px;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    margin-left: 8px;
+  }
+
+  /* DAY CARD */
+  .day-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    margin-bottom: 22px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px var(--shadow);
+  }
+  .day-header {
+    background: linear-gradient(135deg, var(--terracotta) 0%, var(--terracotta-light) 100%);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .day-num {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.25);
+    min-width: 44px;
+    line-height: 1;
+  }
+  .day-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 1px;
+  }
+  .day-subtitle {
+    font-size: 12px;
+    color: rgba(255,255,255,0.75);
+    margin-top: 3px;
+    letter-spacing: 1px;
+  }
+  .day-body { padding: 22px 24px; }
+
+  /* TIMELINE */
+  .timeline-item {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .timeline-item:last-child { margin-bottom: 0; }
+  .timeline-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 36px;
+  }
+  .tl-dot {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+    border: 2px solid var(--border);
+    background: var(--cream);
+  }
+  .tl-dot.food  { background: #fff3e8; border-color: #e8a645; }
+  .tl-dot.shop  { background: #e8efff; border-color: #6b8ce8; }
+  .tl-dot.place { background: #f0f5e8; border-color: #8fad55; }
+  .tl-dot.cafe  { background: #fef0e6; border-color: #c4714a; }
+  .tl-dot.fun   { background: #fde8ff; border-color: #b06be8; }
+  .tl-line {
+    width: 1px; flex: 1;
+    background: var(--border);
+    margin-top: 4px;
+    min-height: 12px;
+  }
+  .tl-content { flex: 1; padding-top: 4px; }
+  .time-label {
+    font-size: 11px;
+    color: var(--text-light);
+    letter-spacing: 1.5px;
+    margin-bottom: 2px;
+  }
+  .item-title {
+    font-size: 14.5px;
+    font-weight: 500;
+    color: var(--text-main);
+    line-height: 1.5;
+    margin-bottom: 4px;
+  }
+  .item-title a {
+    color: var(--terracotta-dark);
+    text-decoration: none;
+    border-bottom: 1px solid var(--terracotta-light);
+    transition: color 0.2s;
+  }
+  .item-title a:hover { color: var(--terracotta); }
+  .item-desc {
+    font-size: 13px;
+    color: var(--text-sub);
+    line-height: 1.75;
+  }
+  .item-tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 10px;
+    border-radius: 10px;
+    margin-right: 4px;
+    margin-top: 5px;
+  }
+  .tag-good   { background: #fff3e8; color: #c4714a; }
+  .tag-best   { background: #fde8e8; color: #c44a4a; }
+  .tag-meh    { background: #f0f0f0; color: #888; }
+  .tag-shop   { background: #e8efff; color: #3a5bc7; }
+  .tag-fun    { background: #f5e8ff; color: #7a3ac7; }
+
+  /* SUMMARY */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin-top: 36px;
+    margin-bottom: 28px;
+  }
+  .summary-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 16px;
+    box-shadow: 0 2px 10px var(--shadow);
+  }
+  .summary-card-title {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--terracotta);
+    font-weight: 500;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .summary-card p, .summary-card li {
+    font-size: 13.5px;
+    color: var(--text-sub);
+    line-height: 1.8;
+  }
+  .summary-card ul { list-style: none; padding: 0; }
+  .summary-card ul li::before { content: '·  '; color: var(--terracotta-light); }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; margin-top: 14px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th {
+    background: var(--terracotta);
+    color: #fff;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+  th:first-child { border-radius: 8px 0 0 0; }
+  th:last-child  { border-radius: 0 8px 0 0; }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-sub);
+    vertical-align: top;
+    line-height: 1.6;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: #fdf8f3; }
+  td a { color: var(--terracotta-dark); text-decoration: none; border-bottom: 1px solid var(--sand); }
+  td a:hover { color: var(--terracotta); }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 32px 24px 48px;
+    color: var(--text-light);
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+  .footer-emoji { font-size: 22px; display: block; margin-bottom: 10px; }
+
+  @media (max-width: 600px) {
+    .hero { padding: 50px 16px 40px; }
+    .day-body { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">🇯🇵 Japan · Tokyo</div>
+  <h1>東　京</h1>
+  <p class="hero-sub">2024年4月　6天5夜　｜　池袋 × 迪士尼 × 淺草 × 新宿</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item">📅 4/13–4/18</div>
+    <div class="hero-meta-item">💰 總花費 $42,617</div>
+    <div class="hero-meta-item">🎠 迪士尼一日</div>
+    <div class="hero-meta-item">👘 淺草和服</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 行程概覽 -->
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="summary-card-title">✈️ 交通</div>
+      <ul>
+        <li>Skyliner 來回（成田←→上野）</li>
+        <li>Suica 卡加值使用</li>
+        <li>ICOCA 悠遊</li>
+      </ul>
+    </div>
+    <div class="summary-card">
+      <div class="summary-card-title">💴 花費明細</div>
+      <ul>
+        <li>機＋酒：$21,966</li>
+        <li>換匯：$10,500</li>
+        <li>迪士尼門票：$1,710</li>
+        <li>網路：$488</li>
+        <li>Skyliner：$961</li>
+      </ul>
+    </div>
+    <div class="summary-card">
+      <div class="summary-card-title">🗺️ 主要區域</div>
+      <ul>
+        <li>池袋（Day 2）</li>
+        <li>台場（Day 3）</li>
+        <li>迪士尼（Day 4）</li>
+        <li>淺草・新宿（Day 5）</li>
+        <li>上野（Day 6）</li>
+      </ul>
+    </div>
+    <div class="summary-card">
+      <div class="summary-card-title">⭐ 本次亮點</div>
+      <ul>
+        <li>Nabezo 壽喜燒（淺草）</li>
+        <li>らぁ麺はやし田（新宿）</li>
+        <li>Toriton 迴轉壽司（池袋）</li>
+        <li>犬カフェ RIO（池袋）</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Day 1 -->
+  <div class="day-card">
+    <div class="day-header">
+      <div class="day-num">01</div>
+      <div>
+        <div class="day-title">4月13日　抵達東京</div>
+        <div class="day-subtitle">入住・晚餐</div>
+      </div>
+    </div>
+    <div class="day-body">
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="tl-dot">✈️</div><div class="tl-line"></div></div>
+        <div class="tl-content">
+          <div class="time-label">傍晚</div>
+          <div class="item-title">抵達成田機場・搭 Skyliner 入市區</div>
+          <div class="item-desc">Skyliner 直達上野，約36分鐘，再轉車至飯店 check in。</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="tl-dot food">🍜</div></div>
+        <div class="tl-content">
+          <div class="time-label">晚餐</div>
+          <div class="item-title"><a href="https://maps.google.com/maps?q=Garaku+烏龍麵+東京" target="_blank">Garaku　烏龍麵</a></div>
+          <div class="item-desc">第一餐選了烏龍麵暖胃，評價不錯。</div>
+          <span class="item-tag tag-good">👍 好評</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 2 -->
+  <div class="day-card">
+    <div class="day-header">
+      <div class="day-num">02</div>
+      <div>
+        <div class="day-title">4月14日　池袋</div>
+        <div class="day-subtitle">逛街購物 × 迴轉壽司 × 狗狗咖啡廳</div>
+      </div>
+    </div>
+    <div class="day-body">
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="tl-dot shop">🛍️</div><div class="tl-line"></div></div>
+        <div class="tl-content">
+          <div class="time-label">上午－下午</div>
+          <div class="item-title">
+            <a href="https://maps.google.com/maps?q=Tobu+百貨+池袋" target="_blank">Tobu 百貨</a>　·　
+            <a href="https://maps.google.com/maps?q=太陽城百貨+池袋" target="_blank">太陽城百貨</a>　·　地下街伴手禮
+          </div>
+          <div class="item-desc">池袋購物主場，NY/Tartine 也在地下街採購伴手禮。</div>
+          <span class="item-tag tag-shop">🛍️ 購物</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="tl-dot food">🍣</div><div class="tl-line"></div></div>
+        <div class="tl-content">
+          <div class="time-label">午餐</div>
+          <div class="item-title"><a href="https://maps.google.com/maps?q=Toriton+迴轉壽司+池袋" target="_blank">Toriton 迴轉壽司</a></div>
+          <div class="item-desc">池袋人氣迴轉壽司，新鮮度高、種類多，CP值高，記得抽號碼牌等位。</div>
+          <span class="item-tag tag-good">👍 好評</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="tl-dot cafe">🐶</div><div class="tl-line"></div></div>
+        <div class="tl-content">
+          <div class="time-label">下午</div>
+          <div class="item-title"><a href="https://maps.google.com/maps?q=犬カフェRIO+池袋" target="_blank">犬カフェ RIO 池袋　狗狗咖啡廳</a></div>
+          <div class="item-desc">各種品種狗狗陪你喝咖啡，超療癒，是此行亮點之一。</div>
+          <span class="item-tag tag-good">👍 好評</span>
+          <span class="item-tag tag-fun">🐶 動物咖啡廳</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="tl-dot food">🍛</div></div>
+        <div class="tl-content">
+          <div class="time-label">晚餐</div>
+          <div class="item-title"><a href="https://maps.google.com/maps?q=Joto+Curry+Iidabashi" target="_blank">Joto Curry Iidabashi</a></div>
+          <div class="item-desc">飯田橋咖哩，日式咖哩飯。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 3 -->
+  <div class="day-card">
+    <div class="day-header">
+      <div class="day-num">03</div>
+      <div>
+        <div class="day-title">4月15日　築地・台場・秋葉原</div>
+        <div class="day-subtitle">小動物展 × 居酒屋 × 唐吉軻德</div>
+      </div>
+    </div>
+    <div class="day-body">
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="tl-dot place">🐟</div><div class="tl-line"></div></div>
+        <div class="tl-content">
+          <div class="time-label">上午</div>
+          <div class="item-title"><a href="https://maps.google.com/maps?q=築地市場+東京" target="_blank">築地市場</a></div>
+          <div class="item-desc">隨意逛逛，觀光客多、價格偏高，整體感覺普通。</div>
+          <span class="item-tag tag-meh">普通</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="tl-dot place">🏬</div><div class="tl-line"></div></div>
+        <div class="tl-content">
+          <div class="time-label">下午</div>
+          <div class="item-title"><a href="https://maps.google.com/maps?q=有明花園+東京" target="_blank">有明花園 Mall</a></div>
+          <div class="item-desc">購物中心，整體感覺普通，不用特別安排。</div>
+          <span class="item-tag tag-meh">普通</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="tl-dot fun">🐾</div><div class="tl-line"></div></div>
+        <div class="tl-content">
+          <div class="time-label">下午</div>
+          <div class="item-title"><a href="https://maps.google.com/maps?q=台場小動物展+東京" target="_blank">台場　小動物展・一丁目商店街</a></div>
+          <div class="item-desc">台場可愛小動物特展，加上懷舊商店街，適合拍照。</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="tl-dot food">🍶</div><div class="tl-line"></div></div>
+        <div class="tl-content">
+          <div class="time-label">晚餐</div>
+          <div class="item-title"><a href="https://maps.google.com/maps?q=一樂+居酒屋+東京" target="_blank">一樂　居酒屋</a></div>
+          <div class="item-desc">熱鬧的日式居酒屋氛圍，料理好吃，值得一去。</div>
+          <span class="item-tag tag-good">👍 好評</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="tl-dot shop">🛍️</div></div>
+        <div class="tl-content">
+          <div class="time-label">夜間</div>
+          <div class="item-title"><a href="https://maps.google.com/maps?q=唐吉軻德+秋葉原" target="_blank">秋葉原　唐吉軻德</a></div>
+          <div class="item-desc">深夜採購，補齊零食、藥妝、伴手禮。</div>
+          <span class="item-tag tag-shop">🛍️ 採購</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 4 -->
+  <div class="day-card">
+    <div class="day-header">
+      <div class="day-num">04</div>
+      <div>
+        <div class="day-title">4月16日　迪士尼樂園</div>
+        <div class="day-subtitle">All Day × 雞蛋仔 × 宵夜拉麵</div>
+      </div>
+    </div>
+    <div class="day-body">
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="tl-dot fun">🎠</div><div class="tl-line"></div></div>
+        <div class="tl-content">
+          <div class="time-label">全天</div>
+          <div class="item-title"><a href="https://maps.google.com/maps?q=東京迪士尼樂園" target="_blank">東京迪士尼樂園</a></div>
+          <div class="item-desc">全天暢遊，門票 ¥10,900 起，建議提早入場搶熱門遊樂設施 DPA。</div>
+          <span class="item-tag tag-fun">🎠 主題樂園</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="tl-dot food">🧇</div><div class="tl-line"></div></div>
+        <div class="tl-content">
+          <div class="time-label">園內點心</div>
+          <div class="item-title"><a href="https://maps.google.com/maps?q=パンダエッグワッフル+東京迪士尼" target="_blank">パンダエッグワッフル　熊貓雞蛋仔</a></div>
+          <div class="item-desc">迪士尼園內人氣點心，外酥內軟，造型可愛，排隊也值得。</div>
+          <span class="item-tag tag-good">👍 好評</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="tl-dot food">🍜</div></div>
+        <div class="tl-content">
+          <div class="time-label">宵夜</div>
+          <div class="item-title"><a href="https://maps.google.com/maps?q=Tsujita+Misonosho+Iidabashi+拉麵" target="_blank">Tsujita Misonosho Iidabashiten　拉麵</a></div>
+          <div class="item-desc">玩了一整天回來還是要吃宵夜拉麵，飯田橋這間味道不錯。</div>
+          <span class="item-tag tag-good">👍 好評</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 5 -->
+  <div class="day-card">
+    <div class="day-header">
+      <div class="day-num">05</div>
+      <div>
+        <div class="day-title">4月17日　淺草・新宿</div>
+        <div class="day-subtitle">和服體驗 × 壽喜燒 × 拉麵</div>
+      </div>
+    </div>
+    <div class="day-body">
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="tl-dot fun">👘</div><div class="tl-line"></div></div>
+        <div class="tl-content">
+          <div class="time-label">上午</div>
+          <div class="item-title"><a href="https://maps.google.com/maps?q=江戸和装工房+雅+浅草" target="_blank">江戸和装工房 雅　淺草和服體驗</a></div>
+          <div class="item-desc">穿著和服漫步淺草，在仲見世通、淺草寺一帶拍照，是東京最具氣氛的體驗之一。</div>
+          <span class="item-tag tag-good">👍 好評</span>
+          <span class="item-tag tag-fun">👘 體驗</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="tl-dot food">🍲</div><div class="tl-line"></div></div>
+        <div class="tl-content">
+          <div class="time-label">午餐</div>
+          <div class="item-title"><a href="https://maps.google.com/maps?q=Nabezo+Asakusa+壽喜燒" target="_blank">Nabezo Asakusa　壽喜燒</a></div>
+          <div class="item-desc">淺草人氣壽喜燒，肉質好、湯頭甜鹹適中，服務親切，此行餐廳最高評價之一。</div>
+          <span class="item-tag tag-best">🌟 強推</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="tl-dot shop">🛍️</div><div class="tl-line"></div></div>
+        <div class="tl-content">
+          <div class="time-label">下午</div>
+          <div class="item-title"><a href="https://maps.google.com/maps?q=テニプリスト+新宿" target="_blank">新宿　テニプリスト 官方旗艦店</a></div>
+          <div class="item-desc">網球王子官方周邊專賣店，粉絲必朝聖。</div>
+          <span class="item-tag tag-good">👍 好評</span>
+          <span class="item-tag tag-shop">🛍️ 動漫周邊</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="tl-dot food">🍜</div></div>
+        <div class="tl-content">
+          <div class="time-label">晚餐</div>
+          <div class="item-title"><a href="https://maps.google.com/maps?q=らぁ麺はやし田+新宿" target="_blank">らぁ麺 はやし田　新宿</a></div>
+          <div class="item-desc">新宿人氣醬油拉麵，湯頭清澈鮮甜，麵條彈牙，是此行拉麵最佳之一，記得早點去排隊。</div>
+          <span class="item-tag tag-best">🌟 強推</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 6 -->
+  <div class="day-card">
+    <div class="day-header">
+      <div class="day-num">06</div>
+      <div>
+        <div class="day-title">4月18日　上野　返程</div>
+        <div class="day-subtitle">鰻魚飯 × 科博館 × 哺乳類展</div>
+      </div>
+    </div>
+    <div class="day-body">
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="tl-dot food">🐟</div><div class="tl-line"></div></div>
+        <div class="tl-content">
+          <div class="time-label">午餐</div>
+          <div class="item-title"><a href="https://maps.google.com/maps?q=名代宇奈とと+上野" target="_blank">名代 宇奈とと　鰻魚飯</a></div>
+          <div class="item-desc">平價鰻魚飯連鎖名店，CP值極高，¥500多就能吃到一碗香噴噴鰻魚飯，強烈推薦。</div>
+          <span class="item-tag tag-good">👍 好評</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="tl-dot fun">🦕</div><div class="tl-line"></div></div>
+        <div class="tl-content">
+          <div class="time-label">下午</div>
+          <div class="item-title"><a href="https://maps.google.com/maps?q=国立科学博物館+上野" target="_blank">上野　國立科學博物館－哺乳類展</a></div>
+          <div class="item-desc">特別展「哺乳類的起源」，標本豐富、展示精彩，喜歡自然科學的話非常值得。</div>
+          <span class="item-tag tag-fun">🦕 特展</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="tl-dot">✈️</div></div>
+        <div class="tl-content">
+          <div class="time-label">傍晚</div>
+          <div class="item-title">搭 Skyliner 至成田機場　返程</div>
+          <div class="item-desc">建議提前2小時抵達機場，順便在免稅區補購最後伴手禮。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 餐廳懶人包 -->
+  <div style="margin-top: 8px;">
+    <div class="section-title">🍽️ 餐廳懶人包</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>餐廳</th><th>類型</th><th>必點</th><th>評價</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><a href="https://maps.google.com/maps?q=Nabezo+Asakusa+壽喜燒" target="_blank">Nabezo Asakusa</a></td>
+            <td>壽喜燒</td><td>牛肉套餐</td><td>🌟 此行最佳</td>
+          </tr>
+          <tr>
+            <td><a href="https://maps.google.com/maps?q=らぁ麺はやし田+新宿" target="_blank">らぁ麺 はやし田</a></td>
+            <td>醬油拉麵</td><td>特製醬油拉麵</td><td>🌟 強推</td>
+          </tr>
+          <tr>
+            <td><a href="https://maps.google.com/maps?q=Toriton+迴轉壽司+池袋" target="_blank">Toriton 迴轉壽司</a></td>
+            <td>迴轉壽司</td><td>時令握壽司</td><td>👍 好評</td>
+          </tr>
+          <tr>
+            <td><a href="https://maps.google.com/maps?q=名代宇奈とと+上野" target="_blank">名代 宇奈とと</a></td>
+            <td>鰻魚飯</td><td>鰻魚丼（¥500起）</td><td>👍 CP值極高</td>
+          </tr>
+          <tr>
+            <td><a href="https://maps.google.com/maps?q=一樂+居酒屋+東京" target="_blank">一樂 居酒屋</a></td>
+            <td>居酒屋</td><td>綜合下酒菜</td><td>👍 好評</td>
+          </tr>
+          <tr>
+            <td><a href="https://maps.google.com/maps?q=Tsujita+Misonosho+Iidabashi" target="_blank">Tsujita Misonosho</a></td>
+            <td>拉麵</td><td>招牌拉麵</td><td>👍 宵夜推薦</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 景點評價 -->
+  <div style="margin-top: 28px;">
+    <div class="section-title">📍 景點評價</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>景點</th><th>區域</th><th>評價</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><a href="https://maps.google.com/maps?q=犬カフェRIO+池袋" target="_blank">犬カフェ RIO　狗狗咖啡廳</a></td>
+            <td>池袋</td><td>👍 超療癒，強推</td>
+          </tr>
+          <tr>
+            <td><a href="https://maps.google.com/maps?q=東京迪士尼樂園" target="_blank">東京迪士尼樂園</a></td>
+            <td>舞濱</td><td>🌟 一整天都值得</td>
+          </tr>
+          <tr>
+            <td><a href="https://maps.google.com/maps?q=江戸和装工房+雅+浅草" target="_blank">淺草和服體驗</a></td>
+            <td>淺草</td><td>👍 必體驗</td>
+          </tr>
+          <tr>
+            <td><a href="https://maps.google.com/maps?q=国立科学博物館+上野" target="_blank">科博館　哺乳類展</a></td>
+            <td>上野</td><td>👍 特展值得</td>
+          </tr>
+          <tr>
+            <td><a href="https://maps.google.com/maps?q=築地市場+東京" target="_blank">築地市場</a></td>
+            <td>築地</td><td>😐 普通，可跳過</td>
+          </tr>
+          <tr>
+            <td><a href="https://maps.google.com/maps?q=有明花園+東京" target="_blank">有明花園 Mall</a></td>
+            <td>有明</td><td>😐 普通，可跳過</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <span class="footer-emoji">🌸</span>
+  東京 2024年4月　6天5夜　·　池袋 × 迪士尼 × 淺草 × 新宿
+</div>
+
+</body>
+</html>
