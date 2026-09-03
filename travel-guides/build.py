@@ -14,7 +14,7 @@ CSS = """
 body{width:1400px;background:var(--paper);color:var(--ink);
   font-family:'Noto Sans TC','Noto Sans CJK TC','WenQuanYi Zen Hei',sans-serif;
   -webkit-font-smoothing:antialiased;}
-.page{position:relative;padding:34px 40px 30px;overflow:hidden}
+.page{position:relative;padding:40px 46px 36px;overflow:hidden}
 .page::before{content:'';position:absolute;inset:0;pointer-events:none;
   background-image:radial-gradient(circle at 1px 1px, rgba(120,100,70,.14) 1px, transparent 0);
   background-size:22px 22px;opacity:.5}
@@ -27,11 +27,11 @@ header{position:relative;display:flex;align-items:flex-end;gap:26px;
   padding:6px 0 16px;border-bottom:3px double var(--line);margin-bottom:14px}
 .htxt{flex:1}
 .kicker{font-size:12px;letter-spacing:.42em;color:var(--accent2);font-weight:700}
-h1{font-family:'Noto Serif TC',serif;font-weight:900;font-size:62px;line-height:1;
+h1{font-family:'Noto Serif TC',serif;font-weight:900;font-size:70px;line-height:1;
   letter-spacing:.04em;margin:6px 0 2px;color:var(--ink)}
 h1 small{font-family:'Noto Sans TC',sans-serif;font-size:19px;font-weight:500;letter-spacing:.16em;
   color:var(--accent);margin-left:14px;vertical-align:6px}
-.tagline{font-size:15.5px;color:var(--sub);letter-spacing:.06em;margin-top:7px}
+.tagline{font-size:17px;color:var(--sub);letter-spacing:.06em;margin-top:7px}
 .tagline b{color:var(--accent);font-weight:700}
 .seal{position:absolute;right:262px;top:2px;width:86px;height:86px;border:2.5px solid var(--accent3);
   border-radius:50%;color:var(--accent3);display:flex;flex-direction:column;align-items:center;
@@ -43,69 +43,71 @@ h1 small{font-family:'Noto Sans TC',sans-serif;font-size:19px;font-weight:500;le
 /* ---------- facts ---------- */
 .facts{display:grid;grid-template-columns:repeat(7,1fr);gap:0;border:1.5px solid var(--line);
   border-radius:6px;background:#fff;margin-bottom:16px;overflow:hidden}
-.fact{padding:8px 10px;border-right:1px dashed var(--line)}
+.fact{padding:12px 14px;border-right:1px dashed var(--line)}
 .fact:last-child{border-right:0}
-.fact .k{font-size:10px;letter-spacing:.16em;color:var(--accent2);font-weight:700}
-.fact .v{font-size:13px;font-weight:700;margin-top:3px;line-height:1.35}
-.fact .v em{font-style:normal;font-size:11px;font-weight:400;color:var(--sub);display:block}
+.fact .k{font-size:11px;letter-spacing:.16em;color:var(--accent2);font-weight:700}
+.fact .v{font-size:15.5px;font-weight:700;margin-top:3px;line-height:1.35}
+.fact .v em{font-style:normal;font-size:12px;font-weight:400;color:var(--sub);display:block}
 
 /* ---------- grid ---------- */
-.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
-.card{background:#fff;border:1.5px solid var(--line);border-radius:7px;padding:12px 14px 13px;
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
+.card{background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:18px 22px 20px;
   position:relative;box-shadow:2px 3px 0 rgba(180,165,135,.22)}
 .card.tint{background:var(--tint)}
-h2{font-family:'Noto Serif TC',serif;font-size:20px;letter-spacing:.06em;display:flex;
-  align-items:center;gap:9px;margin-bottom:9px;color:var(--ink)}
-h2 i{display:inline-flex;width:25px;height:25px;border-radius:50%;background:var(--accent);
-  color:#fff;font-style:normal;font-size:13px;align-items:center;justify-content:center;flex:none;
+h2{font-family:'Noto Serif TC',serif;font-size:25px;letter-spacing:.06em;display:flex;
+  align-items:center;gap:11px;margin-bottom:14px;color:var(--ink)}
+h2 i{display:inline-flex;width:30px;height:30px;border-radius:50%;background:var(--accent);
+  color:#fff;font-style:normal;font-size:15px;align-items:center;justify-content:center;flex:none;
   font-family:'Noto Sans TC',sans-serif;font-weight:700}
-h2 span{font-size:10.5px;letter-spacing:.2em;color:var(--sub);font-weight:400;
+h2 span{font-size:12px;letter-spacing:.2em;color:var(--sub);font-weight:400;
   font-family:'Noto Sans TC',sans-serif}
 h2::after{content:'';flex:1;height:0;border-top:2px dotted var(--line)}
-h3{font-size:12px;letter-spacing:.1em;color:#fff;background:var(--accent2);display:inline-block;
-  padding:2.5px 10px;border-radius:3px;margin:9px 0 7px}
+h3{font-size:14px;letter-spacing:.1em;color:#fff;background:var(--accent2);display:inline-block;
+  padding:4px 13px;border-radius:3px;margin:18px 0 11px}
 h3:first-of-type{margin-top:2px}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:5px 16px}
-.spot{display:flex;gap:8px;padding:4px 0;border-bottom:1px dotted #E7DECD}
-.spot:last-child{border-bottom:0}
-.no{flex:none;width:19px;height:19px;border-radius:50%;border:1.5px solid var(--accent);
-  color:var(--accent);font-size:10.5px;font-weight:700;display:flex;align-items:center;
+.two{display:grid;grid-template-columns:repeat(3,1fr);gap:0 26px}
+.spot{display:flex;gap:10px;padding:2px 0 4px}
+
+.no{flex:none;width:24px;height:24px;border-radius:50%;border:1.5px solid var(--accent);
+  color:var(--accent);font-size:13px;font-weight:700;display:flex;align-items:center;
   justify-content:center;margin-top:2px}
-.nm{font-size:13.5px;font-weight:700;line-height:1.3}
-.nm em{font-style:normal;font-size:9.5px;color:#A0947F;letter-spacing:.04em;font-weight:400;
+.nm{font-size:17px;font-weight:700;line-height:1.35}
+.nm em{font-style:normal;font-size:11px;color:#A0947F;letter-spacing:.04em;font-weight:400;
   margin-left:5px}
-.ds{font-size:11.8px;color:#4C4438;line-height:1.5;margin-top:1px}
-.pill{display:inline-block;font-size:10px;padding:.5px 6px;border:1px solid var(--accent);
+.ds{font-size:13.5px;color:#4C4438;line-height:1.75;margin-top:3px}
+.meta{font-size:12.5px;color:var(--accent);margin-top:5px;letter-spacing:.02em;font-weight:500}
+.meta::before{content:'●';font-size:7px;vertical-align:2.5px;margin-right:5px;opacity:.7}
+.pill{display:inline-block;font-size:11.5px;padding:1px 8px;border:1px solid var(--accent);
   color:var(--accent);border-radius:9px;margin-left:5px;vertical-align:1px;white-space:nowrap}
 .pill.g{border-color:#9AA88F;color:#5F7052}
 
 /* food */
-.food{display:flex;gap:8px;padding:4.5px 0;border-bottom:1px dotted #E7DECD}
+.food{display:flex;gap:11px;padding:9px 0;border-bottom:1px dotted #E7DECD}
 .food:last-child{border-bottom:0}
-.food .ic{flex:none;width:20px;height:20px;margin-top:2px}
-.pricetag{font-size:10.5px;color:#fff;background:var(--accent3);border-radius:3px;padding:0 5px;
+.food .ic{flex:none;width:24px;height:24px;margin-top:2px}
+.pricetag{font-size:11.5px;color:#fff;background:var(--accent3);border-radius:3px;padding:0 5px;
   margin-left:5px;vertical-align:1.5px;white-space:nowrap}
 
 /* list */
 ul.dots{list-style:none}
-ul.dots li{font-size:11.8px;line-height:1.55;padding-left:14px;position:relative;margin-bottom:4.5px;
+ul.dots li{font-size:14px;line-height:1.8;padding-left:17px;position:relative;margin-bottom:12px;
   color:#463E33}
-ul.dots li::before{content:'';position:absolute;left:2px;top:7px;width:5px;height:5px;
+ul.dots li::before{content:'';position:absolute;left:2px;top:10px;width:6px;height:6px;
   background:var(--accent);border-radius:50%}
 ul.dots li b{color:var(--ink)}
 
 /* itinerary */
-.days{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.day{border:1.5px dashed var(--line);border-radius:6px;padding:8px 10px 9px;background:#fff}
-.day .dh{font-family:'Noto Serif TC',serif;font-size:15px;color:var(--accent);font-weight:700;
+.days{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.day{border:1.5px dashed var(--line);border-radius:6px;padding:13px 15px 14px;background:#fff}
+.day .dh{font-family:'Noto Serif TC',serif;font-size:18px;color:var(--accent);font-weight:700;
   border-bottom:1px solid var(--line);padding-bottom:4px;margin-bottom:5px}
-.day .dh em{font-style:normal;font-size:10.5px;color:var(--sub);margin-left:6px;font-family:'Noto Sans TC'}
-.step{font-size:11.5px;line-height:1.5;color:#463E33;padding-left:12px;position:relative;margin-bottom:2px}
+.day .dh em{font-style:normal;font-size:12.5px;color:var(--sub);margin-left:6px;font-family:'Noto Sans TC'}
+.step{font-size:13.5px;line-height:1.7;color:#463E33;padding-left:14px;position:relative;margin-bottom:5px}
 .step::before{content:'▸';position:absolute;left:0;color:var(--accent2);font-size:10px}
-.note{font-size:10.5px;color:var(--sub);margin-top:4px;border-top:1px dotted var(--line);padding-top:4px}
+.note{font-size:12px;color:var(--sub);margin-top:4px;border-top:1px dotted var(--line);padding-top:4px}
 
 /* budget */
-.bud{display:flex;justify-content:space-between;font-size:12px;padding:4px 0;
+.bud{display:flex;justify-content:space-between;font-size:14.5px;padding:9px 0;
   border-bottom:1px dotted #E7DECD}
 .bud:last-child{border-bottom:0}
 .bud b{font-weight:700}
@@ -113,8 +115,8 @@ ul.dots li b{color:var(--ink)}
 .tape{position:absolute;width:74px;height:20px;background:rgba(210,180,120,.35);
   border-left:1px dashed rgba(255,255,255,.7);border-right:1px dashed rgba(255,255,255,.7);
   top:-9px;left:50%;margin-left:-37px;transform:rotate(-1.6deg)}
-footer{margin-top:14px;display:flex;justify-content:space-between;align-items:center;
-  border-top:3px double var(--line);padding-top:9px;font-size:10.5px;color:var(--sub);
+footer{margin-top:18px;display:flex;justify-content:space-between;align-items:center;
+  border-top:3px double var(--line);padding-top:12px;font-size:12px;color:var(--sub);
   letter-spacing:.14em}
 footer b{color:var(--accent);letter-spacing:.2em}
 """
@@ -134,11 +136,11 @@ def spots_html(groups, accent):
         out.append('<h3>%s</h3><div class="two">' % esc(title))
         for it in items:
             en = '<em>%s</em>' % esc(it[1]) if it[1] else ''
-            pill = '<span class="pill">%s</span>' % esc(it[3]) if len(it) > 3 and it[3] else ''
+            meta = ('<div class="meta">%s</div>' % esc(it[3])) if len(it) > 3 and it[3] else ''
             out.append(
                 '<div class="spot"><div class="no">%d</div><div>'
-                '<div class="nm">%s%s%s</div><div class="ds">%s</div></div></div>'
-                % (n, esc(it[0]), en, pill, esc(it[2])))
+                '<div class="nm">%s%s</div><div class="ds">%s</div>%s</div></div>'
+                % (n, esc(it[0]), en, esc(it[2]), meta))
             n += 1
         out.append('</div>')
     return ''.join(out)
@@ -155,7 +157,19 @@ def food_html(items, accent):
     return ''.join(out)
 
 
+LIMITS = dict(spots=3, food=6, transport=5, tips=5, budget=5)
+
+
+def trim(c):
+    c = dict(c)
+    c['spots'] = [(t, items[:LIMITS['spots']]) for t, items in c['spots']]
+    for k in ('food', 'transport', 'tips', 'budget'):
+        c[k] = c[k][:LIMITS[k]]
+    return c
+
+
 def build(c):
+    c = trim(c)
     facts = ''.join(
         '<div class="fact"><div class="k">%s</div><div class="v">%s<em>%s</em></div></div>'
         % (esc(k), esc(v), esc(s)) for k, v, s in c['facts'])
