@@ -1,16 +1,12 @@
-# -*- coding: utf-8 -*-
-"""手機閱讀版：1080px 寬、單欄、大字級的一頁式城市導覽"""
-import html, pathlib
-
-OUT = pathlib.Path(__file__).parent
-
-# 每個區塊要印幾項（手機版刻意留少）
-LIMITS = dict(spots=2, food=5, transport=3, tips=4, budget=4, steps=3)
-
-CSS = """
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=1080">
+<title>河　內旅遊導覽・景點與交通</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="file:///root/fonts/fonts.css">
+<style>
 :root{
   --paper:#FBF6EA; --ink:#2C241C; --sub:#6B6053; --line:#DCD1BE;
-  --accent:@ACCENT@; --accent2:@ACCENT2@; --accent3:@ACCENT3@; --tint:@TINT@;
+  --accent:#1F6E6A; --accent2:#C08A22; --accent3:#A6402F; --tint:#EDF4F1;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{width:1080px;background:var(--paper);color:var(--ink);
@@ -114,109 +110,32 @@ ul.dots li b{color:var(--accent)}
 footer{border-top:4px double var(--line);padding-top:20px;display:flex;
   justify-content:space-between;font-size:20px;letter-spacing:.16em;color:var(--sub)}
 footer b{color:var(--accent);letter-spacing:.22em}
-"""
-
-ICON_FOOD = ("""<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="%s" stroke-width="1.8"
- stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2"""
-             """-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg>""")
-
-
-def esc(s):
-    return html.escape(str(s), quote=False)
-
-
-def trim(c):
-    c = dict(c)
-    c['spots'] = [(t, items[:LIMITS['spots']]) for t, items in c['spots']]
-    for k in ('food', 'transport', 'tips', 'budget'):
-        c[k] = c[k][:LIMITS[k]]
-    c['days'] = [(a, b, steps[:LIMITS['steps']], note) for a, b, steps, note in c['days']]
-    return c
-
-
-def build(c):
-    c = trim(c)
-    li = lambda xs: ''.join('<li>%s</li>' % x for x in xs)
-
-    spots, n = [], 1
-    for title, items in c['spots']:
-        spots.append('<h3>%s</h3>' % esc(title))
-        for it in items:
-            en = '<em>%s</em>' % esc(it[1]) if it[1] else ''
-            meta = '<div class="meta">%s</div>' % esc(it[3]) if len(it) > 3 and it[3] else ''
-            spots.append('<div class="item"><div class="no">%d</div><div>'
-                         '<div class="nm">%s%s</div><div class="ds">%s</div>%s</div></div>'
-                         % (n, esc(it[0]), en, esc(it[2]), meta))
-            n += 1
-    spots = ''.join(spots)
-
-    food = ''.join(
-        '<div class="item">%s<div><div class="nm">%s%s</div><div class="ds">%s</div>%s</div></div>'
-        % (ICON_FOOD % c['accent'], esc(nm), '<em>%s</em>' % esc(en) if en else '', esc(ds),
-           '<div class="meta g">%s</div>' % esc(pr) if pr else '')
-        for nm, en, ds, pr in c['food'])
-
-    facts = ''.join('<div class="fact"><div class="k">%s</div><div class="v">%s<em>%s</em></div></div>'
-                    % (esc(k), esc(v), esc(s)) for k, v, s in c['facts'][:6])
-
-    days = ''.join('<div class="day"><div class="dh">%s<em>%s</em></div>%s</div>'
-                   % (esc(d[0]), esc(d[1]),
-                      ''.join('<div class="step">%s</div>' % esc(s) for s in d[2]))
-                   for d in c['days'])
-
-    budget = ''.join('<div class="bud"><b>%s</b><span>%s</span></div>' % (esc(a), esc(b))
-                     for a, b in c['budget'])
-
-    head_full = f"""<header>
-  <div class="seal"><b>{esc(c['seal'])}</b><span>TRAVEL NOTE</span></div>
-  <div class="kicker">{esc(c['kicker'])}</div>
-  <h1>{esc(c['zh'])}</h1><div class="en">{esc(c['en'])}</div>
-  <div class="tagline">{c['tagline']}</div>
-  <div class="illus">{c['illus']}</div>
+</style></head><body><div class="page"><div class="frame"></div>
+<header>
+  <div class="seal"><b>河內</b><span>TRAVEL NOTE</span></div>
+  <div class="kicker">V I E T N A M  ·  千年首都</div>
+  <h1>河　內</h1><div class="en">HANOI</div>
+  <div class="tagline">法式老城 × <b>三十六古街</b> × 蛋咖啡與河粉——舊時代與摩托車一起流動。</div>
+  <div class="illus"><svg viewBox="0 0 250 150" fill="none" stroke="var(--accent)" stroke-width="2"
+ stroke-linejoin="round" stroke-linecap="round">
+<circle cx="212" cy="34" r="18" fill="var(--tint)" stroke="var(--accent3)" stroke-width="1.6"/>
+<path d="M104 104h40v24h-40z" fill="#fff"/>
+<path d="M96 104q10-3 14-11h28q4 8 14 11" fill="#fff"/>
+<path d="M110 78h28v15h-28z" fill="#fff"/>
+<path d="M102 78q9-3 12-10h24q3 7 12 10" fill="#fff"/>
+<path d="M124 68V60" stroke="var(--accent3)" stroke-width="1.6"/><circle cx="124" cy="56" r="3.5" fill="#fff" stroke="var(--accent3)" stroke-width="1.5"/>
+<path d="M112 110h9v18h-9zM127 110h9v18h-9z" stroke-width="1.2" stroke="var(--accent3)"/>
+<path d="M78 128h92" stroke-width="2.6"/>
+<path d="M14 132q18-12 36 0M8 142q24-14 48 0" stroke-width="1.5" stroke="var(--accent3)"/>
+<path d="M186 132q20-12 40 0M180 142q26-14 52 0" stroke-width="1.5" stroke="var(--accent3)"/>
+<path d="M28 106q14-32 28 0z" fill="#fff"/><path d="M22 106h40" stroke-width="1.6"/>
+<path d="M42 88v-6" stroke="var(--accent3)" stroke-width="1.4"/>
+</svg></div>
   <div class="part">PART 1 ／ 2 ・ 看什麼・怎麼走</div>
-</header>"""
-
-    head_mini = f"""<header class="mini">
-  <div class="seal"><b>{esc(c['seal'])}</b><span>TRAVEL NOTE</span></div>
-  <div class="kicker">{esc(c['kicker'])}</div>
-  <h1>{esc(c['zh'])}</h1><div class="en">{esc(c['en'])}</div>
-  <div class="subttl">吃什麼・怎麼排・多少錢</div>
-  <div class="part">PART 2 ／ 2 ・ 吃與行程</div>
-</header>"""
-
-    foot = lambda t: (f'<footer><span>{esc(c["zh"])}．{esc(c["en"])}</span>'
-                      f'<b>{esc(t)}</b></footer>')
-
-    page_a = f"""<div class="page"><div class="frame"></div>
-{head_full}
-<div class="facts">{facts}</div>
-<section><h2><i>01</i>必訪景點 <span>SIGHTS</span></h2>{spots}</section>
+</header>
+<div class="facts"><div class="fact"><div class="k">航　程</div><div class="v">3 hr 20<em>台北直飛 HAN 內牌機場</em></div></div><div class="fact"><div class="k">時　差</div><div class="v">台灣 −1 hr<em>早班機當天可玩</em></div></div><div class="fact"><div class="k">貨　幣</div><div class="v">VND 越南盾<em>1,000 VND ≒ 1.2 TWD</em></div></div><div class="fact"><div class="k">最佳季節</div><div class="v">10–12 月<em>涼爽乾燥；6–8 月濕熱多雨</em></div></div><div class="fact"><div class="k">語　言</div><div class="v">越南語<em>老城區英文可通，備翻譯 App</em></div></div><div class="fact"><div class="k">電　壓</div><div class="v">220V／A·C<em>台灣扁插多數可用</em></div></div></div>
+<section><h2><i>01</i>必訪景點 <span>SIGHTS</span></h2><h3>老城與湖區 OLD QUARTER</h3><div class="item"><div class="no">1</div><div><div class="nm">還劍湖 + 玉山祠<em>Hoan Kiem</em></div><div class="ds">市中心的呼吸口，紅色棲旭橋通往湖心島，清晨有太極人潮。</div><div class="meta">50k</div></div></div><div class="item"><div class="no">2</div><div><div class="nm">三十六古街<em>36 Old Streets</em></div><div class="ds">一條街賣一種貨：絲綢、鐵器、紙紮，走路逛最有味道。</div><div class="meta">免費</div></div></div><h3>歷史與文化 HISTORY</h3><div class="item"><div class="no">3</div><div><div class="nm">胡志明陵寢 + 主席府<em>Ho Chi Minh</em></div><div class="ds">上午 8–11 開放，週一週五休；長褲過膝、禁拍照。</div><div class="meta">免費</div></div></div><div class="item"><div class="no">4</div><div><div class="nm">一柱廟<em>One Pillar Pagoda</em></div><div class="ds">立於蓮池上的木造小廟，與陵寢園區同一動線。</div><div class="meta">免費</div></div></div><h3>近郊與延伸 DAY TRIPS</h3><div class="item"><div class="no">5</div><div><div class="nm">下龍灣<em>Ha Long Bay</em></div><div class="ds">喀斯特海灣經典郵輪 2 天 1 夜，含獨木舟與鐘乳石洞。</div><div class="meta">車程 2.5 hr</div></div></div><div class="item"><div class="no">6</div><div><div class="nm">寧平・陸龍灣<em>Trang An／Ninh Binh</em></div><div class="ds">搖櫓小船穿越水洞與稻田，被稱作陸上下龍灣。</div><div class="meta">車程 2 hr</div></div></div></section>
 <section><h2><i>02</i>交通移動 <span>GETTING AROUND</span></h2>
-  <ul class="dots">{li(c['transport'])}</ul></section>
-{foot(c['footer'] + '  ·  1 / 2')}
-</div>"""
-
-    page_b = f"""<div class="page"><div class="frame"></div>
-{head_mini}
-<section><h2><i>03</i>非吃不可 <span>EAT</span></h2>{food}</section>
-<section><h2><i>04</i>行前必知 <span>BEFORE YOU GO</span></h2>
-  <ul class="dots">{li(c['tips'])}</ul></section>
-<section><h2><i>05</i>行程這樣排 <span>ITINERARY</span></h2><div class="days">{days}</div></section>
-<section><h2><i>06</i>花費抓預算 <span>BUDGET</span></h2>
-  <div class="budbox">{budget}<div class="budnote">{c['budget_note']}</div></div></section>
-{foot(c['footer'] + '  ·  2 / 2')}
-</div>"""
-
-    css = (CSS.replace('@ACCENT@', c['accent']).replace('@ACCENT2@', c['accent2'])
-              .replace('@ACCENT3@', c['accent3']).replace('@TINT@', c['tint']))
-    stem = c['file'].rsplit('.', 1)[0]
-    for suffix, part, body in (('-1', '景點與交通', page_a), ('-2', '美食與行程', page_b)):
-        doc = f"""<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
-<meta name="viewport" content="width=1080">
-<title>{esc(c['zh'])}旅遊導覽・{esc(part)}</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
-<link rel="stylesheet" href="file:///root/fonts/fonts.css">
-<style>{css}</style></head><body>{body}</body></html>"""
-        p = OUT / (stem + suffix + '.html')
-        p.write_text(doc, encoding='utf-8')
-        print('wrote', p)
+  <ul class="dots"><li><b>Grab 機車</b>短程 20–30k，塞車時最快；<b>Grab Car</b> 冷氣舒適約 60–100k。</li><li><b>Xanh SM</b> 綠色電動計程車與 <b>Mai Linh</b> 是最安全的跳表選擇。</li><li><b>老城區步行</b>即可走完，還劍湖到大教堂只要 10 分鐘。</li></ul></section>
+<footer><span>河　內．HANOI</span><b>VIETNAM 2026  ·  1 / 2</b></footer>
+</div></body></html>

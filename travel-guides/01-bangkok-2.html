@@ -1,16 +1,12 @@
-# -*- coding: utf-8 -*-
-"""手機閱讀版：1080px 寬、單欄、大字級的一頁式城市導覽"""
-import html, pathlib
-
-OUT = pathlib.Path(__file__).parent
-
-# 每個區塊要印幾項（手機版刻意留少）
-LIMITS = dict(spots=2, food=5, transport=3, tips=4, budget=4, steps=3)
-
-CSS = """
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=1080">
+<title>曼　谷旅遊導覽・美食與行程</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="file:///root/fonts/fonts.css">
+<style>
 :root{
   --paper:#FBF6EA; --ink:#2C241C; --sub:#6B6053; --line:#DCD1BE;
-  --accent:@ACCENT@; --accent2:@ACCENT2@; --accent3:@ACCENT3@; --tint:@TINT@;
+  --accent:#B5342B; --accent2:#C08B2A; --accent3:#3E7A6E; --tint:#FDF1DF;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{width:1080px;background:var(--paper);color:var(--ink);
@@ -114,109 +110,24 @@ ul.dots li b{color:var(--accent)}
 footer{border-top:4px double var(--line);padding-top:20px;display:flex;
   justify-content:space-between;font-size:20px;letter-spacing:.16em;color:var(--sub)}
 footer b{color:var(--accent);letter-spacing:.22em}
-"""
-
-ICON_FOOD = ("""<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="%s" stroke-width="1.8"
- stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2"""
-             """-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg>""")
-
-
-def esc(s):
-    return html.escape(str(s), quote=False)
-
-
-def trim(c):
-    c = dict(c)
-    c['spots'] = [(t, items[:LIMITS['spots']]) for t, items in c['spots']]
-    for k in ('food', 'transport', 'tips', 'budget'):
-        c[k] = c[k][:LIMITS[k]]
-    c['days'] = [(a, b, steps[:LIMITS['steps']], note) for a, b, steps, note in c['days']]
-    return c
-
-
-def build(c):
-    c = trim(c)
-    li = lambda xs: ''.join('<li>%s</li>' % x for x in xs)
-
-    spots, n = [], 1
-    for title, items in c['spots']:
-        spots.append('<h3>%s</h3>' % esc(title))
-        for it in items:
-            en = '<em>%s</em>' % esc(it[1]) if it[1] else ''
-            meta = '<div class="meta">%s</div>' % esc(it[3]) if len(it) > 3 and it[3] else ''
-            spots.append('<div class="item"><div class="no">%d</div><div>'
-                         '<div class="nm">%s%s</div><div class="ds">%s</div>%s</div></div>'
-                         % (n, esc(it[0]), en, esc(it[2]), meta))
-            n += 1
-    spots = ''.join(spots)
-
-    food = ''.join(
-        '<div class="item">%s<div><div class="nm">%s%s</div><div class="ds">%s</div>%s</div></div>'
-        % (ICON_FOOD % c['accent'], esc(nm), '<em>%s</em>' % esc(en) if en else '', esc(ds),
-           '<div class="meta g">%s</div>' % esc(pr) if pr else '')
-        for nm, en, ds, pr in c['food'])
-
-    facts = ''.join('<div class="fact"><div class="k">%s</div><div class="v">%s<em>%s</em></div></div>'
-                    % (esc(k), esc(v), esc(s)) for k, v, s in c['facts'][:6])
-
-    days = ''.join('<div class="day"><div class="dh">%s<em>%s</em></div>%s</div>'
-                   % (esc(d[0]), esc(d[1]),
-                      ''.join('<div class="step">%s</div>' % esc(s) for s in d[2]))
-                   for d in c['days'])
-
-    budget = ''.join('<div class="bud"><b>%s</b><span>%s</span></div>' % (esc(a), esc(b))
-                     for a, b in c['budget'])
-
-    head_full = f"""<header>
-  <div class="seal"><b>{esc(c['seal'])}</b><span>TRAVEL NOTE</span></div>
-  <div class="kicker">{esc(c['kicker'])}</div>
-  <h1>{esc(c['zh'])}</h1><div class="en">{esc(c['en'])}</div>
-  <div class="tagline">{c['tagline']}</div>
-  <div class="illus">{c['illus']}</div>
-  <div class="part">PART 1 ／ 2 ・ 看什麼・怎麼走</div>
-</header>"""
-
-    head_mini = f"""<header class="mini">
-  <div class="seal"><b>{esc(c['seal'])}</b><span>TRAVEL NOTE</span></div>
-  <div class="kicker">{esc(c['kicker'])}</div>
-  <h1>{esc(c['zh'])}</h1><div class="en">{esc(c['en'])}</div>
+</style></head><body><div class="page"><div class="frame"></div>
+<header class="mini">
+  <div class="seal"><b>曼谷</b><span>TRAVEL NOTE</span></div>
+  <div class="kicker">T H A I L A N D  ·  首都曼谷</div>
+  <h1>曼　谷</h1><div class="en">BANGKOK</div>
   <div class="subttl">吃什麼・怎麼排・多少錢</div>
   <div class="part">PART 2 ／ 2 ・ 吃與行程</div>
-</header>"""
-
-    foot = lambda t: (f'<footer><span>{esc(c["zh"])}．{esc(c["en"])}</span>'
-                      f'<b>{esc(t)}</b></footer>')
-
-    page_a = f"""<div class="page"><div class="frame"></div>
-{head_full}
-<div class="facts">{facts}</div>
-<section><h2><i>01</i>必訪景點 <span>SIGHTS</span></h2>{spots}</section>
-<section><h2><i>02</i>交通移動 <span>GETTING AROUND</span></h2>
-  <ul class="dots">{li(c['transport'])}</ul></section>
-{foot(c['footer'] + '  ·  1 / 2')}
-</div>"""
-
-    page_b = f"""<div class="page"><div class="frame"></div>
-{head_mini}
-<section><h2><i>03</i>非吃不可 <span>EAT</span></h2>{food}</section>
+</header>
+<section><h2><i>03</i>非吃不可 <span>EAT</span></h2><div class="item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#B5342B" stroke-width="1.8"
+ stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg><div><div class="nm">船麵<em>Boat Noodle</em></div><div class="ds">勝利紀念碑船麵巷，一碗只有兩三口，濃郁血湯配豬皮，戰績堆疊碗塔。</div><div class="meta g">15–20B／碗</div></div></div><div class="item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#B5342B" stroke-width="1.8"
+ stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg><div><div class="nm">痣姐蟹肉蛋<em>Jay Fai</em></div><div class="ds">米其林一星路邊攤，炭火現炒蟹肉蛋捲，務必提前訂位或早排。</div><div class="meta g">1,000B 起</div></div></div><div class="item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#B5342B" stroke-width="1.8"
+ stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg><div><div class="nm">水門海南雞飯<em>Go-Ang</em></div><div class="ds">粉紅制服招牌，雞油飯＋薑蒜辣醬，24 小時附近都有分店。</div><div class="meta g">60B</div></div></div><div class="item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#B5342B" stroke-width="1.8"
+ stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg><div><div class="nm">冬蔭功蝦湯麵<em>Pe Aor</em></div><div class="ds">整隻大蝦＋濃蝦膏湯頭，酸辣到清醒，排隊也值得。</div><div class="meta g">250B</div></div></div><div class="item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#B5342B" stroke-width="1.8"
+ stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg><div><div class="nm">打拋豬飯<em>Pad Kra Pao</em></div><div class="ds">街邊快餐王者，加顆半熟荷包蛋才是正統吃法。</div><div class="meta g">50–70B</div></div></div></section>
 <section><h2><i>04</i>行前必知 <span>BEFORE YOU GO</span></h2>
-  <ul class="dots">{li(c['tips'])}</ul></section>
-<section><h2><i>05</i>行程這樣排 <span>ITINERARY</span></h2><div class="days">{days}</div></section>
+  <ul class="dots"><li><b>寺廟服裝</b>：覆肩、過膝、脫鞋；大皇宮現場租沙龍要押金。</li><li><b>雙價制</b>存在，門票外國人價正常，紀念品可殺到 6–7 折。</li><li><b>別喝自來水</b>，超商瓶裝水 7–14B；冰塊有製冰廠出品可安心。</li><li><b>小費</b>非強制：按摩 50–100B、飯店行李 20B 剛好。</li></ul></section>
+<section><h2><i>05</i>行程這樣排 <span>ITINERARY</span></h2><div class="days"><div class="day"><div class="dh">Day 1<em>老城巡禮</em></div><div class="step">08:30 大皇宮＋玉佛寺（早去避人潮與高溫）</div><div class="step">11:30 臥佛寺看臥佛、順做 1 hr 泰式按摩</div><div class="step">15:00 渡船到鄭王廟，對岸咖啡廳等日落</div></div><div class="day"><div class="dh">Day 2<em>市中心＋天際線</em></div><div class="step">10:00 金湯普森泰絲之家導覽</div><div class="step">12:00 Siam Paragon 美食街午餐、逛 MBK</div><div class="step">16:30 Mahanakhon SkyWalk 看日落</div></div><div class="day"><div class="dh">Day 3<em>市集與河岸</em></div><div class="step">09:00 恰圖恰週末市集（或拉差達夜市改晚上）</div><div class="step">14:00 回飯店午休避開最熱時段</div><div class="step">16:30 Asiatique 搭免費接駁船</div></div><div class="day"><div class="dh">Day 4<em>近郊一日</em></div><div class="step">06:30 出發丹能莎朵水上市場</div><div class="step">10:00 美功鐵道市集看火車穿越</div><div class="step">14:00 回程可加大城古蹟或安帕瓦</div></div></div></section>
 <section><h2><i>06</i>花費抓預算 <span>BUDGET</span></h2>
-  <div class="budbox">{budget}<div class="budnote">{c['budget_note']}</div></div></section>
-{foot(c['footer'] + '  ·  2 / 2')}
-</div>"""
-
-    css = (CSS.replace('@ACCENT@', c['accent']).replace('@ACCENT2@', c['accent2'])
-              .replace('@ACCENT3@', c['accent3']).replace('@TINT@', c['tint']))
-    stem = c['file'].rsplit('.', 1)[0]
-    for suffix, part, body in (('-1', '景點與交通', page_a), ('-2', '美食與行程', page_b)):
-        doc = f"""<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
-<meta name="viewport" content="width=1080">
-<title>{esc(c['zh'])}旅遊導覽・{esc(part)}</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
-<link rel="stylesheet" href="file:///root/fonts/fonts.css">
-<style>{css}</style></head><body>{body}</body></html>"""
-        p = OUT / (stem + suffix + '.html')
-        p.write_text(doc, encoding='utf-8')
-        print('wrote', p)
+  <div class="budbox"><div class="bud"><b>青旅／平價旅館</b><span>400–900 B</span></div><div class="bud"><b>三星飯店（雙人）</b><span>1,200–2,200 B</span></div><div class="bud"><b>街邊一餐</b><span>50–80 B</span></div><div class="bud"><b>餐廳一餐</b><span>250–500 B</span></div><div class="budnote">不含機票，中等玩法每人每日約 <b>1,800–2,800 B（約 1,700–2,700 TWD）</b>；購物與夜生活另計。</div></div></section>
+<footer><span>曼　谷．BANGKOK</span><b>THAILAND 2026  ·  2 / 2</b></footer>
+</div></body></html>
