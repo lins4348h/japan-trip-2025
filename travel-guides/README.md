@@ -1,6 +1,6 @@
-# 東南亞三城一頁式旅遊導覽
+# 東南亞三城一頁式旅遊導覽（手機閱讀版）
 
-旅遊書風格、高資訊密度的一頁式城市導覽，共三張：
+旅遊書風格、直式單欄、為手機螢幕設計的城市導覽，共三張：
 
 | 檔案 | 城市 | 主色 |
 | --- | --- | --- |
@@ -8,19 +8,17 @@
 | `02-chiangmai.html` / `.png` | 清邁 Chiang Mai | 森林綠 × 柚木棕 |
 | `03-hanoi.html` / `.png` | 河內 Hanoi | 湖水藍 × 芥末黃 |
 
-每張含：基本資訊列（航程／時差／貨幣／季節／電壓／機場進城）、9 個精選景點（分三區）、
-6 項在地美食、交通移動、行前必知、預算表、四天行程建議。
-
-內容量由 `build.py` 的 `LIMITS` 控制（`spots` 每區幾個、`food`／`transport`／`tips`／`budget` 各幾項），
-`cities.py` 保留完整資料，改數字即可加回更多內容。
+- 版面寬 1080 px（輸出 2160 px，2 倍解析度），手機全寬檢視時內文約 10 pt，不用放大就看得到
+- 每張含：6 格基本資訊、6 個景點（分三區）、5 項美食、3 條交通、4 則行前提醒、4 天行程、預算表
 
 ## 重新產生
 
 ```bash
 python3 cities.py   # 由 cities.py 的資料 + build.py 的版型產出 HTML
-python3 shot.py     # 用 Playwright/Chromium 輸出 2800px 寬的 PNG
+python3 shot.py     # 用 Playwright/Chromium 輸出 PNG
 ```
 
 - 版型與樣式：`build.py`
-- 文字內容：`cities.py`（改資料就能換城市或更新資訊）
-- 字型：Noto Serif TC + Noto Sans TC（HTML 已內含 Google Fonts 連結）
+- 文字內容：`cities.py`（完整資料都在，未印出的只是被 LIMITS 篩掉）
+- 內容量：`build.py` 的 `LIMITS`（`spots` 每區幾個、`food`／`transport`／`tips`／`budget`／`steps` 各幾項）
+- 字型：Noto Serif TC + Noto Sans TC

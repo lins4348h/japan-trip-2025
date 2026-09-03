@@ -1,132 +1,115 @@
 <!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
-<title>河　內一頁式旅遊導覽</title>
+<meta name="viewport" content="width=1080">
+<title>河　內一頁式旅遊導覽（手機版）</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
 <link rel="stylesheet" href="file:///root/fonts/fonts.css">
 <style>
 :root{
-  --paper:#FBF6EA; --ink:#2C241C; --sub:#6B6053; --line:#D9CEBB;
-  --accent:#1F6E6A; --accent2:#C08A22; --accent3:#A6402F;
-  --tint:#EDF4F1;
+  --paper:#FBF6EA; --ink:#2C241C; --sub:#6B6053; --line:#DCD1BE;
+  --accent:#1F6E6A; --accent2:#C08A22; --accent3:#A6402F; --tint:#EDF4F1;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{width:1400px;background:var(--paper);color:var(--ink);
-  font-family:'Noto Sans TC','Noto Sans CJK TC','WenQuanYi Zen Hei',sans-serif;
-  -webkit-font-smoothing:antialiased;}
-.page{position:relative;padding:40px 46px 36px;overflow:hidden}
+body{width:1080px;background:var(--paper);color:var(--ink);
+  font-family:'Noto Sans TC','WenQuanYi Zen Hei',sans-serif;-webkit-font-smoothing:antialiased}
+.page{position:relative;padding:44px 36px 38px}
 .page::before{content:'';position:absolute;inset:0;pointer-events:none;
-  background-image:radial-gradient(circle at 1px 1px, rgba(120,100,70,.14) 1px, transparent 0);
-  background-size:22px 22px;opacity:.5}
-.frame{position:absolute;inset:14px;border:2px solid var(--line);border-radius:4px;pointer-events:none}
-.frame::after{content:'';position:absolute;inset:5px;border:1px solid var(--line);opacity:.6;border-radius:2px}
-.blob{position:absolute;border-radius:48% 52% 60% 40%/55% 45% 55% 45%;filter:blur(2px);opacity:.5;pointer-events:none}
+  background-image:radial-gradient(circle at 1px 1px, rgba(120,100,70,.13) 1px, transparent 0);
+  background-size:26px 26px}
+.frame{position:absolute;inset:18px;border:3px solid var(--line);border-radius:6px;pointer-events:none}
 
-/* ---------- header ---------- */
-header{position:relative;display:flex;align-items:flex-end;gap:26px;
-  padding:6px 0 16px;border-bottom:3px double var(--line);margin-bottom:14px}
-.htxt{flex:1}
-.kicker{font-size:12px;letter-spacing:.42em;color:var(--accent2);font-weight:700}
-h1{font-family:'Noto Serif TC',serif;font-weight:900;font-size:70px;line-height:1;
-  letter-spacing:.04em;margin:6px 0 2px;color:var(--ink)}
-h1 small{font-family:'Noto Sans TC',sans-serif;font-size:19px;font-weight:500;letter-spacing:.16em;
-  color:var(--accent);margin-left:14px;vertical-align:6px}
-.tagline{font-size:17px;color:var(--sub);letter-spacing:.06em;margin-top:7px}
+/* header */
+header{position:relative;text-align:center;padding-bottom:24px;margin-bottom:26px;
+  border-bottom:4px double var(--line)}
+.kicker{font-size:22px;letter-spacing:.5em;color:var(--accent2);font-weight:700;margin-left:.5em}
+h1{font-family:'Noto Serif TC',serif;font-weight:900;font-size:92px;line-height:1.05;
+  letter-spacing:.08em;margin:10px 0 4px}
+.en{font-size:30px;letter-spacing:.36em;color:var(--accent);font-weight:700;margin-left:.36em}
+.tagline{font-size:27px;color:var(--sub);line-height:1.7;margin-top:14px}
 .tagline b{color:var(--accent);font-weight:700}
-.seal{position:absolute;right:262px;top:2px;width:86px;height:86px;border:2.5px solid var(--accent3);
+.illus{width:420px;margin:10px auto 0;display:block}
+.seal{position:absolute;right:6px;top:0;width:132px;height:132px;border:4px solid var(--accent3);
   border-radius:50%;color:var(--accent3);display:flex;flex-direction:column;align-items:center;
-  justify-content:center;transform:rotate(-11deg);opacity:.85}
-.seal b{font-family:'Noto Serif TC',serif;font-size:21px;line-height:1.15;letter-spacing:.06em}
-.seal span{font-size:9px;letter-spacing:.14em;margin-top:3px}
-.illus{width:236px;flex:none;margin-left:80px}
+  justify-content:center;transform:rotate(-10deg);opacity:.9}
+.seal b{font-family:'Noto Serif TC',serif;font-size:34px;letter-spacing:.06em}
+.seal span{font-size:14px;letter-spacing:.16em;margin-top:5px}
 
-/* ---------- facts ---------- */
-.facts{display:grid;grid-template-columns:repeat(7,1fr);gap:0;border:1.5px solid var(--line);
-  border-radius:6px;background:#fff;margin-bottom:16px;overflow:hidden}
-.fact{padding:12px 14px;border-right:1px dashed var(--line)}
-.fact:last-child{border-right:0}
-.fact .k{font-size:11px;letter-spacing:.16em;color:var(--accent2);font-weight:700}
-.fact .v{font-size:15.5px;font-weight:700;margin-top:3px;line-height:1.35}
-.fact .v em{font-style:normal;font-size:12px;font-weight:400;color:var(--sub);display:block}
+/* facts */
+.facts{display:grid;grid-template-columns:repeat(3,1fr);border:2px solid var(--line);
+  border-radius:10px;background:#fff;overflow:hidden;margin-bottom:32px}
+.fact{padding:14px 18px;border-right:2px dashed var(--line);border-bottom:2px dashed var(--line)}
+.fact:nth-child(3n){border-right:0}
+.fact:nth-child(n+4){border-bottom:0}
+.fact .k{font-size:19px;letter-spacing:.2em;color:var(--accent2);font-weight:700}
+.fact .v{font-size:28px;font-weight:700;margin-top:6px;line-height:1.3}
+.fact .v em{font-style:normal;font-size:21px;font-weight:400;color:var(--sub);display:block;
+  margin-top:4px;line-height:1.5}
 
-/* ---------- grid ---------- */
-.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
-.card{background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:18px 22px 20px;
-  position:relative;box-shadow:2px 3px 0 rgba(180,165,135,.22)}
-.card.tint{background:var(--tint)}
-h2{font-family:'Noto Serif TC',serif;font-size:25px;letter-spacing:.06em;display:flex;
-  align-items:center;gap:11px;margin-bottom:14px;color:var(--ink)}
-h2 i{display:inline-flex;width:30px;height:30px;border-radius:50%;background:var(--accent);
-  color:#fff;font-style:normal;font-size:15px;align-items:center;justify-content:center;flex:none;
-  font-family:'Noto Sans TC',sans-serif;font-weight:700}
-h2 span{font-size:12px;letter-spacing:.2em;color:var(--sub);font-weight:400;
+/* sections */
+section{margin-bottom:30px}
+h2{font-family:'Noto Serif TC',serif;font-size:40px;letter-spacing:.06em;display:flex;
+  align-items:center;gap:14px;margin-bottom:18px}
+h2 i{display:inline-flex;width:48px;height:48px;border-radius:50%;background:var(--accent);
+  color:#fff;font-style:normal;font-size:23px;font-weight:700;align-items:center;
+  justify-content:center;flex:none;font-family:'Noto Sans TC',sans-serif;letter-spacing:0}
+h2 span{font-size:20px;letter-spacing:.22em;color:var(--sub);font-weight:400;
   font-family:'Noto Sans TC',sans-serif}
-h2::after{content:'';flex:1;height:0;border-top:2px dotted var(--line)}
-h3{font-size:14px;letter-spacing:.1em;color:#fff;background:var(--accent2);display:inline-block;
-  padding:4px 13px;border-radius:3px;margin:18px 0 11px}
-h3:first-of-type{margin-top:2px}
-.two{display:grid;grid-template-columns:repeat(3,1fr);gap:0 26px}
-.spot{display:flex;gap:10px;padding:2px 0 4px}
+h2::after{content:'';flex:1;height:0;border-top:3px dotted var(--line)}
+h3{font-size:23px;letter-spacing:.12em;color:#fff;background:var(--accent2);display:inline-block;
+  padding:6px 18px;border-radius:5px;margin:18px 0 12px}
+h3:first-of-type{margin-top:0}
 
-.no{flex:none;width:24px;height:24px;border-radius:50%;border:1.5px solid var(--accent);
-  color:var(--accent);font-size:13px;font-weight:700;display:flex;align-items:center;
-  justify-content:center;margin-top:2px}
-.nm{font-size:17px;font-weight:700;line-height:1.35}
-.nm em{font-style:normal;font-size:11px;color:#A0947F;letter-spacing:.04em;font-weight:400;
-  margin-left:5px}
-.ds{font-size:13.5px;color:#4C4438;line-height:1.75;margin-top:3px}
-.meta{font-size:12.5px;color:var(--accent);margin-top:5px;letter-spacing:.02em;font-weight:500}
-.meta::before{content:'●';font-size:7px;vertical-align:2.5px;margin-right:5px;opacity:.7}
-.pill{display:inline-block;font-size:11.5px;padding:1px 8px;border:1px solid var(--accent);
-  color:var(--accent);border-radius:9px;margin-left:5px;vertical-align:1px;white-space:nowrap}
-.pill.g{border-color:#9AA88F;color:#5F7052}
+.item{display:flex;gap:16px;background:#fff;border:2px solid var(--line);border-radius:10px;
+  padding:16px 20px;margin-bottom:11px;box-shadow:3px 4px 0 rgba(180,165,135,.2)}
+.item:last-child{margin-bottom:0}
+.no{flex:none;width:41px;height:41px;border-radius:50%;border:3px solid var(--accent);
+  color:var(--accent);font-size:22px;font-weight:700;display:flex;align-items:center;
+  justify-content:center}
+.ic{flex:none;width:40px;height:40px}
+.nm{font-size:32px;font-weight:700;line-height:1.3}
+.nm em{font-style:normal;font-size:20px;color:#A0947F;letter-spacing:.04em;font-weight:400;
+  margin-left:10px}
+.ds{font-size:25px;color:#4C4438;line-height:1.7;margin-top:6px}
+.meta{display:inline-block;font-size:21px;color:#fff;background:var(--accent);border-radius:6px;
+  padding:3px 13px;margin-top:9px;letter-spacing:.02em}
+.meta.g{background:var(--accent3)}
 
-/* food */
-.food{display:flex;gap:11px;padding:9px 0;border-bottom:1px dotted #E7DECD}
-.food:last-child{border-bottom:0}
-.food .ic{flex:none;width:24px;height:24px;margin-top:2px}
-.pricetag{font-size:11.5px;color:#fff;background:var(--accent3);border-radius:3px;padding:0 5px;
-  margin-left:5px;vertical-align:1.5px;white-space:nowrap}
-
-/* list */
-ul.dots{list-style:none}
-ul.dots li{font-size:14px;line-height:1.8;padding-left:17px;position:relative;margin-bottom:12px;
-  color:#463E33}
-ul.dots li::before{content:'';position:absolute;left:2px;top:10px;width:6px;height:6px;
+ul.dots{list-style:none;background:#fff;border:2px solid var(--line);border-radius:10px;
+  padding:18px 24px;box-shadow:3px 4px 0 rgba(180,165,135,.2)}
+ul.dots li{font-size:26px;line-height:1.7;padding-left:28px;position:relative;margin-bottom:14px}
+ul.dots li:last-child{margin-bottom:0}
+ul.dots li::before{content:'';position:absolute;left:4px;top:16px;width:12px;height:12px;
   background:var(--accent);border-radius:50%}
-ul.dots li b{color:var(--ink)}
+ul.dots li b{color:var(--accent)}
 
-/* itinerary */
-.days{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.day{border:1.5px dashed var(--line);border-radius:6px;padding:13px 15px 14px;background:#fff}
-.day .dh{font-family:'Noto Serif TC',serif;font-size:18px;color:var(--accent);font-weight:700;
-  border-bottom:1px solid var(--line);padding-bottom:4px;margin-bottom:5px}
-.day .dh em{font-style:normal;font-size:12.5px;color:var(--sub);margin-left:6px;font-family:'Noto Sans TC'}
-.step{font-size:13.5px;line-height:1.7;color:#463E33;padding-left:14px;position:relative;margin-bottom:5px}
-.step::before{content:'▸';position:absolute;left:0;color:var(--accent2);font-size:10px}
-.note{font-size:12px;color:var(--sub);margin-top:4px;border-top:1px dotted var(--line);padding-top:4px}
+.days{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.day{background:#fff;border:2px dashed var(--line);border-radius:10px;padding:16px 18px}
+.day .dh{font-family:'Noto Serif TC',serif;font-size:29px;color:var(--accent);font-weight:700;
+  border-bottom:2px solid var(--line);padding-bottom:10px;margin-bottom:12px}
+.day .dh em{font-style:normal;font-size:22px;color:var(--sub);margin-left:10px;
+  font-family:'Noto Sans TC',sans-serif}
+.step{font-size:24px;line-height:1.65;padding-left:22px;position:relative;margin-bottom:6px;
+  color:#463E33}
+.step:last-child{margin-bottom:0}
+.step::before{content:'▸';position:absolute;left:0;color:var(--accent2)}
 
-/* budget */
-.bud{display:flex;justify-content:space-between;font-size:14.5px;padding:9px 0;
-  border-bottom:1px dotted #E7DECD}
-.bud:last-child{border-bottom:0}
-.bud b{font-weight:700}
+.bud{display:flex;justify-content:space-between;font-size:26px;padding:11px 0;
+  border-bottom:2px dotted var(--line)}
+.budbox{background:var(--tint);border:2px solid var(--line);border-radius:10px;padding:14px 26px 20px}
+.bud:last-of-type{border-bottom:0}
 .bud span{color:var(--accent);font-weight:700}
-.tape{position:absolute;width:74px;height:20px;background:rgba(210,180,120,.35);
-  border-left:1px dashed rgba(255,255,255,.7);border-right:1px dashed rgba(255,255,255,.7);
-  top:-9px;left:50%;margin-left:-37px;transform:rotate(-1.6deg)}
-footer{margin-top:18px;display:flex;justify-content:space-between;align-items:center;
-  border-top:3px double var(--line);padding-top:12px;font-size:12px;color:var(--sub);
-  letter-spacing:.14em}
-footer b{color:var(--accent);letter-spacing:.2em}
-</style></head><body><div class="page">
-<div class="frame"></div>
-<div class="blob" style="width:330px;height:270px;right:-70px;top:520px;background:#DCE9E4"></div><div class="blob" style="width:250px;height:220px;left:-60px;bottom:130px;background:#F3E4CE"></div>
+.budnote{font-size:23px;color:var(--sub);line-height:1.7;border-top:3px dotted var(--line);
+  padding-top:14px;margin-top:6px}
+.budnote b{color:var(--accent)}
+
+footer{border-top:4px double var(--line);padding-top:20px;display:flex;
+  justify-content:space-between;font-size:20px;letter-spacing:.16em;color:var(--sub)}
+footer b{color:var(--accent);letter-spacing:.22em}
+</style></head><body><div class="page"><div class="frame"></div>
 <header>
-  <div class="htxt">
-    <div class="kicker">V I E T N A M  ·  千年首都</div>
-    <h1>河　內<small>HANOI</small></h1>
-    <div class="tagline">法式老城 × <b>三十六古街</b> × 蛋咖啡與河粉——舊時代與摩托車一起流動。</div>
-  </div>
   <div class="seal"><b>河內</b><span>TRAVEL NOTE</span></div>
+  <div class="kicker">V I E T N A M  ·  千年首都</div>
+  <h1>河　內</h1><div class="en">HANOI</div>
+  <div class="tagline">法式老城 × <b>三十六古街</b> × 蛋咖啡與河粉——舊時代與摩托車一起流動。</div>
   <div class="illus"><svg viewBox="0 0 250 150" fill="none" stroke="var(--accent)" stroke-width="2"
  stroke-linejoin="round" stroke-linecap="round">
 <circle cx="212" cy="34" r="18" fill="var(--tint)" stroke="var(--accent3)" stroke-width="1.6"/>
@@ -144,46 +127,22 @@ footer b{color:var(--accent);letter-spacing:.2em}
 </svg></div>
 </header>
 
-<div class="facts"><div class="fact"><div class="k">航　程</div><div class="v">3 hr 20<em>台北直飛 HAN 內牌機場</em></div></div><div class="fact"><div class="k">時　差</div><div class="v">台灣 −1 hr<em>早班機當天可玩</em></div></div><div class="fact"><div class="k">貨　幣</div><div class="v">VND 越南盾<em>1,000 VND ≒ 1.2 TWD</em></div></div><div class="fact"><div class="k">最佳季節</div><div class="v">10–12 月<em>涼爽乾燥；6–8 月濕熱多雨</em></div></div><div class="fact"><div class="k">語　言</div><div class="v">越南語<em>老城區英文可通，備翻譯 App</em></div></div><div class="fact"><div class="k">電　壓</div><div class="v">220V／A·C<em>台灣扁插多數可用</em></div></div><div class="fact"><div class="k">機場進城</div><div class="v">86 號巴士 45k<em>計程車約 350k／45 min</em></div></div></div>
+<div class="facts"><div class="fact"><div class="k">航　程</div><div class="v">3 hr 20<em>台北直飛 HAN 內牌機場</em></div></div><div class="fact"><div class="k">時　差</div><div class="v">台灣 −1 hr<em>早班機當天可玩</em></div></div><div class="fact"><div class="k">貨　幣</div><div class="v">VND 越南盾<em>1,000 VND ≒ 1.2 TWD</em></div></div><div class="fact"><div class="k">最佳季節</div><div class="v">10–12 月<em>涼爽乾燥；6–8 月濕熱多雨</em></div></div><div class="fact"><div class="k">語　言</div><div class="v">越南語<em>老城區英文可通，備翻譯 App</em></div></div><div class="fact"><div class="k">電　壓</div><div class="v">220V／A·C<em>台灣扁插多數可用</em></div></div></div>
 
-<div class="grid">
-  <div class="card" style="grid-column:span 8">
-    <div class="tape"></div>
-    <h2><i>01</i>必訪景點 <span>SIGHTS &amp; PLACES</span></h2>
-    <h3>老城與湖區 OLD QUARTER</h3><div class="two"><div class="spot"><div class="no">1</div><div><div class="nm">還劍湖 + 玉山祠<em>Hoan Kiem</em></div><div class="ds">市中心的呼吸口，紅色棲旭橋通往湖心島，清晨有太極人潮。</div><div class="meta">50k</div></div></div><div class="spot"><div class="no">2</div><div><div class="nm">三十六古街<em>36 Old Streets</em></div><div class="ds">一條街賣一種貨：絲綢、鐵器、紙紮，走路逛最有味道。</div><div class="meta">免費</div></div></div><div class="spot"><div class="no">3</div><div><div class="nm">河內大教堂<em>St. Joseph</em></div><div class="ds">法式新哥德立面，對面小巷是檸檬茶一條街。</div><div class="meta">免費</div></div></div></div><h3>歷史與文化 HISTORY</h3><div class="two"><div class="spot"><div class="no">4</div><div><div class="nm">胡志明陵寢 + 主席府<em>Ho Chi Minh</em></div><div class="ds">上午 8–11 開放，週一週五休；長褲過膝、禁拍照。</div><div class="meta">免費</div></div></div><div class="spot"><div class="no">5</div><div><div class="nm">一柱廟<em>One Pillar Pagoda</em></div><div class="ds">立於蓮池上的木造小廟，與陵寢園區同一動線。</div><div class="meta">免費</div></div></div><div class="spot"><div class="no">6</div><div><div class="nm">文廟／國子監<em>Van Mieu</em></div><div class="ds">越南第一所大學，進士碑林是紙鈔上的畫面。</div><div class="meta">70k</div></div></div></div><h3>近郊與延伸 DAY TRIPS</h3><div class="two"><div class="spot"><div class="no">7</div><div><div class="nm">下龍灣<em>Ha Long Bay</em></div><div class="ds">喀斯特海灣經典郵輪 2 天 1 夜，含獨木舟與鐘乳石洞。</div><div class="meta">車程 2.5 hr</div></div></div><div class="spot"><div class="no">8</div><div><div class="nm">寧平・陸龍灣<em>Trang An／Ninh Binh</em></div><div class="ds">搖櫓小船穿越水洞與稻田，被稱作陸上下龍灣。</div><div class="meta">車程 2 hr</div></div></div><div class="spot"><div class="no">9</div><div><div class="nm">沙壩梯田<em>Sapa</em></div><div class="ds">少數民族村落與番西邦峰纜車，夜巴或臥鋪火車 6 hr。</div><div class="meta">2 天 1 夜</div></div></div></div>
-  </div>
-  <div class="card tint" style="grid-column:span 4">
-    <h2><i>02</i>非吃不可 <span>EAT LIKE A LOCAL</span></h2>
-    <div class="food"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#1F6E6A" stroke-width="1.8"
- stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg><div><div class="nm">河粉<em>Phở</em><span class="pricetag">50–70k</span></div><div class="ds">清晨吃最正統。Phở Thìn 蔥爆牛肉版、Phở Bát Đàn 排隊自取，湯頭清甜。</div></div></div><div class="food"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#1F6E6A" stroke-width="1.8"
- stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg><div><div class="nm">烤肉米線<em>Bún Chả</em><span class="pricetag">85k 套餐</span></div><div class="ds">炭烤肉餅泡魚露湯，配蟹肉春捲。Hương Liên 就是歐巴馬那家。</div></div></div><div class="food"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#1F6E6A" stroke-width="1.8"
- stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg><div><div class="nm">蛋咖啡<em>Cà Phê Trứng</em><span class="pricetag">30–45k</span></div><div class="ds">Giang Café 創始店：蛋黃打成慕斯浮在濃縮上，像喝提拉米蘇。</div></div></div><div class="food"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#1F6E6A" stroke-width="1.8"
- stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg><div><div class="nm">炸魚配蒔蘿<em>Chả Cá Lã Vọng</em><span class="pricetag">150k</span></div><div class="ds">桌邊煎香魚塊拌薑黃與大量青蔥蒔蘿，河內限定老菜。</div></div></div><div class="food"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#1F6E6A" stroke-width="1.8"
- stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg><div><div class="nm">越式法國麵包<em>Bánh Mì</em><span class="pricetag">25–40k</span></div><div class="ds">脆皮夾肝醬、烤肉與香菜，25 Bánh Mì、Bami Bread 都穩。</div></div></div><div class="food"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#1F6E6A" stroke-width="1.8"
- stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg><div><div class="nm">河粉捲<em>Bánh Cuốn</em><span class="pricetag">40k</span></div><div class="ds">現蒸米皮包木耳絞肉，淋魚露配炸紅蔥，早餐首選。</div></div></div>
-  </div>
+<section><h2><i>01</i>必訪景點 <span>SIGHTS</span></h2><h3>老城與湖區 OLD QUARTER</h3><div class="item"><div class="no">1</div><div><div class="nm">還劍湖 + 玉山祠<em>Hoan Kiem</em></div><div class="ds">市中心的呼吸口，紅色棲旭橋通往湖心島，清晨有太極人潮。</div><div class="meta">50k</div></div></div><div class="item"><div class="no">2</div><div><div class="nm">三十六古街<em>36 Old Streets</em></div><div class="ds">一條街賣一種貨：絲綢、鐵器、紙紮，走路逛最有味道。</div><div class="meta">免費</div></div></div><h3>歷史與文化 HISTORY</h3><div class="item"><div class="no">3</div><div><div class="nm">胡志明陵寢 + 主席府<em>Ho Chi Minh</em></div><div class="ds">上午 8–11 開放，週一週五休；長褲過膝、禁拍照。</div><div class="meta">免費</div></div></div><div class="item"><div class="no">4</div><div><div class="nm">一柱廟<em>One Pillar Pagoda</em></div><div class="ds">立於蓮池上的木造小廟，與陵寢園區同一動線。</div><div class="meta">免費</div></div></div><h3>近郊與延伸 DAY TRIPS</h3><div class="item"><div class="no">5</div><div><div class="nm">下龍灣<em>Ha Long Bay</em></div><div class="ds">喀斯特海灣經典郵輪 2 天 1 夜，含獨木舟與鐘乳石洞。</div><div class="meta">車程 2.5 hr</div></div></div><div class="item"><div class="no">6</div><div><div class="nm">寧平・陸龍灣<em>Trang An／Ninh Binh</em></div><div class="ds">搖櫓小船穿越水洞與稻田，被稱作陸上下龍灣。</div><div class="meta">車程 2 hr</div></div></div></section>
+<section><h2><i>02</i>非吃不可 <span>EAT</span></h2><div class="item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#1F6E6A" stroke-width="1.8"
+ stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg><div><div class="nm">河粉<em>Phở</em></div><div class="ds">清晨吃最正統。Phở Thìn 蔥爆牛肉版、Phở Bát Đàn 排隊自取，湯頭清甜。</div><div class="meta g">50–70k</div></div></div><div class="item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#1F6E6A" stroke-width="1.8"
+ stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg><div><div class="nm">烤肉米線<em>Bún Chả</em></div><div class="ds">炭烤肉餅泡魚露湯，配蟹肉春捲。Hương Liên 就是歐巴馬那家。</div><div class="meta g">85k 套餐</div></div></div><div class="item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#1F6E6A" stroke-width="1.8"
+ stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg><div><div class="nm">蛋咖啡<em>Cà Phê Trứng</em></div><div class="ds">Giang Café 創始店：蛋黃打成慕斯浮在濃縮上，像喝提拉米蘇。</div><div class="meta g">30–45k</div></div></div><div class="item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#1F6E6A" stroke-width="1.8"
+ stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg><div><div class="nm">炸魚配蒔蘿<em>Chả Cá Lã Vọng</em></div><div class="ds">桌邊煎香魚塊拌薑黃與大量青蔥蒔蘿，河內限定老菜。</div><div class="meta g">150k</div></div></div><div class="item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#1F6E6A" stroke-width="1.8"
+ stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg><div><div class="nm">越式法國麵包<em>Bánh Mì</em></div><div class="ds">脆皮夾肝醬、烤肉與香菜，25 Bánh Mì、Bami Bread 都穩。</div><div class="meta g">25–40k</div></div></div></section>
+<section><h2><i>03</i>交通移動 <span>GETTING AROUND</span></h2>
+  <ul class="dots"><li><b>Grab 機車</b>短程 20–30k，塞車時最快；<b>Grab Car</b> 冷氣舒適約 60–100k。</li><li><b>Xanh SM</b> 綠色電動計程車與 <b>Mai Linh</b> 是最安全的跳表選擇。</li><li><b>老城區步行</b>即可走完，還劍湖到大教堂只要 10 分鐘。</li></ul></section>
+<section><h2><i>04</i>行前必知 <span>BEFORE YOU GO</span></h2>
+  <ul class="dots"><li><b>現金為王</b>：小攤不收卡，備 10k/20k/50k 小鈔；20k 與 500k 顏色相近要看清。</li><li><b>數零技巧</b>：把三個零去掉再乘 1.2 ≒ 台幣，例如 100k ≒ 120 元。</li><li><b>殺價</b>從對半開口，同安市場與古街紀念品最需要談。</li><li><b>手機防搶</b>：路邊別邊走邊滑，機車搶案偶有發生。</li></ul></section>
+<section><h2><i>05</i>行程這樣排 <span>ITINERARY</span></h2><div class="days"><div class="day"><div class="dh">Day 1<em>老城初體驗</em></div><div class="step">14:00 入住後散步還劍湖＋玉山祠</div><div class="step">16:00 三十六古街掃街、大教堂拍照</div><div class="step">18:00 水上木偶戲 45 分鐘場次</div></div><div class="day"><div class="dh">Day 2<em>歷史一日</em></div><div class="step">08:00 胡志明陵寢＋主席府＋一柱廟</div><div class="step">11:00 文廟國子監、午餐吃烤肉米線</div><div class="step">14:00 火爐監獄或昇龍皇城</div></div><div class="day"><div class="dh">Day 3<em>寧平陸龍灣</em></div><div class="step">07:30 出發寧平（車程 2 hr）</div><div class="step">10:00 Trang An 搖櫓船穿水洞 3 hr</div><div class="step">14:30 登臥龍山看稻田全景</div></div><div class="day"><div class="dh">Day 4<em>下龍灣或市集</em></div><div class="step">08:00 下龍灣一日團（含遊船與洞穴）</div><div class="step">或 09:00 西湖鎮國寺＋缽場陶村</div><div class="step">15:00 同春市場、Hàng Gai 絲綢街採買</div></div></div></section>
+<section><h2><i>06</i>花費抓預算 <span>BUDGET</span></h2>
+  <div class="budbox"><div class="bud"><b>青旅／民宿</b><span>150k–400k</span></div><div class="bud"><b>三星飯店（雙人）</b><span>600k–1.2M</span></div><div class="bud"><b>街邊一餐</b><span>40k–70k</span></div><div class="bud"><b>餐廳一餐</b><span>150k–300k</span></div><div class="budnote">中等玩法每人每日約 <b>700k–1.2M VND（約 850–1,450 TWD）</b>，郵輪或跨區行程另計。</div></div></section>
 
-  <div class="card" style="grid-column:span 4">
-    <h2><i>03</i>交通移動 <span>GETTING AROUND</span></h2>
-    <ul class="dots"><li><b>Grab 機車</b>短程 20–30k，塞車時最快；<b>Grab Car</b> 冷氣舒適約 60–100k。</li><li><b>Xanh SM</b> 綠色電動計程車與 <b>Mai Linh</b> 是最安全的跳表選擇。</li><li><b>老城區步行</b>即可走完，還劍湖到大教堂只要 10 分鐘。</li><li><b>過馬路訣竅</b>：維持等速慢慢走、別急停回頭，車流會自己繞開。</li><li><b>機場</b>內牌 → 老城 45 min；86 號巴士 45k，行李多再叫車。</li></ul>
-  </div>
-  <div class="card" style="grid-column:span 4">
-    <h2><i>04</i>行前必知 <span>KNOW BEFORE YOU GO</span></h2>
-    <ul class="dots"><li><b>現金為王</b>：小攤不收卡，備 10k/20k/50k 小鈔；20k 與 500k 顏色相近要看清。</li><li><b>數零技巧</b>：把三個零去掉再乘 1.2 ≒ 台幣，例如 100k ≒ 120 元。</li><li><b>殺價</b>從對半開口，同安市場與古街紀念品最需要談。</li><li><b>手機防搶</b>：路邊別邊走邊滑，機車搶案偶有發生。</li><li><b>季節</b>：6–8 月濕熱多雨、1–2 月濕冷 12℃ 需外套，10–12 月最舒服。</li></ul>
-  </div>
-  <div class="card tint" style="grid-column:span 4">
-    <h2><i>05</i>花費抓預算 <span>BUDGET</span></h2>
-    <div class="bud"><b>青旅／民宿</b><span>150k–400k</span></div><div class="bud"><b>三星飯店（雙人）</b><span>600k–1.2M</span></div><div class="bud"><b>街邊一餐</b><span>40k–70k</span></div><div class="bud"><b>餐廳一餐</b><span>150k–300k</span></div><div class="bud"><b>咖啡一杯</b><span>30k–60k</span></div>
-    <div class="note" style="border-top:1px dotted var(--line);margin-top:6px">中等玩法每人每日約 <b>700k–1.2M VND（約 850–1,450 TWD）</b>，郵輪或跨區行程另計。</div>
-  </div>
-
-  <div class="card" style="grid-column:span 12">
-    <h2><i>06</i>行程這樣排 <span>SUGGESTED ITINERARY</span></h2>
-    <div class="days"><div class="day"><div class="dh">Day 1<em>老城初體驗</em></div><div class="step">14:00 入住後散步還劍湖＋玉山祠</div><div class="step">16:00 三十六古街掃街、大教堂拍照</div><div class="step">18:00 水上木偶戲 45 分鐘場次</div><div class="step">20:00 Tạ Hiện 啤酒街吃小吃</div><div class="note">第一天不排遠程，先適應車流。</div></div><div class="day"><div class="dh">Day 2<em>歷史一日</em></div><div class="step">08:00 胡志明陵寢＋主席府＋一柱廟</div><div class="step">11:00 文廟國子監、午餐吃烤肉米線</div><div class="step">14:00 火爐監獄或昇龍皇城</div><div class="step">17:30 火車街喝咖啡等列車</div><div class="note">週一週五陵寢休館要改序。</div></div><div class="day"><div class="dh">Day 3<em>寧平陸龍灣</em></div><div class="step">07:30 出發寧平（車程 2 hr）</div><div class="step">10:00 Trang An 搖櫓船穿水洞 3 hr</div><div class="step">14:30 登臥龍山看稻田全景</div><div class="step">19:00 回河內吃炸魚配蒔蘿</div><div class="note">船程曬，帽子與防曬必備。</div></div><div class="day"><div class="dh">Day 4<em>下龍灣或市集</em></div><div class="step">08:00 下龍灣一日團（含遊船與洞穴）</div><div class="step">或 09:00 西湖鎮國寺＋缽場陶村</div><div class="step">15:00 同春市場、Hàng Gai 絲綢街採買</div><div class="step">18:00 蛋咖啡收尾、機場報到</div><div class="note">想過夜請選 2D1N 郵輪。</div></div></div>
-  </div>
-</div>
-
-<footer><span>河　內．HANOI</span>
-<b>VIETNAM 2026</b>
-<span>ONE-PAGE TRAVEL GUIDE</span></footer>
+<footer><span>河　內．HANOI</span><b>VIETNAM 2026</b></footer>
 </div></body></html>

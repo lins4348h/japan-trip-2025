@@ -1,163 +1,122 @@
 # -*- coding: utf-8 -*-
-"""產生曼谷 / 清邁 / 河內 三張旅遊書風格一頁式導覽 HTML"""
-import html, os, pathlib
+"""手機閱讀版：1080px 寬、單欄、大字級的一頁式城市導覽"""
+import html, pathlib
 
 OUT = pathlib.Path(__file__).parent
 
+# 每個區塊要印幾項（手機版刻意留少）
+LIMITS = dict(spots=2, food=5, transport=3, tips=4, budget=4, steps=3)
+
 CSS = """
 :root{
-  --paper:#FBF6EA; --ink:#2C241C; --sub:#6B6053; --line:#D9CEBB;
-  --accent:@ACCENT@; --accent2:@ACCENT2@; --accent3:@ACCENT3@;
-  --tint:@TINT@;
+  --paper:#FBF6EA; --ink:#2C241C; --sub:#6B6053; --line:#DCD1BE;
+  --accent:@ACCENT@; --accent2:@ACCENT2@; --accent3:@ACCENT3@; --tint:@TINT@;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{width:1400px;background:var(--paper);color:var(--ink);
-  font-family:'Noto Sans TC','Noto Sans CJK TC','WenQuanYi Zen Hei',sans-serif;
-  -webkit-font-smoothing:antialiased;}
-.page{position:relative;padding:40px 46px 36px;overflow:hidden}
+body{width:1080px;background:var(--paper);color:var(--ink);
+  font-family:'Noto Sans TC','WenQuanYi Zen Hei',sans-serif;-webkit-font-smoothing:antialiased}
+.page{position:relative;padding:44px 36px 38px}
 .page::before{content:'';position:absolute;inset:0;pointer-events:none;
-  background-image:radial-gradient(circle at 1px 1px, rgba(120,100,70,.14) 1px, transparent 0);
-  background-size:22px 22px;opacity:.5}
-.frame{position:absolute;inset:14px;border:2px solid var(--line);border-radius:4px;pointer-events:none}
-.frame::after{content:'';position:absolute;inset:5px;border:1px solid var(--line);opacity:.6;border-radius:2px}
-.blob{position:absolute;border-radius:48% 52% 60% 40%/55% 45% 55% 45%;filter:blur(2px);opacity:.5;pointer-events:none}
+  background-image:radial-gradient(circle at 1px 1px, rgba(120,100,70,.13) 1px, transparent 0);
+  background-size:26px 26px}
+.frame{position:absolute;inset:18px;border:3px solid var(--line);border-radius:6px;pointer-events:none}
 
-/* ---------- header ---------- */
-header{position:relative;display:flex;align-items:flex-end;gap:26px;
-  padding:6px 0 16px;border-bottom:3px double var(--line);margin-bottom:14px}
-.htxt{flex:1}
-.kicker{font-size:12px;letter-spacing:.42em;color:var(--accent2);font-weight:700}
-h1{font-family:'Noto Serif TC',serif;font-weight:900;font-size:70px;line-height:1;
-  letter-spacing:.04em;margin:6px 0 2px;color:var(--ink)}
-h1 small{font-family:'Noto Sans TC',sans-serif;font-size:19px;font-weight:500;letter-spacing:.16em;
-  color:var(--accent);margin-left:14px;vertical-align:6px}
-.tagline{font-size:17px;color:var(--sub);letter-spacing:.06em;margin-top:7px}
+/* header */
+header{position:relative;text-align:center;padding-bottom:24px;margin-bottom:26px;
+  border-bottom:4px double var(--line)}
+.kicker{font-size:22px;letter-spacing:.5em;color:var(--accent2);font-weight:700;margin-left:.5em}
+h1{font-family:'Noto Serif TC',serif;font-weight:900;font-size:92px;line-height:1.05;
+  letter-spacing:.08em;margin:10px 0 4px}
+.en{font-size:30px;letter-spacing:.36em;color:var(--accent);font-weight:700;margin-left:.36em}
+.tagline{font-size:27px;color:var(--sub);line-height:1.7;margin-top:14px}
 .tagline b{color:var(--accent);font-weight:700}
-.seal{position:absolute;right:262px;top:2px;width:86px;height:86px;border:2.5px solid var(--accent3);
+.illus{width:420px;margin:10px auto 0;display:block}
+.seal{position:absolute;right:6px;top:0;width:132px;height:132px;border:4px solid var(--accent3);
   border-radius:50%;color:var(--accent3);display:flex;flex-direction:column;align-items:center;
-  justify-content:center;transform:rotate(-11deg);opacity:.85}
-.seal b{font-family:'Noto Serif TC',serif;font-size:21px;line-height:1.15;letter-spacing:.06em}
-.seal span{font-size:9px;letter-spacing:.14em;margin-top:3px}
-.illus{width:236px;flex:none;margin-left:80px}
+  justify-content:center;transform:rotate(-10deg);opacity:.9}
+.seal b{font-family:'Noto Serif TC',serif;font-size:34px;letter-spacing:.06em}
+.seal span{font-size:14px;letter-spacing:.16em;margin-top:5px}
 
-/* ---------- facts ---------- */
-.facts{display:grid;grid-template-columns:repeat(7,1fr);gap:0;border:1.5px solid var(--line);
-  border-radius:6px;background:#fff;margin-bottom:16px;overflow:hidden}
-.fact{padding:12px 14px;border-right:1px dashed var(--line)}
-.fact:last-child{border-right:0}
-.fact .k{font-size:11px;letter-spacing:.16em;color:var(--accent2);font-weight:700}
-.fact .v{font-size:15.5px;font-weight:700;margin-top:3px;line-height:1.35}
-.fact .v em{font-style:normal;font-size:12px;font-weight:400;color:var(--sub);display:block}
+/* facts */
+.facts{display:grid;grid-template-columns:repeat(3,1fr);border:2px solid var(--line);
+  border-radius:10px;background:#fff;overflow:hidden;margin-bottom:32px}
+.fact{padding:14px 18px;border-right:2px dashed var(--line);border-bottom:2px dashed var(--line)}
+.fact:nth-child(3n){border-right:0}
+.fact:nth-child(n+4){border-bottom:0}
+.fact .k{font-size:19px;letter-spacing:.2em;color:var(--accent2);font-weight:700}
+.fact .v{font-size:28px;font-weight:700;margin-top:6px;line-height:1.3}
+.fact .v em{font-style:normal;font-size:21px;font-weight:400;color:var(--sub);display:block;
+  margin-top:4px;line-height:1.5}
 
-/* ---------- grid ---------- */
-.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
-.card{background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:18px 22px 20px;
-  position:relative;box-shadow:2px 3px 0 rgba(180,165,135,.22)}
-.card.tint{background:var(--tint)}
-h2{font-family:'Noto Serif TC',serif;font-size:25px;letter-spacing:.06em;display:flex;
-  align-items:center;gap:11px;margin-bottom:14px;color:var(--ink)}
-h2 i{display:inline-flex;width:30px;height:30px;border-radius:50%;background:var(--accent);
-  color:#fff;font-style:normal;font-size:15px;align-items:center;justify-content:center;flex:none;
-  font-family:'Noto Sans TC',sans-serif;font-weight:700}
-h2 span{font-size:12px;letter-spacing:.2em;color:var(--sub);font-weight:400;
+/* sections */
+section{margin-bottom:30px}
+h2{font-family:'Noto Serif TC',serif;font-size:40px;letter-spacing:.06em;display:flex;
+  align-items:center;gap:14px;margin-bottom:18px}
+h2 i{display:inline-flex;width:48px;height:48px;border-radius:50%;background:var(--accent);
+  color:#fff;font-style:normal;font-size:23px;font-weight:700;align-items:center;
+  justify-content:center;flex:none;font-family:'Noto Sans TC',sans-serif;letter-spacing:0}
+h2 span{font-size:20px;letter-spacing:.22em;color:var(--sub);font-weight:400;
   font-family:'Noto Sans TC',sans-serif}
-h2::after{content:'';flex:1;height:0;border-top:2px dotted var(--line)}
-h3{font-size:14px;letter-spacing:.1em;color:#fff;background:var(--accent2);display:inline-block;
-  padding:4px 13px;border-radius:3px;margin:18px 0 11px}
-h3:first-of-type{margin-top:2px}
-.two{display:grid;grid-template-columns:repeat(3,1fr);gap:0 26px}
-.spot{display:flex;gap:10px;padding:2px 0 4px}
+h2::after{content:'';flex:1;height:0;border-top:3px dotted var(--line)}
+h3{font-size:23px;letter-spacing:.12em;color:#fff;background:var(--accent2);display:inline-block;
+  padding:6px 18px;border-radius:5px;margin:18px 0 12px}
+h3:first-of-type{margin-top:0}
 
-.no{flex:none;width:24px;height:24px;border-radius:50%;border:1.5px solid var(--accent);
-  color:var(--accent);font-size:13px;font-weight:700;display:flex;align-items:center;
-  justify-content:center;margin-top:2px}
-.nm{font-size:17px;font-weight:700;line-height:1.35}
-.nm em{font-style:normal;font-size:11px;color:#A0947F;letter-spacing:.04em;font-weight:400;
-  margin-left:5px}
-.ds{font-size:13.5px;color:#4C4438;line-height:1.75;margin-top:3px}
-.meta{font-size:12.5px;color:var(--accent);margin-top:5px;letter-spacing:.02em;font-weight:500}
-.meta::before{content:'●';font-size:7px;vertical-align:2.5px;margin-right:5px;opacity:.7}
-.pill{display:inline-block;font-size:11.5px;padding:1px 8px;border:1px solid var(--accent);
-  color:var(--accent);border-radius:9px;margin-left:5px;vertical-align:1px;white-space:nowrap}
-.pill.g{border-color:#9AA88F;color:#5F7052}
+.item{display:flex;gap:16px;background:#fff;border:2px solid var(--line);border-radius:10px;
+  padding:16px 20px;margin-bottom:11px;box-shadow:3px 4px 0 rgba(180,165,135,.2)}
+.item:last-child{margin-bottom:0}
+.no{flex:none;width:41px;height:41px;border-radius:50%;border:3px solid var(--accent);
+  color:var(--accent);font-size:22px;font-weight:700;display:flex;align-items:center;
+  justify-content:center}
+.ic{flex:none;width:40px;height:40px}
+.nm{font-size:32px;font-weight:700;line-height:1.3}
+.nm em{font-style:normal;font-size:20px;color:#A0947F;letter-spacing:.04em;font-weight:400;
+  margin-left:10px}
+.ds{font-size:25px;color:#4C4438;line-height:1.7;margin-top:6px}
+.meta{display:inline-block;font-size:21px;color:#fff;background:var(--accent);border-radius:6px;
+  padding:3px 13px;margin-top:9px;letter-spacing:.02em}
+.meta.g{background:var(--accent3)}
 
-/* food */
-.food{display:flex;gap:11px;padding:9px 0;border-bottom:1px dotted #E7DECD}
-.food:last-child{border-bottom:0}
-.food .ic{flex:none;width:24px;height:24px;margin-top:2px}
-.pricetag{font-size:11.5px;color:#fff;background:var(--accent3);border-radius:3px;padding:0 5px;
-  margin-left:5px;vertical-align:1.5px;white-space:nowrap}
-
-/* list */
-ul.dots{list-style:none}
-ul.dots li{font-size:14px;line-height:1.8;padding-left:17px;position:relative;margin-bottom:12px;
-  color:#463E33}
-ul.dots li::before{content:'';position:absolute;left:2px;top:10px;width:6px;height:6px;
+ul.dots{list-style:none;background:#fff;border:2px solid var(--line);border-radius:10px;
+  padding:18px 24px;box-shadow:3px 4px 0 rgba(180,165,135,.2)}
+ul.dots li{font-size:26px;line-height:1.7;padding-left:28px;position:relative;margin-bottom:14px}
+ul.dots li:last-child{margin-bottom:0}
+ul.dots li::before{content:'';position:absolute;left:4px;top:16px;width:12px;height:12px;
   background:var(--accent);border-radius:50%}
-ul.dots li b{color:var(--ink)}
+ul.dots li b{color:var(--accent)}
 
-/* itinerary */
-.days{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.day{border:1.5px dashed var(--line);border-radius:6px;padding:13px 15px 14px;background:#fff}
-.day .dh{font-family:'Noto Serif TC',serif;font-size:18px;color:var(--accent);font-weight:700;
-  border-bottom:1px solid var(--line);padding-bottom:4px;margin-bottom:5px}
-.day .dh em{font-style:normal;font-size:12.5px;color:var(--sub);margin-left:6px;font-family:'Noto Sans TC'}
-.step{font-size:13.5px;line-height:1.7;color:#463E33;padding-left:14px;position:relative;margin-bottom:5px}
-.step::before{content:'▸';position:absolute;left:0;color:var(--accent2);font-size:10px}
-.note{font-size:12px;color:var(--sub);margin-top:4px;border-top:1px dotted var(--line);padding-top:4px}
+.days{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.day{background:#fff;border:2px dashed var(--line);border-radius:10px;padding:16px 18px}
+.day .dh{font-family:'Noto Serif TC',serif;font-size:29px;color:var(--accent);font-weight:700;
+  border-bottom:2px solid var(--line);padding-bottom:10px;margin-bottom:12px}
+.day .dh em{font-style:normal;font-size:22px;color:var(--sub);margin-left:10px;
+  font-family:'Noto Sans TC',sans-serif}
+.step{font-size:24px;line-height:1.65;padding-left:22px;position:relative;margin-bottom:6px;
+  color:#463E33}
+.step:last-child{margin-bottom:0}
+.step::before{content:'▸';position:absolute;left:0;color:var(--accent2)}
 
-/* budget */
-.bud{display:flex;justify-content:space-between;font-size:14.5px;padding:9px 0;
-  border-bottom:1px dotted #E7DECD}
-.bud:last-child{border-bottom:0}
-.bud b{font-weight:700}
+.bud{display:flex;justify-content:space-between;font-size:26px;padding:11px 0;
+  border-bottom:2px dotted var(--line)}
+.budbox{background:var(--tint);border:2px solid var(--line);border-radius:10px;padding:14px 26px 20px}
+.bud:last-of-type{border-bottom:0}
 .bud span{color:var(--accent);font-weight:700}
-.tape{position:absolute;width:74px;height:20px;background:rgba(210,180,120,.35);
-  border-left:1px dashed rgba(255,255,255,.7);border-right:1px dashed rgba(255,255,255,.7);
-  top:-9px;left:50%;margin-left:-37px;transform:rotate(-1.6deg)}
-footer{margin-top:18px;display:flex;justify-content:space-between;align-items:center;
-  border-top:3px double var(--line);padding-top:12px;font-size:12px;color:var(--sub);
-  letter-spacing:.14em}
-footer b{color:var(--accent);letter-spacing:.2em}
+.budnote{font-size:23px;color:var(--sub);line-height:1.7;border-top:3px dotted var(--line);
+  padding-top:14px;margin-top:6px}
+.budnote b{color:var(--accent)}
+
+footer{border-top:4px double var(--line);padding-top:20px;display:flex;
+  justify-content:space-between;font-size:20px;letter-spacing:.16em;color:var(--sub)}
+footer b{color:var(--accent);letter-spacing:.22em}
 """
 
-ICON_FOOD = """<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="%s" stroke-width="1.8"
- stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg>"""
+ICON_FOOD = ("""<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="%s" stroke-width="1.8"
+ stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2"""
+             """-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg>""")
 
 
 def esc(s):
     return html.escape(str(s), quote=False)
-
-
-def spots_html(groups, accent):
-    out = []
-    n = 1
-    for title, items in groups:
-        out.append('<h3>%s</h3><div class="two">' % esc(title))
-        for it in items:
-            en = '<em>%s</em>' % esc(it[1]) if it[1] else ''
-            meta = ('<div class="meta">%s</div>' % esc(it[3])) if len(it) > 3 and it[3] else ''
-            out.append(
-                '<div class="spot"><div class="no">%d</div><div>'
-                '<div class="nm">%s%s</div><div class="ds">%s</div>%s</div></div>'
-                % (n, esc(it[0]), en, esc(it[2]), meta))
-            n += 1
-        out.append('</div>')
-    return ''.join(out)
-
-
-def food_html(items, accent):
-    out = []
-    for nm, en, ds, price in items:
-        en = '<em>%s</em>' % esc(en) if en else ''
-        pr = '<span class="pricetag">%s</span>' % esc(price) if price else ''
-        out.append('<div class="food">%s<div><div class="nm">%s%s%s</div>'
-                   '<div class="ds">%s</div></div></div>'
-                   % (ICON_FOOD % accent, esc(nm), en, pr, esc(ds)))
-    return ''.join(out)
-
-
-LIMITS = dict(spots=3, food=6, transport=5, tips=5, budget=5)
 
 
 def trim(c):
@@ -165,79 +124,72 @@ def trim(c):
     c['spots'] = [(t, items[:LIMITS['spots']]) for t, items in c['spots']]
     for k in ('food', 'transport', 'tips', 'budget'):
         c[k] = c[k][:LIMITS[k]]
+    c['days'] = [(a, b, steps[:LIMITS['steps']], note) for a, b, steps, note in c['days']]
     return c
 
 
 def build(c):
     c = trim(c)
-    facts = ''.join(
-        '<div class="fact"><div class="k">%s</div><div class="v">%s<em>%s</em></div></div>'
-        % (esc(k), esc(v), esc(s)) for k, v, s in c['facts'])
-    days = ''.join(
-        '<div class="day"><div class="dh">%s<em>%s</em></div>%s%s</div>'
-        % (esc(d[0]), esc(d[1]),
-           ''.join('<div class="step">%s</div>' % esc(s) for s in d[2]),
-           '<div class="note">%s</div>' % esc(d[3]) if d[3] else '')
-        for d in c['days'])
-    budget = ''.join('<div class="bud"><b>%s</b><span>%s</span></div>' % (esc(a), esc(b))
-                     for a, b in c['budget'])
     li = lambda xs: ''.join('<li>%s</li>' % x for x in xs)
 
-    body = f"""<div class="page">
-<div class="frame"></div>
-{c['blobs']}
+    spots, n = [], 1
+    for title, items in c['spots']:
+        spots.append('<h3>%s</h3>' % esc(title))
+        for it in items:
+            en = '<em>%s</em>' % esc(it[1]) if it[1] else ''
+            meta = '<div class="meta">%s</div>' % esc(it[3]) if len(it) > 3 and it[3] else ''
+            spots.append('<div class="item"><div class="no">%d</div><div>'
+                         '<div class="nm">%s%s</div><div class="ds">%s</div>%s</div></div>'
+                         % (n, esc(it[0]), en, esc(it[2]), meta))
+            n += 1
+    spots = ''.join(spots)
+
+    food = ''.join(
+        '<div class="item">%s<div><div class="nm">%s%s</div><div class="ds">%s</div>%s</div></div>'
+        % (ICON_FOOD % c['accent'], esc(nm), '<em>%s</em>' % esc(en) if en else '', esc(ds),
+           '<div class="meta g">%s</div>' % esc(pr) if pr else '')
+        for nm, en, ds, pr in c['food'])
+
+    facts = ''.join('<div class="fact"><div class="k">%s</div><div class="v">%s<em>%s</em></div></div>'
+                    % (esc(k), esc(v), esc(s)) for k, v, s in c['facts'][:6])
+
+    days = ''.join('<div class="day"><div class="dh">%s<em>%s</em></div>%s</div>'
+                   % (esc(d[0]), esc(d[1]),
+                      ''.join('<div class="step">%s</div>' % esc(s) for s in d[2]))
+                   for d in c['days'])
+
+    budget = ''.join('<div class="bud"><b>%s</b><span>%s</span></div>' % (esc(a), esc(b))
+                     for a, b in c['budget'])
+
+    body = f"""<div class="page"><div class="frame"></div>
 <header>
-  <div class="htxt">
-    <div class="kicker">{esc(c['kicker'])}</div>
-    <h1>{esc(c['zh'])}<small>{esc(c['en'])}</small></h1>
-    <div class="tagline">{c['tagline']}</div>
-  </div>
   <div class="seal"><b>{esc(c['seal'])}</b><span>TRAVEL NOTE</span></div>
+  <div class="kicker">{esc(c['kicker'])}</div>
+  <h1>{esc(c['zh'])}</h1><div class="en">{esc(c['en'])}</div>
+  <div class="tagline">{c['tagline']}</div>
   <div class="illus">{c['illus']}</div>
 </header>
 
 <div class="facts">{facts}</div>
 
-<div class="grid">
-  <div class="card" style="grid-column:span 8">
-    <div class="tape"></div>
-    <h2><i>01</i>必訪景點 <span>SIGHTS &amp; PLACES</span></h2>
-    {spots_html(c['spots'], c['accent'])}
-  </div>
-  <div class="card tint" style="grid-column:span 4">
-    <h2><i>02</i>非吃不可 <span>EAT LIKE A LOCAL</span></h2>
-    {food_html(c['food'], c['accent'])}
-  </div>
+<section><h2><i>01</i>必訪景點 <span>SIGHTS</span></h2>{spots}</section>
+<section><h2><i>02</i>非吃不可 <span>EAT</span></h2>{food}</section>
+<section><h2><i>03</i>交通移動 <span>GETTING AROUND</span></h2>
+  <ul class="dots">{li(c['transport'])}</ul></section>
+<section><h2><i>04</i>行前必知 <span>BEFORE YOU GO</span></h2>
+  <ul class="dots">{li(c['tips'])}</ul></section>
+<section><h2><i>05</i>行程這樣排 <span>ITINERARY</span></h2><div class="days">{days}</div></section>
+<section><h2><i>06</i>花費抓預算 <span>BUDGET</span></h2>
+  <div class="budbox">{budget}<div class="budnote">{c['budget_note']}</div></div></section>
 
-  <div class="card" style="grid-column:span 4">
-    <h2><i>03</i>交通移動 <span>GETTING AROUND</span></h2>
-    <ul class="dots">{li(c['transport'])}</ul>
-  </div>
-  <div class="card" style="grid-column:span 4">
-    <h2><i>04</i>行前必知 <span>KNOW BEFORE YOU GO</span></h2>
-    <ul class="dots">{li(c['tips'])}</ul>
-  </div>
-  <div class="card tint" style="grid-column:span 4">
-    <h2><i>05</i>花費抓預算 <span>BUDGET</span></h2>
-    {budget}
-    <div class="note" style="border-top:1px dotted var(--line);margin-top:6px">{c['budget_note']}</div>
-  </div>
-
-  <div class="card" style="grid-column:span 12">
-    <h2><i>06</i>行程這樣排 <span>SUGGESTED ITINERARY</span></h2>
-    <div class="days">{days}</div>
-  </div>
-</div>
-
-<footer><span>{esc(c['zh'])}．{esc(c['en'])}</span>
-<b>{esc(c['footer'])}</b>
-<span>ONE-PAGE TRAVEL GUIDE</span></footer>
+<footer><span>{esc(c['zh'])}．{esc(c['en'])}</span><b>{esc(c['footer'])}</b></footer>
 </div>"""
 
     css = (CSS.replace('@ACCENT@', c['accent']).replace('@ACCENT2@', c['accent2'])
               .replace('@ACCENT3@', c['accent3']).replace('@TINT@', c['tint']))
     doc = f"""<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
-<title>{esc(c['zh'])}一頁式旅遊導覽</title>
+<meta name="viewport" content="width=1080">
+<title>{esc(c['zh'])}一頁式旅遊導覽（手機版）</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
 <link rel="stylesheet" href="file:///root/fonts/fonts.css">
 <style>{css}</style></head><body>{body}</body></html>"""

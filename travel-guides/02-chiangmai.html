@@ -1,132 +1,115 @@
 <!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
-<title>清　邁一頁式旅遊導覽</title>
+<meta name="viewport" content="width=1080">
+<title>清　邁一頁式旅遊導覽（手機版）</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
 <link rel="stylesheet" href="file:///root/fonts/fonts.css">
 <style>
 :root{
-  --paper:#FBF6EA; --ink:#2C241C; --sub:#6B6053; --line:#D9CEBB;
-  --accent:#2F6B41; --accent2:#96682C; --accent3:#B4522E;
-  --tint:#F2F5E9;
+  --paper:#FBF6EA; --ink:#2C241C; --sub:#6B6053; --line:#DCD1BE;
+  --accent:#2F6B41; --accent2:#96682C; --accent3:#B4522E; --tint:#F2F5E9;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{width:1400px;background:var(--paper);color:var(--ink);
-  font-family:'Noto Sans TC','Noto Sans CJK TC','WenQuanYi Zen Hei',sans-serif;
-  -webkit-font-smoothing:antialiased;}
-.page{position:relative;padding:40px 46px 36px;overflow:hidden}
+body{width:1080px;background:var(--paper);color:var(--ink);
+  font-family:'Noto Sans TC','WenQuanYi Zen Hei',sans-serif;-webkit-font-smoothing:antialiased}
+.page{position:relative;padding:44px 36px 38px}
 .page::before{content:'';position:absolute;inset:0;pointer-events:none;
-  background-image:radial-gradient(circle at 1px 1px, rgba(120,100,70,.14) 1px, transparent 0);
-  background-size:22px 22px;opacity:.5}
-.frame{position:absolute;inset:14px;border:2px solid var(--line);border-radius:4px;pointer-events:none}
-.frame::after{content:'';position:absolute;inset:5px;border:1px solid var(--line);opacity:.6;border-radius:2px}
-.blob{position:absolute;border-radius:48% 52% 60% 40%/55% 45% 55% 45%;filter:blur(2px);opacity:.5;pointer-events:none}
+  background-image:radial-gradient(circle at 1px 1px, rgba(120,100,70,.13) 1px, transparent 0);
+  background-size:26px 26px}
+.frame{position:absolute;inset:18px;border:3px solid var(--line);border-radius:6px;pointer-events:none}
 
-/* ---------- header ---------- */
-header{position:relative;display:flex;align-items:flex-end;gap:26px;
-  padding:6px 0 16px;border-bottom:3px double var(--line);margin-bottom:14px}
-.htxt{flex:1}
-.kicker{font-size:12px;letter-spacing:.42em;color:var(--accent2);font-weight:700}
-h1{font-family:'Noto Serif TC',serif;font-weight:900;font-size:70px;line-height:1;
-  letter-spacing:.04em;margin:6px 0 2px;color:var(--ink)}
-h1 small{font-family:'Noto Sans TC',sans-serif;font-size:19px;font-weight:500;letter-spacing:.16em;
-  color:var(--accent);margin-left:14px;vertical-align:6px}
-.tagline{font-size:17px;color:var(--sub);letter-spacing:.06em;margin-top:7px}
+/* header */
+header{position:relative;text-align:center;padding-bottom:24px;margin-bottom:26px;
+  border-bottom:4px double var(--line)}
+.kicker{font-size:22px;letter-spacing:.5em;color:var(--accent2);font-weight:700;margin-left:.5em}
+h1{font-family:'Noto Serif TC',serif;font-weight:900;font-size:92px;line-height:1.05;
+  letter-spacing:.08em;margin:10px 0 4px}
+.en{font-size:30px;letter-spacing:.36em;color:var(--accent);font-weight:700;margin-left:.36em}
+.tagline{font-size:27px;color:var(--sub);line-height:1.7;margin-top:14px}
 .tagline b{color:var(--accent);font-weight:700}
-.seal{position:absolute;right:262px;top:2px;width:86px;height:86px;border:2.5px solid var(--accent3);
+.illus{width:420px;margin:10px auto 0;display:block}
+.seal{position:absolute;right:6px;top:0;width:132px;height:132px;border:4px solid var(--accent3);
   border-radius:50%;color:var(--accent3);display:flex;flex-direction:column;align-items:center;
-  justify-content:center;transform:rotate(-11deg);opacity:.85}
-.seal b{font-family:'Noto Serif TC',serif;font-size:21px;line-height:1.15;letter-spacing:.06em}
-.seal span{font-size:9px;letter-spacing:.14em;margin-top:3px}
-.illus{width:236px;flex:none;margin-left:80px}
+  justify-content:center;transform:rotate(-10deg);opacity:.9}
+.seal b{font-family:'Noto Serif TC',serif;font-size:34px;letter-spacing:.06em}
+.seal span{font-size:14px;letter-spacing:.16em;margin-top:5px}
 
-/* ---------- facts ---------- */
-.facts{display:grid;grid-template-columns:repeat(7,1fr);gap:0;border:1.5px solid var(--line);
-  border-radius:6px;background:#fff;margin-bottom:16px;overflow:hidden}
-.fact{padding:12px 14px;border-right:1px dashed var(--line)}
-.fact:last-child{border-right:0}
-.fact .k{font-size:11px;letter-spacing:.16em;color:var(--accent2);font-weight:700}
-.fact .v{font-size:15.5px;font-weight:700;margin-top:3px;line-height:1.35}
-.fact .v em{font-style:normal;font-size:12px;font-weight:400;color:var(--sub);display:block}
+/* facts */
+.facts{display:grid;grid-template-columns:repeat(3,1fr);border:2px solid var(--line);
+  border-radius:10px;background:#fff;overflow:hidden;margin-bottom:32px}
+.fact{padding:14px 18px;border-right:2px dashed var(--line);border-bottom:2px dashed var(--line)}
+.fact:nth-child(3n){border-right:0}
+.fact:nth-child(n+4){border-bottom:0}
+.fact .k{font-size:19px;letter-spacing:.2em;color:var(--accent2);font-weight:700}
+.fact .v{font-size:28px;font-weight:700;margin-top:6px;line-height:1.3}
+.fact .v em{font-style:normal;font-size:21px;font-weight:400;color:var(--sub);display:block;
+  margin-top:4px;line-height:1.5}
 
-/* ---------- grid ---------- */
-.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
-.card{background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:18px 22px 20px;
-  position:relative;box-shadow:2px 3px 0 rgba(180,165,135,.22)}
-.card.tint{background:var(--tint)}
-h2{font-family:'Noto Serif TC',serif;font-size:25px;letter-spacing:.06em;display:flex;
-  align-items:center;gap:11px;margin-bottom:14px;color:var(--ink)}
-h2 i{display:inline-flex;width:30px;height:30px;border-radius:50%;background:var(--accent);
-  color:#fff;font-style:normal;font-size:15px;align-items:center;justify-content:center;flex:none;
-  font-family:'Noto Sans TC',sans-serif;font-weight:700}
-h2 span{font-size:12px;letter-spacing:.2em;color:var(--sub);font-weight:400;
+/* sections */
+section{margin-bottom:30px}
+h2{font-family:'Noto Serif TC',serif;font-size:40px;letter-spacing:.06em;display:flex;
+  align-items:center;gap:14px;margin-bottom:18px}
+h2 i{display:inline-flex;width:48px;height:48px;border-radius:50%;background:var(--accent);
+  color:#fff;font-style:normal;font-size:23px;font-weight:700;align-items:center;
+  justify-content:center;flex:none;font-family:'Noto Sans TC',sans-serif;letter-spacing:0}
+h2 span{font-size:20px;letter-spacing:.22em;color:var(--sub);font-weight:400;
   font-family:'Noto Sans TC',sans-serif}
-h2::after{content:'';flex:1;height:0;border-top:2px dotted var(--line)}
-h3{font-size:14px;letter-spacing:.1em;color:#fff;background:var(--accent2);display:inline-block;
-  padding:4px 13px;border-radius:3px;margin:18px 0 11px}
-h3:first-of-type{margin-top:2px}
-.two{display:grid;grid-template-columns:repeat(3,1fr);gap:0 26px}
-.spot{display:flex;gap:10px;padding:2px 0 4px}
+h2::after{content:'';flex:1;height:0;border-top:3px dotted var(--line)}
+h3{font-size:23px;letter-spacing:.12em;color:#fff;background:var(--accent2);display:inline-block;
+  padding:6px 18px;border-radius:5px;margin:18px 0 12px}
+h3:first-of-type{margin-top:0}
 
-.no{flex:none;width:24px;height:24px;border-radius:50%;border:1.5px solid var(--accent);
-  color:var(--accent);font-size:13px;font-weight:700;display:flex;align-items:center;
-  justify-content:center;margin-top:2px}
-.nm{font-size:17px;font-weight:700;line-height:1.35}
-.nm em{font-style:normal;font-size:11px;color:#A0947F;letter-spacing:.04em;font-weight:400;
-  margin-left:5px}
-.ds{font-size:13.5px;color:#4C4438;line-height:1.75;margin-top:3px}
-.meta{font-size:12.5px;color:var(--accent);margin-top:5px;letter-spacing:.02em;font-weight:500}
-.meta::before{content:'●';font-size:7px;vertical-align:2.5px;margin-right:5px;opacity:.7}
-.pill{display:inline-block;font-size:11.5px;padding:1px 8px;border:1px solid var(--accent);
-  color:var(--accent);border-radius:9px;margin-left:5px;vertical-align:1px;white-space:nowrap}
-.pill.g{border-color:#9AA88F;color:#5F7052}
+.item{display:flex;gap:16px;background:#fff;border:2px solid var(--line);border-radius:10px;
+  padding:16px 20px;margin-bottom:11px;box-shadow:3px 4px 0 rgba(180,165,135,.2)}
+.item:last-child{margin-bottom:0}
+.no{flex:none;width:41px;height:41px;border-radius:50%;border:3px solid var(--accent);
+  color:var(--accent);font-size:22px;font-weight:700;display:flex;align-items:center;
+  justify-content:center}
+.ic{flex:none;width:40px;height:40px}
+.nm{font-size:32px;font-weight:700;line-height:1.3}
+.nm em{font-style:normal;font-size:20px;color:#A0947F;letter-spacing:.04em;font-weight:400;
+  margin-left:10px}
+.ds{font-size:25px;color:#4C4438;line-height:1.7;margin-top:6px}
+.meta{display:inline-block;font-size:21px;color:#fff;background:var(--accent);border-radius:6px;
+  padding:3px 13px;margin-top:9px;letter-spacing:.02em}
+.meta.g{background:var(--accent3)}
 
-/* food */
-.food{display:flex;gap:11px;padding:9px 0;border-bottom:1px dotted #E7DECD}
-.food:last-child{border-bottom:0}
-.food .ic{flex:none;width:24px;height:24px;margin-top:2px}
-.pricetag{font-size:11.5px;color:#fff;background:var(--accent3);border-radius:3px;padding:0 5px;
-  margin-left:5px;vertical-align:1.5px;white-space:nowrap}
-
-/* list */
-ul.dots{list-style:none}
-ul.dots li{font-size:14px;line-height:1.8;padding-left:17px;position:relative;margin-bottom:12px;
-  color:#463E33}
-ul.dots li::before{content:'';position:absolute;left:2px;top:10px;width:6px;height:6px;
+ul.dots{list-style:none;background:#fff;border:2px solid var(--line);border-radius:10px;
+  padding:18px 24px;box-shadow:3px 4px 0 rgba(180,165,135,.2)}
+ul.dots li{font-size:26px;line-height:1.7;padding-left:28px;position:relative;margin-bottom:14px}
+ul.dots li:last-child{margin-bottom:0}
+ul.dots li::before{content:'';position:absolute;left:4px;top:16px;width:12px;height:12px;
   background:var(--accent);border-radius:50%}
-ul.dots li b{color:var(--ink)}
+ul.dots li b{color:var(--accent)}
 
-/* itinerary */
-.days{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.day{border:1.5px dashed var(--line);border-radius:6px;padding:13px 15px 14px;background:#fff}
-.day .dh{font-family:'Noto Serif TC',serif;font-size:18px;color:var(--accent);font-weight:700;
-  border-bottom:1px solid var(--line);padding-bottom:4px;margin-bottom:5px}
-.day .dh em{font-style:normal;font-size:12.5px;color:var(--sub);margin-left:6px;font-family:'Noto Sans TC'}
-.step{font-size:13.5px;line-height:1.7;color:#463E33;padding-left:14px;position:relative;margin-bottom:5px}
-.step::before{content:'▸';position:absolute;left:0;color:var(--accent2);font-size:10px}
-.note{font-size:12px;color:var(--sub);margin-top:4px;border-top:1px dotted var(--line);padding-top:4px}
+.days{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.day{background:#fff;border:2px dashed var(--line);border-radius:10px;padding:16px 18px}
+.day .dh{font-family:'Noto Serif TC',serif;font-size:29px;color:var(--accent);font-weight:700;
+  border-bottom:2px solid var(--line);padding-bottom:10px;margin-bottom:12px}
+.day .dh em{font-style:normal;font-size:22px;color:var(--sub);margin-left:10px;
+  font-family:'Noto Sans TC',sans-serif}
+.step{font-size:24px;line-height:1.65;padding-left:22px;position:relative;margin-bottom:6px;
+  color:#463E33}
+.step:last-child{margin-bottom:0}
+.step::before{content:'▸';position:absolute;left:0;color:var(--accent2)}
 
-/* budget */
-.bud{display:flex;justify-content:space-between;font-size:14.5px;padding:9px 0;
-  border-bottom:1px dotted #E7DECD}
-.bud:last-child{border-bottom:0}
-.bud b{font-weight:700}
+.bud{display:flex;justify-content:space-between;font-size:26px;padding:11px 0;
+  border-bottom:2px dotted var(--line)}
+.budbox{background:var(--tint);border:2px solid var(--line);border-radius:10px;padding:14px 26px 20px}
+.bud:last-of-type{border-bottom:0}
 .bud span{color:var(--accent);font-weight:700}
-.tape{position:absolute;width:74px;height:20px;background:rgba(210,180,120,.35);
-  border-left:1px dashed rgba(255,255,255,.7);border-right:1px dashed rgba(255,255,255,.7);
-  top:-9px;left:50%;margin-left:-37px;transform:rotate(-1.6deg)}
-footer{margin-top:18px;display:flex;justify-content:space-between;align-items:center;
-  border-top:3px double var(--line);padding-top:12px;font-size:12px;color:var(--sub);
-  letter-spacing:.14em}
-footer b{color:var(--accent);letter-spacing:.2em}
-</style></head><body><div class="page">
-<div class="frame"></div>
-<div class="blob" style="width:320px;height:260px;right:-70px;top:500px;background:#E3EBD6"></div><div class="blob" style="width:250px;height:220px;left:-60px;bottom:140px;background:#F0E3D2"></div>
+.budnote{font-size:23px;color:var(--sub);line-height:1.7;border-top:3px dotted var(--line);
+  padding-top:14px;margin-top:6px}
+.budnote b{color:var(--accent)}
+
+footer{border-top:4px double var(--line);padding-top:20px;display:flex;
+  justify-content:space-between;font-size:20px;letter-spacing:.16em;color:var(--sub)}
+footer b{color:var(--accent);letter-spacing:.22em}
+</style></head><body><div class="page"><div class="frame"></div>
 <header>
-  <div class="htxt">
-    <div class="kicker">T H A I L A N D  ·  北方蘭納</div>
-    <h1>清　邁<small>CHIANG MAI</small></h1>
-    <div class="tagline">蘭納古都 × <b>山中慢活</b> × 咖啡與手作——把腳步放慢的玫瑰之城。</div>
-  </div>
   <div class="seal"><b>清邁</b><span>TRAVEL NOTE</span></div>
+  <div class="kicker">T H A I L A N D  ·  北方蘭納</div>
+  <h1>清　邁</h1><div class="en">CHIANG MAI</div>
+  <div class="tagline">蘭納古都 × <b>山中慢活</b> × 咖啡與手作——把腳步放慢的玫瑰之城。</div>
   <div class="illus"><svg viewBox="0 0 250 150" fill="none" stroke="var(--accent)" stroke-width="2"
  stroke-linejoin="round" stroke-linecap="round">
 <circle cx="34" cy="36" r="18" fill="var(--tint)" stroke="var(--accent3)" stroke-width="1.6"/>
@@ -142,46 +125,22 @@ footer b{color:var(--accent);letter-spacing:.2em}
 </svg></div>
 </header>
 
-<div class="facts"><div class="fact"><div class="k">航　程</div><div class="v">3.5 hr<em>台北直飛 CNX 或曼谷轉 1 hr</em></div></div><div class="fact"><div class="k">時　差</div><div class="v">台灣 −1 hr<em>市區到機場僅 15 min</em></div></div><div class="fact"><div class="k">貨　幣</div><div class="v">THB 泰銖<em>物價約曼谷 7–8 折</em></div></div><div class="fact"><div class="k">最佳季節</div><div class="v">11–2 月<em>早晚 15℃；3–4 月霾害避開</em></div></div><div class="fact"><div class="k">海　拔</div><div class="v">310 m<em>山區 Doi Inthanon 2,565 m</em></div></div><div class="fact"><div class="k">電　壓</div><div class="v">220V／A·B·C<em>台灣扁插可直用</em></div></div><div class="fact"><div class="k">必看節慶</div><div class="v">11 月水燈節<em>Yi Peng 天燈需早半年訂票</em></div></div></div>
+<div class="facts"><div class="fact"><div class="k">航　程</div><div class="v">3.5 hr<em>台北直飛 CNX 或曼谷轉 1 hr</em></div></div><div class="fact"><div class="k">時　差</div><div class="v">台灣 −1 hr<em>市區到機場僅 15 min</em></div></div><div class="fact"><div class="k">貨　幣</div><div class="v">THB 泰銖<em>物價約曼谷 7–8 折</em></div></div><div class="fact"><div class="k">最佳季節</div><div class="v">11–2 月<em>早晚 15℃；3–4 月霾害避開</em></div></div><div class="fact"><div class="k">海　拔</div><div class="v">310 m<em>山區 Doi Inthanon 2,565 m</em></div></div><div class="fact"><div class="k">電　壓</div><div class="v">220V／A·B·C<em>台灣扁插可直用</em></div></div></div>
 
-<div class="grid">
-  <div class="card" style="grid-column:span 8">
-    <div class="tape"></div>
-    <h2><i>01</i>必訪景點 <span>SIGHTS &amp; PLACES</span></h2>
-    <h3>古城方城內 OLD CITY</h3><div class="two"><div class="spot"><div class="no">1</div><div><div class="nm">帕辛寺<em>Wat Phra Singh</em></div><div class="ds">蘭納建築代表作，金色柚木大殿與壁畫，黃昏最上相。</div><div class="meta">50B</div></div></div><div class="spot"><div class="no">2</div><div><div class="nm">契迪龍寺<em>Wat Chedi Luang</em></div><div class="ds">地震殘留的巨大磚塔，午後有 Monk Chat 可與僧侶聊天。</div><div class="meta">50B</div></div></div><div class="spot"><div class="no">3</div><div><div class="nm">盼道寺<em>Wat Phan Tao</em></div><div class="ds">全柚木建築，池畔常設許願燈裝置，拍照人少。</div><div class="meta">免費</div></div></div></div><h3>山區與郊外 MOUNTAINS</h3><div class="two"><div class="spot"><div class="no">4</div><div><div class="nm">素帖寺<em>Doi Suthep</em></div><div class="ds">306 階那伽階梯後是金塔與全城展望，清邁的精神象徵。</div><div class="meta">30B／雙條 300B</div></div></div><div class="spot"><div class="no">5</div><div><div class="nm">因他農國家公園<em>Doi Inthanon</em></div><div class="ds">泰國最高峰，皇家雙塔花園、瀑布與苗族市集，一日團最省力。</div><div class="meta">外國人 300B</div></div></div><div class="spot"><div class="no">6</div><div><div class="nm">大象自然公園<em>Elephant Nature Park</em></div><div class="ds">救援型保育園，只餵食洗澡不騎乘，需提前 1–2 週線上預約。</div><div class="meta">半日 2,500B</div></div></div></div><h3>咖啡文創與市集 CAFÉ &amp; CRAFT</h3><div class="two"><div class="spot"><div class="no">7</div><div><div class="nm">寧曼路<em>Nimmanhaemin</em></div><div class="ds">清邁的東區：精品咖啡、選物店與 One Nimman 廣場。</div><div class="meta">免費</div></div></div><div class="spot"><div class="no">8</div><div><div class="nm">Jing Jai Farmer’s Market<em>真心市集</em></div><div class="ds">週六日 6:30–14 有機農夫市集＋手作，早鳥才有好貨。</div><div class="meta">週末</div></div></div><div class="spot"><div class="no">9</div><div><div class="nm">Baan Kang Wat 藝術村<em>Art Village</em></div><div class="ds">木造小屋工作室群，可體驗陶藝與植物染。</div><div class="meta">免費</div></div></div></div>
-  </div>
-  <div class="card tint" style="grid-column:span 4">
-    <h2><i>02</i>非吃不可 <span>EAT LIKE A LOCAL</span></h2>
-    <div class="food"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#2F6B41" stroke-width="1.8"
- stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg><div><div class="nm">金麵咖哩麵<em>Khao Soi</em><span class="pricetag">50–70B</span></div><div class="ds">清邁招牌：椰奶咖哩湯＋炸麵，配酸菜與紅蔥。Khun Yai、Mae Sai 都是口碑店。</div></div></div><div class="food"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#2F6B41" stroke-width="1.8"
- stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg><div><div class="nm">清邁香腸<em>Sai Ua</em><span class="pricetag">40B／串</span></div><div class="ds">香茅、南薑與辣椒揉進豬肉，配糯米最對味，市場論斤買。</div></div></div><div class="food"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#2F6B41" stroke-width="1.8"
- stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg><div><div class="nm">番茄豬肉辣醬<em>Nam Prik Ong</em><span class="pricetag">80B</span></div><div class="ds">沾小黃瓜與炸豬皮 Cap Moo，北部菜的靈魂前菜。</div></div></div><div class="food"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#2F6B41" stroke-width="1.8"
- stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg><div><div class="nm">豬腳飯<em>Khao Kha Moo</em><span class="pricetag">50B</span></div><div class="ds">Chang Phueak 夜市「牛仔帽阿嬤」，燉到入口即化，附滷蛋酸菜。</div></div></div><div class="food"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#2F6B41" stroke-width="1.8"
- stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg><div><div class="nm">北部菜老店<em>Huen Phen</em><span class="pricetag">250B</span></div><div class="ds">古城內蘭納家常菜，午餐是平價食堂、晚上變老屋餐廳。</div></div></div><div class="food"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#2F6B41" stroke-width="1.8"
- stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg><div><div class="nm">烤雞 + 涼拌<em>SP Chicken</em><span class="pricetag">180B／隻</span></div><div class="ds">炭烤全雞外脆內嫩，配糯米與 Som Tam 是完美組合。</div></div></div>
-  </div>
+<section><h2><i>01</i>必訪景點 <span>SIGHTS</span></h2><h3>古城方城內 OLD CITY</h3><div class="item"><div class="no">1</div><div><div class="nm">帕辛寺<em>Wat Phra Singh</em></div><div class="ds">蘭納建築代表作，金色柚木大殿與壁畫，黃昏最上相。</div><div class="meta">50B</div></div></div><div class="item"><div class="no">2</div><div><div class="nm">契迪龍寺<em>Wat Chedi Luang</em></div><div class="ds">地震殘留的巨大磚塔，午後有 Monk Chat 可與僧侶聊天。</div><div class="meta">50B</div></div></div><h3>山區與郊外 MOUNTAINS</h3><div class="item"><div class="no">3</div><div><div class="nm">素帖寺<em>Doi Suthep</em></div><div class="ds">306 階那伽階梯後是金塔與全城展望，清邁的精神象徵。</div><div class="meta">30B／雙條 300B</div></div></div><div class="item"><div class="no">4</div><div><div class="nm">因他農國家公園<em>Doi Inthanon</em></div><div class="ds">泰國最高峰，皇家雙塔花園、瀑布與苗族市集，一日團最省力。</div><div class="meta">外國人 300B</div></div></div><h3>咖啡文創與市集 CAFÉ &amp; CRAFT</h3><div class="item"><div class="no">5</div><div><div class="nm">寧曼路<em>Nimmanhaemin</em></div><div class="ds">清邁的東區：精品咖啡、選物店與 One Nimman 廣場。</div><div class="meta">免費</div></div></div><div class="item"><div class="no">6</div><div><div class="nm">Jing Jai Farmer’s Market<em>真心市集</em></div><div class="ds">週六日 6:30–14 有機農夫市集＋手作，早鳥才有好貨。</div><div class="meta">週末</div></div></div></section>
+<section><h2><i>02</i>非吃不可 <span>EAT</span></h2><div class="item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#2F6B41" stroke-width="1.8"
+ stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg><div><div class="nm">金麵咖哩麵<em>Khao Soi</em></div><div class="ds">清邁招牌：椰奶咖哩湯＋炸麵，配酸菜與紅蔥。Khun Yai、Mae Sai 都是口碑店。</div><div class="meta g">50–70B</div></div></div><div class="item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#2F6B41" stroke-width="1.8"
+ stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg><div><div class="nm">清邁香腸<em>Sai Ua</em></div><div class="ds">香茅、南薑與辣椒揉進豬肉，配糯米最對味，市場論斤買。</div><div class="meta g">40B／串</div></div></div><div class="item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#2F6B41" stroke-width="1.8"
+ stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg><div><div class="nm">番茄豬肉辣醬<em>Nam Prik Ong</em></div><div class="ds">沾小黃瓜與炸豬皮 Cap Moo，北部菜的靈魂前菜。</div><div class="meta g">80B</div></div></div><div class="item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#2F6B41" stroke-width="1.8"
+ stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg><div><div class="nm">豬腳飯<em>Khao Kha Moo</em></div><div class="ds">Chang Phueak 夜市「牛仔帽阿嬤」，燉到入口即化，附滷蛋酸菜。</div><div class="meta g">50B</div></div></div><div class="item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#2F6B41" stroke-width="1.8"
+ stroke-linecap="round"><path d="M6 3v8a2 2 0 002 2h0a2 2 0 002-2V3M8 13v8M18 3c-1.6 1.4-2.2 3.2-2.2 5.2 0 1.6.7 2.6 2.2 2.8V21"/></svg><div><div class="nm">北部菜老店<em>Huen Phen</em></div><div class="ds">古城內蘭納家常菜，午餐是平價食堂、晚上變老屋餐廳。</div><div class="meta g">250B</div></div></div></section>
+<section><h2><i>03</i>交通移動 <span>GETTING AROUND</span></h2>
+  <ul class="dots"><li><b>紅色雙條車 Songthaew</b>：招手上車、共乘制，市區 30–40B／人，上車先講目的地。</li><li><b>Grab／Bolt</b> 全城可叫，市區短程 60–90B，比議價省事。</li><li><b>租機車</b> 200–250B／日，需國際駕照＋台灣駕照，山路要戴安全帽。</li></ul></section>
+<section><h2><i>04</i>行前必知 <span>BEFORE YOU GO</span></h2>
+  <ul class="dots"><li><b>3–4 月霾害季</b> PM2.5 常破表，呼吸道敏感者請避開，改 11–2 月。</li><li><b>山區早晚溫差大</b>，12–1 月清晨僅 10–14℃，薄羽絨或刷毛外套必帶。</li><li><b>水燈節（Loy Krathong／Yi Peng）</b>約在 11 月，住宿與天燈場次需提早半年訂。</li><li><b>大象行程</b>請選明確標示「不騎乘、不表演」的保育型園區。</li></ul></section>
+<section><h2><i>05</i>行程這樣排 <span>ITINERARY</span></h2><div class="days"><div class="day"><div class="dh">Day 1<em>古城入門</em></div><div class="step">10:00 帕辛寺 → 盼道寺 → 契迪龍寺三連拍</div><div class="step">13:00 Huen Phen 吃北部菜</div><div class="step">15:00 塔佩門周邊按摩＋書店</div></div><div class="day"><div class="dh">Day 2<em>素帖山＋咖啡</em></div><div class="step">08:30 雙條車上素帖寺，避開中午人潮</div><div class="step">11:30 蒲屏皇宮花園（冬季花期）</div><div class="step">14:00 寧曼路 Ristr8to／Graph 咖啡巡禮</div></div><div class="day"><div class="dh">Day 3<em>大象與自然</em></div><div class="step">07:30 大象自然公園接送出發</div><div class="step">12:00 園區素食午餐、餵食與洗澡體驗</div><div class="step">16:00 回程順遊 Baan Kang Wat 藝術村</div></div><div class="day"><div class="dh">Day 4<em>登高或跨城</em></div><div class="step">06:30 因他農山一日遊（雙塔、瀑布、市集）</div><div class="step">或 07:00 清萊白廟藍廟黑屋一日</div><div class="step">17:00 回市區 Jing Jai 市集買伴手</div></div></div></section>
+<section><h2><i>06</i>花費抓預算 <span>BUDGET</span></h2>
+  <div class="budbox"><div class="bud"><b>青旅／民宿</b><span>250–700 B</span></div><div class="bud"><b>三星飯店（雙人）</b><span>900–1,600 B</span></div><div class="bud"><b>街邊一餐</b><span>40–70 B</span></div><div class="bud"><b>咖啡廳一杯</b><span>80–130 B</span></div><div class="budnote">中等玩法每人每日約 <b>1,300–2,000 B（約 1,200–1,900 TWD）</b>，比曼谷再省兩成。</div></div></section>
 
-  <div class="card" style="grid-column:span 4">
-    <h2><i>03</i>交通移動 <span>GETTING AROUND</span></h2>
-    <ul class="dots"><li><b>紅色雙條車 Songthaew</b>：招手上車、共乘制，市區 30–40B／人，上車先講目的地。</li><li><b>Grab／Bolt</b> 全城可叫，市區短程 60–90B，比議價省事。</li><li><b>租機車</b> 200–250B／日，需國際駕照＋台灣駕照，山路要戴安全帽。</li><li><b>古城內步行</b>即可，方形城牆一邊約 1.6 km，走路 20 分鐘。</li><li><b>素帖寺</b>雙條車在塔佩門或動物園排班，來回含等候約 300B／人。</li></ul>
-  </div>
-  <div class="card" style="grid-column:span 4">
-    <h2><i>04</i>行前必知 <span>KNOW BEFORE YOU GO</span></h2>
-    <ul class="dots"><li><b>3–4 月霾害季</b> PM2.5 常破表，呼吸道敏感者請避開，改 11–2 月。</li><li><b>山區早晚溫差大</b>，12–1 月清晨僅 10–14℃，薄羽絨或刷毛外套必帶。</li><li><b>水燈節（Loy Krathong／Yi Peng）</b>約在 11 月，住宿與天燈場次需提早半年訂。</li><li><b>大象行程</b>請選明確標示「不騎乘、不表演」的保育型園區。</li><li><b>寺廟禮儀</b>：女性勿觸碰僧侶，主殿脫鞋、勿背對佛像拍照。</li></ul>
-  </div>
-  <div class="card tint" style="grid-column:span 4">
-    <h2><i>05</i>花費抓預算 <span>BUDGET</span></h2>
-    <div class="bud"><b>青旅／民宿</b><span>250–700 B</span></div><div class="bud"><b>三星飯店（雙人）</b><span>900–1,600 B</span></div><div class="bud"><b>街邊一餐</b><span>40–70 B</span></div><div class="bud"><b>咖啡廳一杯</b><span>80–130 B</span></div><div class="bud"><b>泰式按摩 1 hr</b><span>200–350 B</span></div>
-    <div class="note" style="border-top:1px dotted var(--line);margin-top:6px">中等玩法每人每日約 <b>1,300–2,000 B（約 1,200–1,900 TWD）</b>，比曼谷再省兩成。</div>
-  </div>
-
-  <div class="card" style="grid-column:span 12">
-    <h2><i>06</i>行程這樣排 <span>SUGGESTED ITINERARY</span></h2>
-    <div class="days"><div class="day"><div class="dh">Day 1<em>古城入門</em></div><div class="step">10:00 帕辛寺 → 盼道寺 → 契迪龍寺三連拍</div><div class="step">13:00 Huen Phen 吃北部菜</div><div class="step">15:00 塔佩門周邊按摩＋書店</div><div class="step">17:00 週日／週六夜市掃街</div><div class="note">第一天別排山路，先適應天氣。</div></div><div class="day"><div class="dh">Day 2<em>素帖山＋咖啡</em></div><div class="step">08:30 雙條車上素帖寺，避開中午人潮</div><div class="step">11:30 蒲屏皇宮花園（冬季花期）</div><div class="step">14:00 寧曼路 Ristr8to／Graph 咖啡巡禮</div><div class="step">18:30 One Nimman 晚餐＋手作市集</div><div class="note">山上早晚涼，帶薄外套。</div></div><div class="day"><div class="dh">Day 3<em>大象與自然</em></div><div class="step">07:30 大象自然公園接送出發</div><div class="step">12:00 園區素食午餐、餵食與洗澡體驗</div><div class="step">16:00 回程順遊 Baan Kang Wat 藝術村</div><div class="step">19:00 Khantoke 蘭納宮廷晚餐</div><div class="note">穿舊衣＋涼鞋，會沾泥。</div></div><div class="day"><div class="dh">Day 4<em>登高或跨城</em></div><div class="step">06:30 因他農山一日遊（雙塔、瀑布、市集）</div><div class="step">或 07:00 清萊白廟藍廟黑屋一日</div><div class="step">17:00 回市區 Jing Jai 市集買伴手</div><div class="step">20:00 金麵收尾、按摩再上飛機</div><div class="note">兩者二選一，車程都偏長。</div></div></div>
-  </div>
-</div>
-
-<footer><span>清　邁．CHIANG MAI</span>
-<b>LANNA 2026</b>
-<span>ONE-PAGE TRAVEL GUIDE</span></footer>
+<footer><span>清　邁．CHIANG MAI</span><b>LANNA 2026</b></footer>
 </div></body></html>
