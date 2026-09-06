@@ -1,7 +1,7 @@
 import sys, pathlib
 from playwright.sync_api import sync_playwright
 D = pathlib.Path(__file__).parent
-files = sorted(D.glob('0*.html'))
+files = sorted(D.glob('0[456]-plan-*.html'))
 with sync_playwright() as p:
     b = p.chromium.launch(executable_path='/opt/pw-browsers/chromium-1194/chrome-linux/chrome', args=['--allow-file-access-from-files','--font-render-hinting=none'])
     pg = b.new_page(viewport={'width':1080,'height':2400}, device_scale_factor=1)

@@ -26,3 +26,18 @@ python3 shot.py     # 用 Playwright/Chromium 輸出 PNG
 - 文字內容：`cities.py`（完整資料都在，未印出的只是被 LIMITS 篩掉）
 - 內容量：`build.py` 的 `LIMITS`（`spots` 每區幾個、`food`／`transport`／`tips`／`budget`／`steps` 各幾項）
 - 字型：Noto Serif TC + Noto Sans TC
+
+## 曼谷 5 天行程（三種風格）
+
+| 檔案 | 風格 | 主軸 |
+| --- | --- | --- |
+| `04-plan-classic-1/-2` | 經典首訪 | 王城、河岸、水上市場、天際線 |
+| `05-plan-foodie-1/-2` | 市場美食獵人 | 米其林街攤、中國城、廚藝課、早市 |
+| `06-plan-slow-1/-2` | 河岸慢活．SPA | 河岸、綠肺單車、老宅咖啡、兩場 SPA |
+
+每個風格兩張：`-1` 是 Day 1–3、`-2` 是 Day 4–5＋路線筆記。
+資料在 `plans.py`（每天 5–7 個時段，含餐廳與移動方式），版型在 `plan_build.py`。
+
+```bash
+python3 plans.py && python3 shot.py
+```
