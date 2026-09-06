@@ -41,3 +41,16 @@ python3 shot.py     # 用 Playwright/Chromium 輸出 PNG
 ```bash
 python3 plans.py && python3 shot.py
 ```
+
+## 互動網頁版（Artifact）
+
+`bangkok-planner.html`：三種行程分頁切換，每個景點／餐廳可直接開 Google Maps，
+每天另有「路線一次開」的多點導航連結。
+
+```bash
+python3 gen_web.py   # 讀 plans.py 的資料 + web_template.html 的版型
+```
+
+- 版型：`web_template.html`（分頁、深淺色主題、字級皆在此調整）
+- 地圖連結：由 `gen_web.py` 依「中文名 + 英文名 + Bangkok」組成搜尋字串；
+  非地點的項目（Check-in、前往機場等）不會產生連結

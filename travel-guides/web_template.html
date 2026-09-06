@@ -1,0 +1,178 @@
+<title>曼谷五天三種玩法</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --bg:#F2F0E8; --surface:#FFFDF8; --raise:#FBF8F0;
+    --ink:#221F19; --muted:#6E6757;
+    --line:#E1DACA; --line-soft:#EDE7DA;
+    --a-a:#B0342A; --a-b:#BB5316; --a-c:#256866; --gold:#9C7E2B;
+    --shadow:0 1px 2px rgba(60,50,30,.06), 0 8px 24px -18px rgba(60,50,30,.5);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#14130E; --surface:#1D1B15; --raise:#242119;
+      --ink:#EDE7DA; --muted:#A79E8B; --line:#332F24; --line-soft:#292619;
+      --a-a:#E8806F; --a-b:#E89759; --a-c:#71C0B6; --gold:#CBAA55;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -20px rgba(0,0,0,.9);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#14130E; --surface:#1D1B15; --raise:#242119;
+    --ink:#EDE7DA; --muted:#A79E8B; --line:#332F24; --line-soft:#292619;
+    --a-a:#E8806F; --a-b:#E89759; --a-c:#71C0B6; --gold:#CBAA55;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -20px rgba(0,0,0,.9);
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Noto Sans TC',system-ui,-apple-system,'Helvetica Neue',sans-serif;
+    font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding:0 18px 64px}
+  a{color:inherit}
+  :focus-visible{outline:2.5px solid var(--gold);outline-offset:3px;border-radius:4px}
+
+  /* ── header ── */
+  .top{padding:34px 0 20px}
+  .eyebrow{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:12px;font-weight:600;
+    letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin:0}
+  h1{font-family:'Noto Serif TC',serif;font-weight:900;font-size:clamp(32px,8vw,46px);
+    line-height:1.15;letter-spacing:.02em;margin:10px 0 0;text-wrap:balance}
+  .sub{margin:12px 0 0;color:var(--muted);font-size:15.5px;max-width:60ch}
+  .hint{margin:14px 0 0;font-size:14px;color:var(--muted);display:flex;align-items:center;gap:7px}
+  .hint .pin{width:15px;height:15px;fill:var(--gold);flex:none}
+
+  /* ── tabs ── */
+  .tabs{position:sticky;top:0;z-index:10;display:grid;grid-template-columns:repeat(3,1fr);
+    gap:8px;padding:10px 0;background:var(--bg);border-bottom:1px solid var(--line)}
+  .tab{appearance:none;cursor:pointer;background:var(--surface);border:1.5px solid var(--line);
+    border-radius:10px;padding:10px 8px 9px;display:flex;flex-direction:column;align-items:center;
+    gap:2px;color:var(--muted);font-family:inherit;transition:border-color .15s,color .15s}
+  .tab .letter{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;
+    letter-spacing:.1em;color:var(--muted)}
+  .tab .tname{font-size:15px;font-weight:700;color:var(--ink);line-height:1.25;text-align:center}
+  .tab .ten{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--muted);display:none}
+  .tab[aria-selected="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 9%,var(--surface))}
+  .tab[aria-selected="true"] .letter{color:var(--accent)}
+  .tab[aria-selected="true"] .tname{color:var(--accent)}
+  @media (min-width:620px){ .tab .ten{display:block} .tab{padding:12px 10px} }
+
+  .theme-a{--accent:var(--a-a)} .theme-b{--accent:var(--a-b)} .theme-c{--accent:var(--a-c)}
+
+  /* ── plan intro ── */
+  .lead{padding:26px 0 6px}
+  .lead-t{margin:0;font-family:'Noto Serif TC',serif;font-size:19px;line-height:1.7;
+    font-weight:700;text-wrap:balance}
+  .who{margin:12px 0 0;display:inline-block;font-size:13.5px;color:var(--accent);
+    border:1.5px dashed color-mix(in srgb,var(--accent) 55%,transparent);
+    border-radius:999px;padding:4px 14px}
+
+  /* ── day ── */
+  .day{margin-top:22px;background:var(--surface);border:1px solid var(--line);border-radius:14px;
+    box-shadow:var(--shadow);overflow:hidden}
+  .day-h{display:grid;grid-template-columns:auto 1fr;align-items:baseline;gap:4px 12px;
+    padding:16px 18px 13px;border-bottom:1px solid var(--line-soft);
+    background:color-mix(in srgb,var(--accent) 6%,var(--surface))}
+  .day-h h3{margin:0;font-family:'Noto Serif TC',serif;font-size:25px;font-weight:900;
+    letter-spacing:.02em;color:var(--accent)}
+  .day-t{margin:0;font-size:15px;font-weight:700}
+  .area{grid-column:1/-1;margin:0;font-family:'IBM Plex Mono',monospace;font-size:10.5px;
+    letter-spacing:.16em;color:var(--muted)}
+  .route{grid-column:1/-1;justify-self:start;margin-top:8px;display:inline-flex;align-items:center;
+    gap:5px;font-size:13px;font-weight:700;text-decoration:none;color:var(--accent);
+    border:1.5px solid color-mix(in srgb,var(--accent) 40%,transparent);border-radius:999px;
+    padding:5px 13px}
+  .route .pin{width:13px;height:13px;fill:var(--accent)}
+  .route:hover{background:color-mix(in srgb,var(--accent) 10%,transparent)}
+
+  .stops{list-style:none;margin:0;padding:4px 18px 12px}
+  .stop{display:grid;grid-template-columns:58px 1fr;gap:12px;padding:13px 0;
+    border-bottom:1px dashed var(--line-soft)}
+  .stop:last-child{border-bottom:0}
+  .time{font-family:'IBM Plex Mono',monospace;font-size:13.5px;font-weight:600;
+    font-variant-numeric:tabular-nums;color:var(--accent);padding-top:3px}
+  .place{display:inline;font-size:17px;font-weight:700;line-height:1.45;
+    text-decoration:none;border-bottom:1.5px solid color-mix(in srgb,var(--accent) 35%,transparent)}
+  .place:hover{border-bottom-color:var(--accent);color:var(--accent)}
+  .place.plain{border-bottom:0;color:var(--muted);font-weight:700}
+  .place em{font-style:normal;font-size:12.5px;font-weight:400;color:var(--muted);margin-left:6px;
+    letter-spacing:.02em}
+  .pin{width:14px;height:14px;fill:var(--accent);margin-left:5px;vertical-align:-1px}
+  .note{display:block;margin-top:5px;font-size:14.5px;line-height:1.65;color:var(--muted)}
+  .note .mv{display:inline-block;font-size:12.5px;font-weight:600;color:var(--accent);
+    background:color-mix(in srgb,var(--accent) 11%,transparent);border-radius:6px;
+    padding:1px 8px;margin-left:2px}
+  .tagline-eat{color:var(--accent)}
+
+  /* ── notes ── */
+  .notes{margin-top:24px;background:color-mix(in srgb,var(--accent) 7%,var(--surface));
+    border:1px solid color-mix(in srgb,var(--accent) 22%,var(--line));border-radius:14px;
+    padding:18px 20px 20px}
+  .notes h3{margin:0 0 10px;font-family:'Noto Serif TC',serif;font-size:20px;font-weight:900}
+  .notes ul{margin:0;padding:0;list-style:none}
+  .notes li{position:relative;padding-left:18px;font-size:14.5px;line-height:1.7;margin-bottom:10px}
+  .notes li:last-child{margin-bottom:0}
+  .notes li::before{content:"";position:absolute;left:2px;top:9px;width:6px;height:6px;
+    border-radius:50%;background:var(--accent)}
+  .notes li b{color:var(--accent)}
+
+  footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);
+    font-size:12.5px;color:var(--muted);line-height:1.7}
+  footer b{color:var(--ink);font-weight:700}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <p class="eyebrow">Bangkok · 5 days · 3 routes</p>
+    <h1>曼谷五天，三種玩法</h1>
+    <p class="sub">同樣五天、同一座城市，三條把移動距離算過的路線。挑一條，或把喜歡的日子換著用。</p>
+    <p class="hint"><svg class="pin" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 00-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 00-7-7zm0 9.5A2.5 2.5 0 1112 6.5a2.5 2.5 0 010 5z"/></svg>點任一個地點就開 Google Maps；每天也可以「路線一次開」看整日動線。</p>
+  </header>
+
+  <div class="tabs" role="tablist" aria-label="三種行程風格"><!--TABS--></div>
+
+  <main><!--PANELS--></main>
+
+  <footer>
+    <b>使用說明</b>：地點連結為 Google Maps 搜尋，出發前請再確認營業時間與公休日。票價與車資為概估，以現場為準。<br>
+    需要訂位的店家（建興酒家、Jay Fai、Issaya、Divana、Mahanakhon）都寫在各路線的「路線筆記」。
+  </footer>
+</div>
+
+<script>
+(function () {
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  var KEY = 'bkk-plan-tab';
+
+  function show(key, save) {
+    tabs.forEach(function (t) {
+      var on = t.dataset.key === key;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById('panel-' + t.dataset.key).hidden = !on;
+    });
+    if (save) {
+      try { localStorage.setItem(KEY, key); } catch (e) {}
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { show(t.dataset.key, true); });
+    t.addEventListener('keydown', function (e) {
+      var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (!d) return;
+      e.preventDefault();
+      var next = tabs[(i + d + tabs.length) % tabs.length];
+      next.focus();
+      show(next.dataset.key, true);
+    });
+  });
+
+  try {
+    var saved = localStorage.getItem(KEY);
+    if (saved && document.getElementById('panel-' + saved)) show(saved, false);
+  } catch (e) {}
+})();
+</script>
