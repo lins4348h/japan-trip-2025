@@ -1,0 +1,525 @@
+<title>彰化控肉飯地圖</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chocolate+Classical+Sans&family=Noto+Sans+TC:wght@500;700;900&display=swap">
+<style>
+  :root{
+    --sky:#BEE3F0; --paper:#F6EED8; --paper2:#FFF9EC;
+    --ink:#4A3421; --ink-soft:#7A5C3E;
+    --wood:#8B5A33; --wood-dark:#5F3B1E;
+    --park:#B5D99C; --river:#A8D8EA;
+    --red:#E85A3A; --blue:#3E7EC1; --purple:#9B59B6;
+    --green:#3FA65C; --yellow:#F0A500; --gold:#F5B400;
+    --shadow:0 5px 0 rgba(74,52,33,.16);
+  }
+  *{box-sizing:border-box}
+  html{color-scheme:light}
+  body{
+    margin:0;color:var(--ink);
+    font-family:"Noto Sans TC",-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;
+    font-size:15px;line-height:1.6;
+    background:
+      radial-gradient(ellipse 60% 24% at 18% 2%, #fff 0 46%, transparent 47%),
+      radial-gradient(ellipse 42% 18% at 78% 4%, #fff 0 46%, transparent 47%),
+      linear-gradient(180deg,var(--sky) 0 340px,var(--paper) 620px);
+    background-color:var(--paper);
+    background-repeat:no-repeat;
+  }
+  .disp{font-family:"Chocolate Classical Sans","Noto Sans TC","PingFang TC",sans-serif;font-weight:400}
+  .poster{max-width:1120px;margin:0 auto;padding:22px 16px 46px}
+
+  /* ── 標題區 ── */
+  .hero{display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:8px}
+  .titlebox h1{
+    margin:0;line-height:1.04;letter-spacing:.03em;
+    font-size:clamp(44px,7.5vw,74px);color:var(--ink);
+    text-shadow:0 3px 0 rgba(255,255,255,.85);
+  }
+  .titlebox h1 .hl{
+    background:linear-gradient(180deg,transparent 52%,#FFD95E 52% 94%,transparent 94%);
+    border-radius:6px;padding:0 4px;
+  }
+  .titlebox h1 .row2{display:block;font-size:.72em;margin-top:4px}
+  .tagline{
+    display:inline-block;margin-top:12px;transform:rotate(-1.6deg);
+    background:var(--red);color:#FFF6E6;font-weight:900;letter-spacing:.08em;
+    padding:6px 16px;border-radius:12px;box-shadow:var(--shadow);font-size:clamp(14px,2.4vw,18px);
+  }
+  .hero-train{position:relative;margin-left:auto;flex:0 0 auto}
+  .bubble{
+    position:relative;background:#fff;border:3px solid var(--ink);border-radius:16px;
+    padding:7px 14px;font-weight:900;font-size:15px;letter-spacing:.05em;
+    box-shadow:var(--shadow);transform:rotate(2deg);
+  }
+  .bubble::after{
+    content:"";position:absolute;left:26px;bottom:-13px;
+    border:7px solid transparent;border-top-color:var(--ink);
+  }
+  .hero-train svg{display:block;margin-top:10px}
+
+  /* ── 版面 ── */
+  .board{display:grid;grid-template-columns:minmax(0,1fr) 316px;gap:16px;align-items:start}
+  @media (max-width:900px){.board{grid-template-columns:1fr}}
+  .mapframe{
+    background:var(--paper2);
+    border:4px solid var(--wood);border-radius:22px;
+    box-shadow:var(--shadow);overflow:hidden;
+  }
+  svg#map{display:block;width:100%;height:auto}
+
+  /* ── 右側看板 ── */
+  .side{display:flex;flex-direction:column;gap:14px}
+  .panel{
+    background:var(--paper2);border:4px solid var(--wood);border-radius:18px;
+    box-shadow:var(--shadow);overflow:hidden;
+  }
+  .panel-h{
+    background:var(--wood);color:#FFF3DC;padding:9px 14px;
+    display:flex;align-items:center;gap:9px;
+    border-bottom:4px solid var(--wood-dark);
+    font-size:19px;letter-spacing:.14em;
+  }
+  .panel-h svg{flex:0 0 auto}
+  .panel-b{padding:11px 12px 13px}
+  .livemeta{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--ink-soft);padding:0 4px 8px}
+  .livemeta .lamp{width:9px;height:9px;border-radius:50%;background:var(--green);animation:lamp 1.6s ease-in-out infinite}
+  @keyframes lamp{0%,100%{opacity:1}50%{opacity:.35}}
+  .livemeta .clk{margin-left:auto;font-size:19px;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:.04em}
+  .rows{display:flex;flex-direction:column;gap:7px}
+  .row{
+    display:grid;grid-template-columns:40px 1fr auto;gap:9px;align-items:center;
+    background:#fff;border:2.5px solid #E4D5B5;border-radius:13px;padding:6px 9px;
+    font:inherit;text-align:left;cursor:pointer;width:100%;
+  }
+  .row:hover{transform:translateY(-1px)}
+  .row:focus-visible,.stn:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+  .row[aria-pressed="true"]{border-color:var(--ink);background:#FFF4D6}
+  .row .nm{font-weight:900;font-size:14.5px;line-height:1.25}
+  .row .stars{font-size:12.5px;color:var(--ink-soft);font-weight:700}
+  .row .stars b{color:var(--gold);font-size:13.5px}
+  .wait{
+    font-size:12.5px;font-weight:900;padding:3px 10px;border-radius:999px;white-space:nowrap;
+    font-variant-numeric:tabular-nums;color:#fff;
+  }
+  .wait.w1{background:var(--green)} .wait.w2{background:var(--yellow);color:#5B4200}
+  .wait.w3{background:var(--red)} .wait.off{background:#D8C9A8;color:#7A5C3E}
+  .nextstop{
+    margin-top:10px;background:#FFF4D6;border:2.5px dashed var(--wood);border-radius:12px;
+    padding:8px 12px;font-size:13.5px;font-weight:700;
+  }
+  .nextstop b{color:var(--red)}
+
+  .legend{display:flex;flex-direction:column;gap:8px;font-size:13.5px;font-weight:700}
+  .lg{display:flex;align-items:center;gap:10px}
+  .lg .pill-ico{width:34px;height:12px;border-radius:7px;flex:0 0 auto;position:relative}
+  .lg .pill-ico::after{content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;background:#fff;border-radius:50%;transform:translate(-50%,-50%)}
+  .lg small{display:block;font-weight:500;color:var(--ink-soft);font-size:12px;line-height:1.3}
+  .lg .sq{width:22px;height:14px;border-radius:5px;flex:0 0 auto}
+
+  .mascotcard{display:flex;align-items:center;gap:12px;padding:12px 14px}
+  .mascotcard .bubble{transform:rotate(-1.5deg);font-size:14px}
+  .mascotcard .bubble::after{left:auto;right:24px}
+  .love{margin:6px 0 0;color:var(--red);font-weight:900;letter-spacing:.1em;font-size:15px;transform:rotate(-2deg)}
+
+  footer{max-width:1120px;margin:6px auto 0;padding:10px 18px 30px;font-size:12.5px;color:var(--ink-soft);display:grid;gap:4px}
+
+  /* 地圖動效 */
+  .stn{cursor:pointer}
+  .stn .bowlwrap{transform-box:fill-box;transform-origin:center bottom}
+  .stn.picked .bowlwrap{animation:hop .6s ease}
+  @keyframes hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-14px) scale(1.06)}}
+  .steam-s{opacity:.55}
+  .steam-s ellipse{animation:puffs 3s ease-out infinite}
+  @keyframes puffs{0%{opacity:0;transform:translateY(0)}30%{opacity:.6}100%{opacity:0;transform:translateY(-16px)}}
+  @media (prefers-reduced-motion:reduce){
+    .livemeta .lamp,.stn.picked .bowlwrap,.steam-s ellipse{animation:none}
+    .row:hover{transform:none}
+  }
+</style>
+
+<div class="poster">
+  <div class="hero">
+    <div class="titlebox">
+      <h1 class="disp"><span class="hl">彰化</span><span class="row2"><span class="hl">控肉飯地圖</span></span></h1>
+      <span class="tagline">一碗控肉飯,串起彰化的美味軌道!</span>
+    </div>
+    <div class="hero-train">
+      <div class="bubble">上車!吃控肉飯去!</div>
+      <svg width="190" height="86" viewBox="0 0 190 86" aria-hidden="true">
+        <line x1="0" y1="76" x2="190" y2="76" stroke="#8B5A33" stroke-width="5"/>
+        <line x1="0" y1="76" x2="190" y2="76" stroke="#C9A468" stroke-width="2.5" stroke-dasharray="6 12"/>
+        <rect x="108" y="18" width="72" height="50" rx="14" fill="#3E7EC1" stroke="#28527F" stroke-width="3.5"/>
+        <rect x="118" y="26" width="52" height="18" rx="8" fill="#DCEFFA" stroke="#28527F" stroke-width="3"/>
+        <circle cx="132" cy="52" r="3.6" fill="#28527F"/><circle cx="156" cy="52" r="3.6" fill="#28527F"/>
+        <path d="M136 59 q8 6 16 0" stroke="#28527F" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <rect x="104" y="60" width="80" height="9" rx="4.5" fill="#F0A500" stroke="#28527F" stroke-width="3"/>
+        <circle cx="126" cy="73" r="7" fill="#4A3421" stroke="#C9A468" stroke-width="2.5"/>
+        <circle cx="162" cy="73" r="7" fill="#4A3421" stroke="#C9A468" stroke-width="2.5"/>
+        <rect x="34" y="26" width="66" height="42" rx="10" fill="#5F8FC9" stroke="#28527F" stroke-width="3.5"/>
+        <rect x="42" y="34" width="20" height="15" rx="5" fill="#DCEFFA" stroke="#28527F" stroke-width="2.5"/>
+        <rect x="70" y="34" width="20" height="15" rx="5" fill="#DCEFFA" stroke="#28527F" stroke-width="2.5"/>
+        <circle cx="52" cy="73" r="7" fill="#4A3421" stroke="#C9A468" stroke-width="2.5"/>
+        <circle cx="84" cy="73" r="7" fill="#4A3421" stroke="#C9A468" stroke-width="2.5"/>
+        <path d="M22 20 q4 -6 0 -12 M32 14 q4 -6 0 -12" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".9"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="board">
+    <div class="mapframe">
+      <svg id="map" viewBox="0 0 760 1060" role="img"
+        aria-label="彰化控肉飯插畫地圖:五家名店以彩色路線串連,沿途有彰化車站、八卦山大佛、扇形車庫與鹿港老街"></svg>
+    </div>
+
+    <div class="side">
+      <section class="panel" aria-label="即時美味列車">
+        <h2 class="panel-h disp" style="margin:0">
+          <svg width="24" height="18" viewBox="0 0 24 18" aria-hidden="true"><rect x="1" y="1" width="22" height="12" rx="4" fill="#FFF3DC"/><rect x="4" y="4" width="7" height="5" rx="2" fill="#8B5A33"/><rect x="13" y="4" width="7" height="5" rx="2" fill="#8B5A33"/><circle cx="6" cy="16" r="2" fill="#FFF3DC"/><circle cx="18" cy="16" r="2" fill="#FFF3DC"/></svg>
+          即時美味列車
+        </h2>
+        <div class="panel-b">
+          <div class="livemeta">
+            <span class="lamp"></span>即時更新<span class="clk disp" id="clock">--:--</span>
+          </div>
+          <div class="rows" id="rows"></div>
+          <div class="nextstop" id="nextstop"></div>
+        </div>
+      </section>
+
+      <section class="panel" aria-label="路線圖例">
+        <h2 class="panel-h disp" style="margin:0;font-size:18px">
+          <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="none" stroke="#FFF3DC" stroke-width="3"/><circle cx="10" cy="10" r="3" fill="#FFF3DC"/></svg>
+          路線圖例
+        </h2>
+        <div class="panel-b legend" id="legend"></div>
+      </section>
+
+      <section class="panel mascotcard" aria-label="碗公吉祥物">
+        <svg width="92" height="96" viewBox="0 0 92 96" aria-hidden="true">
+          <ellipse cx="46" cy="90" rx="30" ry="5" fill="rgba(74,52,33,.15)"/>
+          <path d="M12 46 C12 74 26 88 46 88 C66 88 80 74 80 46 Z" fill="#FFF9EC" stroke="#4A3421" stroke-width="3.5"/>
+          <path d="M12 46 C12 51 80 51 80 46" fill="none" stroke="#3E7EC1" stroke-width="4.5"/>
+          <circle cx="36" cy="62" r="3.6" fill="#4A3421"/><circle cx="56" cy="62" r="3.6" fill="#4A3421"/>
+          <path d="M40 70 q6 5 12 0" stroke="#4A3421" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <circle cx="29" cy="68" r="3.4" fill="#F5A9A0" opacity=".8"/><circle cx="63" cy="68" r="3.4" fill="#F5A9A0" opacity=".8"/>
+          <path d="M20 40 C18 26 32 18 40 24 C40 12 58 12 58 24 C68 16 78 28 72 40 Z" fill="#8C4A1F" stroke="#5C3010" stroke-width="3"/>
+          <path d="M24 34 h44 M28 27 h36" stroke="#E8B87A" stroke-width="3" stroke-linecap="round" opacity=".9"/>
+          <line x1="66" y1="8" x2="86" y2="34" stroke="#B67B22" stroke-width="3.5" stroke-linecap="round"/>
+          <line x1="74" y1="4" x2="90" y2="28" stroke="#B67B22" stroke-width="3.5" stroke-linecap="round"/>
+        </svg>
+        <div>
+          <div class="bubble">彰化控肉飯超好吃!</div>
+          <p class="love disp">一吃就上癮!♥</p>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>★ 評分與「等候 X 分」為依時段的人氣推估,僅供趣味參考,非店家官方數據。</span>
+  <span>營業時間、位置為整理參考;店家公休無定、賣完就收,出發前請先問一聲。</span>
+  <span>控肉、爌肉、焢肉——寫法無仝,滷的是同一鍋。彰化人的浪漫:一天三頓攏呷會著。</span>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  const C={red:"#E85A3A",blue:"#3E7EC1",purple:"#9B59B6",green:"#3FA65C",yellow:"#F0A500",
+           ink:"#4A3421",wood:"#8B5A33",paper:"#FFF9EC",park:"#B5D99C",river:"#A8D8EA",gold:"#F5B400"};
+
+  /* ── 資料(評分/等候為趣味推估;時間為參考) ── */
+  const SHOPS=[
+    {id:"bmk", name:"北門口控肉飯", color:C.red,    lineName:"北門口線", lineDesc:"古早味經典",
+     rating:4.5, base:9,  hours:[660,1170], must:"控肉飯、滷蛋、龍髓湯",
+     blurb:["古早味醬香","肥而不膩!"]},
+    {id:"aq",  name:"阿泉控肉飯",   color:C.blue,   lineName:"阿泉線",   lineDesc:"厚切控肉系",
+     rating:4.8, base:13, hours:[420,810],  must:"招牌控肉飯、滷筍絲",
+     blurb:["必吃招牌控肉","肉片超厚!"]},
+    {id:"zch", name:"正彰化肉圓控肉飯", color:C.purple, lineName:"正彰化線", lineDesc:"肉圓+控肉",
+     rating:4.6, base:10, hours:[630,1200], must:"肉圓+控肉飯套餐",
+     blurb:["肉圓+控肉","雙重享受"]},
+    {id:"ldz", name:"老担阿璋肉圓", color:C.green,  lineName:"老担阿璋線", lineDesc:"酥香肉圓系",
+     rating:4.3, base:7,  hours:[570,1290], must:"肉圓、貢丸湯",
+     blurb:["肉圓外酥內Q","控肉也很強!"]},
+    {id:"fy",  name:"芳苑控肉飯",   color:C.yellow, lineName:"芳苑線",   lineDesc:"海線在地味",
+     rating:4.2, base:6,  hours:[390,840],  must:"控肉飯、蚵仔湯",
+     blurb:["海線在地老味道","超下飯!"]}
+  ];
+
+  /* ── 路線點(含中途小站) ── */
+  const PTS=[
+    {x:92,y:432},                 // 0 wp
+    {x:122,y:300,s:"bmk"},        // 1 北門口
+    {x:252,y:180},                // 2 wp
+    {x:430,y:248,s:"aq"},         // 3 阿泉
+    {x:540,y:392},                // 4 wp
+    {x:478,y:540,s:"zch"},        // 5 正彰化
+    {x:330,y:652},                // 6 wp
+    {x:210,y:772,s:"ldz"},        // 7 老担
+    {x:362,y:862},                // 8 wp
+    {x:532,y:832,s:"fy"},         // 9 芳苑
+    {x:652,y:922}                 // 10 wp
+  ];
+  /* 每站的插畫版面偏移 */
+  const LAYOUT={
+    bmk:{bowl:[-25,-100], pill:[88,6],  txt:[88,0]},
+    aq: {bowl:[8,-98],    pill:[128,8], txt:[128,0]},
+    zch:{bowl:[112,-64],  pill:[128,58],txt:[128,50]},
+    ldz:{bowl:[-58,-92],  pill:[-18,64],txt:[-18,56]},
+    fy: {bowl:[62,-84],   pill:[82,54], txt:[82,46]}
+  };
+
+  const svg=document.getElementById("map");
+  const NS="http://www.w3.org/2000/svg";
+  const el=(n,at,parent)=>{const e=document.createElementNS(NS,n);for(const k in at)e.setAttribute(k,at[k]);if(parent)parent.appendChild(e);return e;};
+  const txt=(x,y,t,at,parent)=>{const e=el("text",Object.assign({x,y},at),parent);e.textContent=t;return e;};
+  const fmt2=n=>String(n).padStart(2,"0");
+
+  /* ── 底圖:紙、街道、河川、公園 ── */
+  const defs=el("defs",{},svg);
+  defs.innerHTML=
+   '<pattern id="streets" width="86" height="86" patternUnits="userSpaceOnUse">'+
+   '<path d="M0 43 H86 M43 0 V86" stroke="#E7DABB" stroke-width="7" fill="none"/>'+
+   '<path d="M0 43 H86 M43 0 V86" stroke="#fff" stroke-width="1.6" stroke-dasharray="7 9" fill="none" opacity=".8"/>'+
+   '</pattern>'+
+   /* 大碗站點插畫 */
+   '<g id="bowlBig">'+
+   '<circle r="40" fill="#FFF9EC" stroke="#4A3421" stroke-width="3"/>'+
+   '<g class="steam-s"><ellipse cx="-8" cy="-26" rx="4" ry="6" fill="#fff"/><ellipse cx="6" cy="-30" rx="5" ry="7" fill="#fff"/></g>'+
+   '<path d="M-26 -2 C-26 16 -12 24 0 24 C12 24 26 16 26 -2 Z" fill="#FDFBF4" stroke="#4A3421" stroke-width="3"/>'+
+   '<path d="M-26 -2 C-26 3 26 3 26 -2" fill="none" stroke="#3E7EC1" stroke-width="3.6"/>'+
+   '<circle cx="-17" cy="-7" r="6.5" fill="#fff" stroke="#4A3421" stroke-width="2.2"/>'+
+   '<circle cx="18" cy="-7" r="6.5" fill="#fff" stroke="#4A3421" stroke-width="2.2"/>'+
+   '<circle cx="-22" cy="-4" r="4" fill="#3FA65C"/><circle cx="23" cy="-3" r="4" fill="#3FA65C"/>'+
+   '<path d="M-13 -8 C-15 -22 -2 -28 4 -23 C6 -30 18 -27 16 -18 L14 -8 Z" fill="#8C4A1F" stroke="#5C3010" stroke-width="2.6"/>'+
+   '<path d="M-10 -13 h22 M-8 -19 h18" stroke="#E8B87A" stroke-width="2.6" stroke-linecap="round" opacity=".95"/>'+
+   '</g>'+
+   /* 小樹 */
+   '<g id="tree"><rect x="-2.5" y="6" width="5" height="9" rx="2" fill="#8B5A33"/><circle cy="0" r="11" fill="#7CBF6B"/><circle cx="-8" cy="4" r="7" fill="#8FCB7C"/><circle cx="8" cy="4" r="7" fill="#8FCB7C"/></g>';
+
+  el("rect",{x:0,y:0,width:760,height:1060,fill:"#F3E9CF"},svg);
+  el("rect",{x:0,y:0,width:760,height:1060,fill:"url(#streets)",opacity:".55"},svg);
+
+  /* 河川 */
+  const gGround=el("g",{},svg);
+  el("path",{d:"M-20 560 C70 620 30 760 80 860 C110 930 60 1010 90 1080",fill:"none",stroke:C.river,"stroke-width":30,"stroke-linecap":"round"},gGround);
+  el("path",{d:"M-20 560 C70 620 30 760 80 860 C110 930 60 1010 90 1080",fill:"none",stroke:"#CBE9F5","stroke-width":13,"stroke-linecap":"round","stroke-dasharray":"26 20"},gGround);
+  /* 公園綠地 */
+  [[640,330,74,44],[110,120,66,40],[600,470,56,34],[120,930,60,36],[680,760,52,32]].forEach(([x,y,rx,ry])=>{
+    el("ellipse",{cx:x,cy:y,rx,ry,fill:C.park,opacity:".85"},gGround);
+  });
+  [[615,318],[665,342],[100,112],[140,132],[600,462],[118,922],[680,752]].forEach(([x,y])=>{
+    el("use",{href:"#tree",x,y},gGround);
+  });
+
+  /* ── 地標 ── */
+  const gLm=el("g",{},svg);
+  function label(g,x,y,t){txt(x,y,t,{fill:C.ink,"font-size":15,"font-weight":900,"text-anchor":"middle","letter-spacing":"2",stroke:"#F3E9CF","stroke-width":4,"paint-order":"stroke"},g);}
+  /* 彰化車站 */
+  (function(x,y){
+    const g=el("g",{transform:`translate(${x} ${y})`},gLm);
+    el("path",{d:"M-52 0 L-52 -26 L0 -44 L52 -26 L52 0 Z",fill:"#C9805A",stroke:C.ink,"stroke-width":3},g);
+    el("rect",{x:-46,y:0,width:92,height:30,rx:4,fill:"#FFF4DC",stroke:C.ink,"stroke-width":3},g);
+    el("circle",{cx:0,cy:-18,r:9,fill:"#fff",stroke:C.ink,"stroke-width":2.6},g);
+    el("path",{d:"M0 -18 V-24 M0 -18 H4",stroke:C.ink,"stroke-width":2,"stroke-linecap":"round"},g);
+    el("rect",{x:-8,y:10,width:16,height:20,rx:3,fill:"#8B5A33",stroke:C.ink,"stroke-width":2.4},g);
+    el("rect",{x:-36,y:8,width:14,height:12,rx:3,fill:"#BFE0F0",stroke:C.ink,"stroke-width":2.2},g);
+    el("rect",{x:22,y:8,width:14,height:12,rx:3,fill:"#BFE0F0",stroke:C.ink,"stroke-width":2.2},g);
+    label(g,0,52,"彰化車站");
+  })(272,478);
+  /* 八卦山大佛 */
+  (function(x,y){
+    const g=el("g",{transform:`translate(${x} ${y})`},gLm);
+    el("ellipse",{cx:0,cy:34,rx:34,ry:8,fill:"#C9B084",opacity:".7"},g);
+    el("path",{d:"M-28 32 C-30 8 -14 -2 -12 -8 C-16 -12 -10 -26 0 -26 C10 -26 16 -12 12 -8 C14 -2 30 8 28 32 Z",fill:"#9C7B4D",stroke:C.ink,"stroke-width":3},g);
+    el("path",{d:"M-9 -18 a9 9 0 0 1 18 0",fill:"none",stroke:C.ink,"stroke-width":2},g);
+    el("path",{d:"M-14 16 q14 10 28 0",fill:"none",stroke:C.ink,"stroke-width":2.4},g);
+    label(g,0,58,"八卦山大佛");
+  })(652,150);
+  /* 扇形車庫 */
+  (function(x,y){
+    const g=el("g",{transform:`translate(${x} ${y})`},gLm);
+    el("path",{d:"M-44 12 A44 44 0 0 1 44 12 Z",fill:"#D8C49A",stroke:C.ink,"stroke-width":3},g);
+    for(let i=-2;i<=2;i++){
+      el("line",{x1:0,y1:12,x2:i*16,y2:-24,stroke:C.wood,"stroke-width":4,"stroke-linecap":"round"},g);
+    }
+    el("circle",{cx:0,cy:12,r:8,fill:"#8B5A33",stroke:C.ink,"stroke-width":2.6},g);
+    label(g,0,40,"扇形車庫");
+  })(668,668);
+  /* 鹿港老街(牌樓) */
+  (function(x,y){
+    const g=el("g",{transform:`translate(${x} ${y})`},gLm);
+    el("rect",{x:-40,y:-6,width:9,height:34,rx:3,fill:"#C0503A",stroke:C.ink,"stroke-width":2.6},g);
+    el("rect",{x:31,y:-6,width:9,height:34,rx:3,fill:"#C0503A",stroke:C.ink,"stroke-width":2.6},g);
+    el("path",{d:"M-52 -6 Q0 -26 52 -6 L46 -14 Q0 -32 -46 -14 Z",fill:"#B8432E",stroke:C.ink,"stroke-width":3},g);
+    el("rect",{x:-20,y:-14,width:40,height:14,rx:4,fill:"#FFF4DC",stroke:C.ink,"stroke-width":2.4},g);
+    txt(0,-3,"鹿港",{fill:C.ink,"font-size":11,"font-weight":900,"text-anchor":"middle"},g);
+    label(g,0,52,"鹿港老街");
+  })(292,952);
+
+  /* ── 路線(Catmull-Rom 平滑) ── */
+  function seg(i){
+    const p0=PTS[Math.max(i-1,0)],p1=PTS[i],p2=PTS[i+1],p3=PTS[Math.min(i+2,PTS.length-1)];
+    const c1x=p1.x+(p2.x-p0.x)/6, c1y=p1.y+(p2.y-p0.y)/6;
+    const c2x=p2.x-(p3.x-p1.x)/6, c2y=p2.y-(p3.y-p1.y)/6;
+    return `M ${p1.x} ${p1.y} C ${c1x} ${c1y} ${c2x} ${c2y} ${p2.x} ${p2.y}`;
+  }
+  function segColor(i){
+    for(let j=i+1;j<PTS.length;j++){ if(PTS[j].s) return SHOPS.find(s=>s.id===PTS[j].s).color; }
+    return SHOPS[SHOPS.length-1].color;
+  }
+  const gRoute=el("g",{},svg);
+  let fullD="";
+  for(let i=0;i<PTS.length-1;i++){
+    const d=seg(i);
+    fullD+=(i?" ":"")+d;
+    el("path",{d,fill:"none",stroke:"rgba(74,52,33,.28)","stroke-width":19,"stroke-linecap":"round"},gRoute);
+  }
+  for(let i=0;i<PTS.length-1;i++){
+    el("path",{d:seg(i),fill:"none",stroke:segColor(i),"stroke-width":13,"stroke-linecap":"round"},gRoute);
+  }
+  const fullPath=el("path",{d:fullD,fill:"none",stroke:"none"},svg);
+
+  /* 中途小站 */
+  PTS.forEach(p=>{
+    if(!p.s) el("circle",{cx:p.x,cy:p.y,r:8,fill:"#fff",stroke:"rgba(74,52,33,.5)","stroke-width":3.5},gRoute);
+  });
+
+  /* ── 車站(碗+站名牌+評分+短評) ── */
+  const gStn=el("g",{},svg);
+  PTS.filter(p=>p.s).forEach(p=>{
+    const s=SHOPS.find(x=>x.id===p.s), L=LAYOUT[s.id];
+    const g=el("g",{class:"stn","data-shop":s.id,tabindex:"0",role:"button","aria-label":`${s.name},評分 ${s.rating}`},gStn);
+    el("circle",{cx:p.x,cy:p.y,r:15,fill:"#fff",stroke:s.color,"stroke-width":8.5},g);
+    const bw=el("g",{class:"bowlwrap"},g);
+    el("use",{href:"#bowlBig",x:p.x+L.bowl[0],y:p.y+L.bowl[1]},bw);
+    /* 站名牌 */
+    const pw=s.name.length*16.6+38;
+    const px=p.x+L.pill[0], py=p.y+L.pill[1];
+    el("rect",{x:px-pw/2,y:py-15,width:pw,height:30,rx:15,fill:s.color,stroke:"#fff","stroke-width":3},g);
+    el("circle",{cx:px-pw/2+15,cy:py,r:5.5,fill:"#fff"},g);
+    txt(px+7,py+6,s.name,{fill:"#fff","font-size":15.5,"font-weight":900,"text-anchor":"middle","letter-spacing":".5"},g);
+    /* 評分與短評 */
+    const tx=p.x+L.txt[0], ty=p.y+L.txt[1];
+    txt(tx,ty+42,"★ "+s.rating.toFixed(1),{fill:C.gold,"font-size":18,"font-weight":900,"text-anchor":"middle",stroke:"#fff","stroke-width":4,"paint-order":"stroke"},g);
+    s.blurb.forEach((line,i)=>{
+      txt(tx,ty+64+i*19,line,{fill:C.ink,"font-size":13.5,"font-weight":700,"text-anchor":"middle",stroke:"#FFF9EC","stroke-width":4,"paint-order":"stroke"},g);
+    });
+  });
+
+  /* ── Q版小火車(沿路線跑) ── */
+  const train=el("g",{id:"qtrain"},svg);
+  train.innerHTML=
+    '<g transform="translate(-26 -34)">'+
+    '<rect x="0" y="6" width="52" height="34" rx="10" fill="#3E7EC1" stroke="#28527F" stroke-width="3"/>'+
+    '<rect x="7" y="12" width="38" height="12" rx="5" fill="#DCEFFA" stroke="#28527F" stroke-width="2.4"/>'+
+    '<circle cx="17" cy="31" r="2.8" fill="#28527F"/><circle cx="35" cy="31" r="2.8" fill="#28527F"/>'+
+    '<rect x="-3" y="34" width="58" height="7" rx="3.5" fill="#F0A500" stroke="#28527F" stroke-width="2.4"/>'+
+    '<circle cx="13" cy="43" r="5.5" fill="#4A3421" stroke="#C9A468" stroke-width="2"/>'+
+    '<circle cx="39" cy="43" r="5.5" fill="#4A3421" stroke="#C9A468" stroke-width="2"/>'+
+    '<path d="M8 2 q3 -5 0 -10" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" opacity=".9"/>'+
+    '</g>';
+
+  /* ── 圖例 ── */
+  const lg=document.getElementById("legend");
+  SHOPS.forEach(s=>{
+    const d=document.createElement("div");d.className="lg";
+    d.innerHTML=`<span class="pill-ico" style="background:${s.color}"></span><span>${s.lineName}<small>${s.lineDesc}</small></span>`;
+    lg.appendChild(d);
+  });
+  lg.insertAdjacentHTML("beforeend",
+    `<div class="lg"><svg width="26" height="18" viewBox="0 0 26 18"><rect x="1" y="1" width="24" height="13" rx="5" fill="#3E7EC1" stroke="#28527F" stroke-width="2"/><circle cx="7" cy="16" r="2.2" fill="#4A3421"/><circle cx="19" cy="16" r="2.2" fill="#4A3421"/></svg><span>美味列車(現在位置)</span></div>`+
+    `<div class="lg"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="6" fill="#fff" stroke="#4A3421" stroke-width="3.5"/></svg><span>中途小站</span></div>`+
+    `<div class="lg"><span class="sq" style="background:${C.river}"></span><span>河川</span></div>`+
+    `<div class="lg"><span class="sq" style="background:${C.park}"></span><span>公園/景點</span></div>`);
+
+  /* ── 即時邏輯 ── */
+  function twNow(){
+    const p=new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Taipei",hour12:false,hour:"2-digit",minute:"2-digit"}).formatToParts(new Date());
+    const g=t=>+p.find(x=>x.type===t).value;
+    return {h:g("hour")%24,m:g("minute")};
+  }
+  const isOpen=(s,min)=>{const[a,b]=s.hours;return a<=b?(min>=a&&min<b):(min>=a||min<b);};
+  function peak(h){
+    if((h>=7&&h<9)||(h>=11&&h<13)||(h>=17&&h<19))return 1.7;
+    if((h>=9&&h<11)||(h>=13&&h<17)||(h>=19&&h<21))return 1.0;
+    return 0.5;
+  }
+  function waitOf(s,h,m){
+    const jitter=Math.round(3*Math.sin((m/60)*Math.PI*2+s.base));
+    return Math.max(2,Math.round(s.base*peak(h))+jitter);
+  }
+
+  let picked=SHOPS[1].id; // 預設阿泉
+  const rowsBox=document.getElementById("rows");
+  function renderRows(){
+    const {h,m}=twNow(), min=h*60+m;
+    document.getElementById("clock").textContent=fmt2(h)+":"+fmt2(m);
+    rowsBox.innerHTML="";
+    SHOPS.forEach(s=>{
+      const open=isOpen(s,min);
+      const w=waitOf(s,h,m);
+      const cls=!open?"off":w<=6?"w1":w<=12?"w2":"w3";
+      const b=document.createElement("button");
+      b.className="row";b.dataset.shop=s.id;
+      b.setAttribute("aria-pressed",s.id===picked?"true":"false");
+      b.innerHTML=
+        `<svg width="38" height="38" viewBox="0 0 92 92" aria-hidden="true">`+
+        `<circle cx="46" cy="46" r="43" fill="#FFF9EC" stroke="${s.color}" stroke-width="5"/>`+
+        `<path d="M20 46 C20 64 32 72 46 72 C60 72 72 64 72 46 Z" fill="#FDFBF4" stroke="#4A3421" stroke-width="3.4"/>`+
+        `<path d="M20 46 C20 51 72 51 72 46" fill="none" stroke="#3E7EC1" stroke-width="4"/>`+
+        `<path d="M30 44 C28 28 42 22 48 27 C50 20 64 23 62 34 L60 44 Z" fill="#8C4A1F" stroke="#5C3010" stroke-width="3"/>`+
+        `</svg>`+
+        `<span><span class="nm">${s.name}</span><br><span class="stars"><b>★ ${s.rating.toFixed(1)}</b>.${s.lineName}</span></span>`+
+        `<span class="wait ${cls}">${open?("等候 "+w+" 分"):"休息中"}</span>`;
+      b.addEventListener("click",()=>{pick(s.id,true);});
+      rowsBox.appendChild(b);
+    });
+    renderNext();
+  }
+  function renderNext(){
+    const s=SHOPS.find(x=>x.id===picked);
+    document.getElementById("nextstop").innerHTML=
+      `下一站:<b>${s.name}</b>(${s.lineName})<br>必點:${s.must}`;
+  }
+  function pick(id,hop){
+    picked=id;
+    document.querySelectorAll(".row").forEach(r=>r.setAttribute("aria-pressed",r.dataset.shop===id?"true":"false"));
+    document.querySelectorAll(".stn").forEach(g=>{
+      g.classList.remove("picked");
+      if(g.dataset.shop===id&&hop){void g.getBoundingClientRect();g.classList.add("picked");}
+    });
+    renderNext();
+  }
+  gStn.addEventListener("click",e=>{
+    const t=e.target.closest(".stn");if(t)pick(t.dataset.shop,true);
+  });
+  gStn.addEventListener("keydown",e=>{
+    const t=e.target.closest(".stn");
+    if(t&&(e.key==="Enter"||e.key===" ")){e.preventDefault();pick(t.dataset.shop,true);}
+  });
+
+  /* ── 火車動畫 ── */
+  const LEN=fullPath.getTotalLength();
+  const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function place(dist){
+    const p=fullPath.getPointAtLength(dist);
+    const q=fullPath.getPointAtLength(Math.min(dist+2,LEN));
+    let ang=Math.atan2(q.y-p.y,q.x-p.x)*180/Math.PI;
+    let flip=1;
+    if(ang>90||ang<-90){ang+=180;flip=-1;}
+    train.setAttribute("transform",`translate(${p.x} ${p.y}) rotate(${ang*0.35}) scale(${flip} 1)`);
+  }
+  if(reduced){ place(LEN*0.28); }
+  else{
+    let d=0,last=performance.now();
+    (function loop(now){
+      d=(d+(now-last)*0.045)%LEN;last=now;
+      place(d);
+      requestAnimationFrame(loop);
+    })(last);
+  }
+
+  renderRows();
+  setInterval(renderRows,30000);
+})();
+</script>
