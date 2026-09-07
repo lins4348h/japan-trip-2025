@@ -1,0 +1,758 @@
+<title>行政訊息轉譯台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap">
+<style>
+:root{
+  --paper:#ECECE8; --surface:#FBFBF8; --surface-2:#F4F4EF;
+  --ink:#191C1E; --ink-2:#565C60; --ink-3:#8A9094;
+  --rule:#D8D8D0; --rule-strong:#BCBCB2;
+  --seal:#B23A2B; --seal-bg:#F5E2DE;
+  --indigo:#28506E; --indigo-bg:#DFE8F0;
+  --moss:#4C6B3C; --moss-bg:#E3EBDD;
+  --shadow:0 1px 2px rgba(25,28,30,.06), 0 6px 20px -12px rgba(25,28,30,.28);
+  --sans:"Noto Sans TC",-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft JhengHei",sans-serif;
+  --serif:"Noto Serif TC",Georgia,"Songti TC",serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#131619; --surface:#1B1F22; --surface-2:#23282C;
+    --ink:#E8E7E0; --ink-2:#A2A8AB; --ink-3:#767D81;
+    --rule:#31373B; --rule-strong:#454C51;
+    --seal:#E28270; --seal-bg:#3A2320;
+    --indigo:#8CB6D6; --indigo-bg:#1C2B37;
+    --moss:#93B382; --moss-bg:#212B1D;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -14px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#131619; --surface:#1B1F22; --surface-2:#23282C;
+  --ink:#E8E7E0; --ink-2:#A2A8AB; --ink-3:#767D81;
+  --rule:#31373B; --rule-strong:#454C51;
+  --seal:#E28270; --seal-bg:#3A2320;
+  --indigo:#8CB6D6; --indigo-bg:#1C2B37;
+  --moss:#93B382; --moss-bg:#212B1D;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -14px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--sans); font-size:15px; line-height:1.72;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1260px; margin:0 auto; padding:28px 20px 72px}
+
+/* ---------- header ---------- */
+.masthead{
+  display:flex; flex-wrap:wrap; align-items:flex-end; gap:16px 28px;
+  padding-bottom:18px; margin-bottom:24px;
+  border-bottom:2px solid var(--ink);
+}
+.masthead h1{
+  font-family:var(--serif); font-weight:700; font-size:31px; line-height:1.25;
+  letter-spacing:.01em; margin:0; text-wrap:balance;
+}
+.masthead .sub{
+  margin:6px 0 0; color:var(--ink-2); font-size:14px; max-width:52ch;
+}
+.stamp{
+  margin-left:auto; align-self:center;
+  font-family:var(--mono); font-size:11px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--seal);
+  border:1.5px solid var(--seal); border-radius:3px;
+  padding:5px 10px; transform:rotate(-1.5deg); white-space:nowrap;
+}
+
+/* ---------- layout ---------- */
+.grid{display:grid; grid-template-columns:minmax(0,368px) minmax(0,1fr); gap:26px; align-items:start}
+@media (max-width:920px){ .grid{grid-template-columns:1fr} }
+
+.panel{
+  background:var(--surface); border:1px solid var(--rule); border-radius:6px;
+  box-shadow:var(--shadow);
+}
+.intake{position:sticky; top:20px; padding:18px}
+@media (max-width:920px){ .intake{position:static} }
+
+.field-label{
+  display:block; font-family:var(--mono); font-size:11px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink-3); margin-bottom:7px;
+}
+textarea, input[type=text]{
+  width:100%; font-family:var(--sans); color:var(--ink);
+  background:var(--surface-2); border:1px solid var(--rule);
+  border-radius:4px; padding:11px 12px; font-size:14px; line-height:1.65;
+  resize:vertical;
+}
+textarea:focus-visible, input[type=text]:focus-visible, button:focus-visible, .tab:focus-visible{
+  outline:2px solid var(--indigo); outline-offset:2px;
+}
+#raw{min-height:280px; font-size:13.5px; line-height:1.7}
+.row{display:flex; gap:10px; margin-top:14px}
+.row > div{flex:1; min-width:0}
+
+.hint{font-size:12.5px; color:var(--ink-3); margin:8px 0 0; line-height:1.6}
+.counter{font-family:var(--mono); font-size:11.5px; color:var(--ink-3); float:right; margin-top:6px}
+
+/* ---------- buttons ---------- */
+button{font-family:var(--sans); cursor:pointer; border-radius:4px; transition:background .13s, border-color .13s, color .13s}
+button:disabled{cursor:not-allowed; opacity:.5}
+.btn-go{
+  width:100%; margin-top:16px; padding:12px 16px;
+  background:var(--ink); color:var(--paper); border:1px solid var(--ink);
+  font-size:15px; font-weight:700; letter-spacing:.03em;
+}
+.btn-go:hover:not(:disabled){background:var(--indigo); border-color:var(--indigo)}
+.btn-ghost{
+  background:transparent; color:var(--ink-2); border:1px solid var(--rule-strong);
+  padding:7px 12px; font-size:12.5px;
+}
+.btn-ghost:hover{border-color:var(--ink-2); color:var(--ink)}
+.btn-row{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap}
+.btn-row button{flex:1; min-width:120px}
+
+/* ---------- images ---------- */
+.shots{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px}
+.shot{position:relative; width:58px; height:58px; border-radius:4px; overflow:hidden; border:1px solid var(--rule-strong)}
+.shot img{width:100%; height:100%; object-fit:cover; display:block}
+.shot button{
+  position:absolute; top:1px; right:1px; width:18px; height:18px; line-height:1;
+  border:none; background:rgba(0,0,0,.66); color:#fff; font-size:12px; border-radius:3px; padding:0;
+}
+.dropping{border-color:var(--indigo); background:var(--indigo-bg)}
+
+/* ---------- output ---------- */
+.out{display:flex; flex-direction:column; gap:22px}
+.section-head{
+  display:flex; align-items:baseline; gap:12px; margin:0 0 12px;
+  padding-bottom:8px; border-bottom:1px solid var(--rule);
+}
+.section-head h2{
+  font-family:var(--serif); font-weight:600; font-size:19px; margin:0; letter-spacing:.01em;
+}
+.section-head .meta{font-family:var(--mono); font-size:11px; color:var(--ink-3); margin-left:auto; letter-spacing:.06em}
+
+.tabs{display:flex; gap:0; border-bottom:1px solid var(--rule); margin-bottom:0}
+.tab{
+  appearance:none; background:transparent; border:none; border-bottom:2px solid transparent;
+  padding:10px 15px; font-size:14px; font-weight:500; color:var(--ink-3);
+  border-radius:0; margin-bottom:-1px;
+}
+.tab[aria-selected="true"]{color:var(--ink); border-bottom-color:var(--seal); font-weight:700}
+.tab:hover{color:var(--ink)}
+.tab .who{display:block; font-family:var(--mono); font-size:10px; letter-spacing:.08em; color:var(--ink-3); font-weight:400}
+
+.draft{
+  min-height:330px; border-top:none; border-radius:0 0 4px 4px;
+  background:var(--surface); font-size:14.5px; line-height:1.85; padding:16px 18px;
+}
+.draft-foot{
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  padding:10px 0 0; font-size:12.5px; color:var(--ink-3);
+}
+.draft-foot .grow{margin-left:auto}
+.btn-copy{
+  background:var(--seal); color:#fff; border:1px solid var(--seal);
+  padding:8px 18px; font-size:13.5px; font-weight:700;
+}
+.btn-copy:hover{filter:brightness(1.08)}
+.btn-copy.done{background:var(--moss); border-color:var(--moss)}
+
+/* ---------- task list ---------- */
+ul.list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px}
+li.task{
+  display:grid; grid-template-columns:96px minmax(0,1fr); gap:0 16px;
+  padding:13px 14px 13px 12px; background:var(--surface);
+  border-left:3px solid var(--rule-strong); border-bottom:1px solid var(--rule);
+}
+li.task.hot{border-left-color:var(--seal); background:linear-gradient(90deg,var(--seal-bg),var(--surface) 62%)}
+li.task .due{
+  font-family:var(--mono); font-size:12px; color:var(--ink-2);
+  font-variant-numeric:tabular-nums; padding-top:2px; word-break:break-all;
+}
+li.task.hot .due{color:var(--seal); font-weight:500}
+li.task .what{font-weight:500; margin:0}
+li.task .who{font-size:12.5px; color:var(--ink-3); margin:3px 0 0}
+li.task .note{font-size:13px; color:var(--ink-2); margin:5px 0 0}
+@media (max-width:520px){
+  li.task{grid-template-columns:1fr; gap:4px}
+}
+
+/* ---------- superseded ---------- */
+.fix{padding:12px 14px; background:var(--surface); border-bottom:1px solid var(--rule); font-size:13.5px}
+.fix .old{color:var(--ink-3); text-decoration:line-through; text-decoration-color:var(--seal)}
+.fix .arrow{font-family:var(--mono); color:var(--seal); margin:0 8px}
+.fix .new{font-weight:500}
+.fix .why{display:block; font-size:12.5px; color:var(--ink-3); margin-top:3px}
+
+/* ---------- attachments ---------- */
+.att{display:flex; gap:12px; padding:12px 14px; background:var(--surface); border-bottom:1px solid var(--rule); align-items:flex-start}
+.kind{
+  font-family:var(--mono); font-size:10px; letter-spacing:.09em; text-transform:uppercase;
+  padding:3px 7px; border-radius:3px; white-space:nowrap; margin-top:3px;
+}
+.kind.file{background:var(--indigo-bg); color:var(--indigo)}
+.kind.link{background:var(--moss-bg); color:var(--moss)}
+.att .body{min-width:0; flex:1}
+.att .name{font-weight:500; word-break:break-all}
+.att .name a{color:var(--indigo)}
+.att .purpose{font-size:13px; color:var(--ink-2); margin:2px 0 0}
+
+.plain{background:var(--surface); padding:12px 14px; font-size:13px; color:var(--ink-3); border-bottom:1px solid var(--rule)}
+.plain b{color:var(--ink-2); font-weight:500}
+
+/* ---------- states ---------- */
+.notice{
+  display:flex; gap:10px; align-items:flex-start;
+  padding:11px 14px; border-radius:4px; font-size:13.5px; line-height:1.65;
+  background:var(--indigo-bg); color:var(--indigo); border:1px solid transparent;
+}
+.notice.warn{background:var(--seal-bg); color:var(--seal)}
+.notice[hidden]{display:none}
+.demo-flag{
+  display:inline-flex; align-items:center; gap:6px;
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--seal); border:1px dashed var(--seal); border-radius:3px; padding:2px 8px;
+}
+.working{display:flex; align-items:center; gap:10px; font-size:14px; color:var(--ink-2)}
+.pulse{width:9px; height:9px; border-radius:50%; background:var(--seal); animation:beat 1.1s ease-in-out infinite}
+@keyframes beat{0%,100%{opacity:.28; transform:scale(.8)} 50%{opacity:1; transform:scale(1.15)}}
+@media (prefers-reduced-motion: reduce){ .pulse{animation:none; opacity:.8} }
+
+footer{
+  margin-top:44px; padding-top:16px; border-top:1px solid var(--rule);
+  font-size:12.5px; color:var(--ink-3); line-height:1.8;
+}
+footer code{font-family:var(--mono); font-size:11.5px; background:var(--surface-2); padding:1px 5px; border-radius:3px}
+</style>
+<div class="wrap">
+
+  <header class="masthead">
+    <div>
+      <h1>行政訊息轉譯台</h1>
+      <p class="sub">把 LINE 河道上的碎片訊息，撈成一份導師待辦，和三份可以直接貼出去的布達版本。</p>
+    </div>
+    <div class="stamp">導師專用 · 非官方</div>
+  </header>
+
+  <div class="grid">
+
+    <!-- ============ 左：投入 ============ -->
+    <section class="panel intake">
+      <label class="field-label" for="raw">貼上原始訊息</label>
+      <textarea id="raw" spellcheck="false" placeholder="從 LINE 群組整段複製貼上即可，順序亂、有閒聊、有更正都沒關係。&#10;檔名（例：同意書.pdf）和連結請一併貼上。"></textarea>
+      <div class="counter" id="counter">0 字</div>
+
+      <div class="shots" id="shots"></div>
+      <p class="hint" id="imgHint">也可以直接 <b>Ctrl/⌘ + V 貼上 LINE 截圖</b>，或把圖片拖進上面的框。</p>
+
+      <div class="row">
+        <div>
+          <label class="field-label" for="klass">班級</label>
+          <input type="text" id="klass" value="三年五班" autocomplete="off">
+        </div>
+        <div>
+          <label class="field-label" for="today">今天日期</label>
+          <input type="text" id="today" value="9/8（一）" autocomplete="off">
+        </div>
+      </div>
+
+      <button class="btn-go" id="go">整理這段訊息</button>
+
+      <div class="btn-row">
+        <button class="btn-ghost" id="loadDemo">載入示範對話</button>
+        <button class="btn-ghost" id="copyPrompt">複製指令到別的 AI</button>
+      </div>
+
+      <p class="hint" id="fallbackHint" hidden>
+        這個頁面目前無法直接呼叫 Claude。請按「複製指令到別的 AI」，貼到 Claude／Gemini／ChatGPT 也能得到同樣結果。
+      </p>
+    </section>
+
+    <!-- ============ 右：產出 ============ -->
+    <div class="out">
+
+      <section>
+        <div class="section-head">
+          <h2>可以直接貼出去的版本</h2>
+          <span class="meta" id="draftMeta"></span>
+        </div>
+        <div class="tabs" role="tablist" aria-label="布達對象">
+          <button class="tab" role="tab" id="tab-student" aria-selected="true" aria-controls="draft">給學生<span class="who">班級群組</span></button>
+          <button class="tab" role="tab" id="tab-simple" aria-selected="false" aria-controls="draft">白話簡化版<span class="who">理解較弱的孩子</span></button>
+          <button class="tab" role="tab" id="tab-parent" aria-selected="false" aria-controls="draft">給家長<span class="who">親師群組</span></button>
+        </div>
+        <textarea class="draft" id="draft" aria-labelledby="tab-student" spellcheck="false"></textarea>
+        <div class="draft-foot">
+          <span id="draftNote">送出前可以直接在上面修改。</span>
+          <span class="grow"></span>
+          <button class="btn-copy" id="copyDraft">複製這一版</button>
+        </div>
+      </section>
+
+      <section id="secTodo">
+        <div class="section-head">
+          <h2>我要做的事</h2>
+          <span class="meta" id="todoMeta"></span>
+        </div>
+        <ul class="list" id="todos"></ul>
+      </section>
+
+      <section id="secFix" hidden>
+        <div class="section-head">
+          <h2>被後面改掉的訊息</h2>
+          <span class="meta">已自動取最終版</span>
+        </div>
+        <div id="fixes"></div>
+      </section>
+
+      <section id="secAtt" hidden>
+        <div class="section-head">
+          <h2>附件與連結</h2>
+        </div>
+        <div id="atts"></div>
+      </section>
+
+      <section id="secSkip" hidden>
+        <div class="section-head">
+          <h2>已略過</h2>
+          <span class="meta">閒聊與不需轉達的內容</span>
+        </div>
+        <div id="skips"></div>
+      </section>
+
+    </div>
+  </div>
+
+  <footer>
+    訊息只在你的瀏覽器與本次整理中處理，這個頁面不保存任何內容到伺服器；輸入框的草稿只留在你這台裝置上（<code>localStorage</code>）。<br>
+    產出一律當作草稿看待：日期、金額、繳交方式請對照原訊息再送出。
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============ 示範資料（首屏就看得到成品長什麼樣） ============ */
+  var DEMO_RAW = [
+    "教務處 林組長：各位導師好，本週五(9/12)第七節全校英語會考，請提醒學生攜帶2B鉛筆與橡皮擦，13:20前回原班座位。",
+    "學務處 陳主任：另外校外教學家長同意書請於9/15(一)前收齊繳回學務處，未繳者無法參加。檔案：114學年度校外教學家長同意書.pdf",
+    "王老師：請問同意書要正本還是掃描檔就可以？",
+    "學務處 陳主任：正本喔，需要家長親筆簽名。",
+    "教務處 林組長：更正！英語會考改到第八節，14:10開始，不好意思。",
+    "輔導室 黃老師：健康檢查名單已上傳，請導師到校務系統確認班級名單有無錯誤 https://sso.school.edu.tw/health",
+    "李老師：欸這週怎麼這麼多事情",
+    "陳老師：+1 開學週真的爆炸",
+    "學務處 陳主任：補充，校外教學費用380元，請隨同意書一起繳交。",
+    "教務處 林組長：英語會考範圍是第一課到第三課。"
+  ].join("\n");
+
+  var DEMO = {
+    demo: true,
+    summary: "本週兩件事要收：英語會考提醒（時間已更正）、校外教學同意書與費用。",
+    todos: [
+      { what:"收齊校外教學家長同意書「正本」與費用 380 元，繳回學務處", from:"學務處 陳主任", due:"9/15（一）前", urgency:"high", note:"須家長親筆簽名，掃描檔不收；未繳者無法參加。" },
+      { what:"到校務系統確認班級健康檢查名單有無錯誤", from:"輔導室 黃老師", due:"未說明", urgency:"normal", note:"連結見下方附件。" },
+      { what:"考前提醒學生英語會考時間已改為第八節", from:"教務處 林組長", due:"9/12（五）前", urgency:"normal", note:"" }
+    ],
+    superseded: [
+      { original:"英語會考 第七節、13:20 到原班座位", final:"英語會考 第八節、14:10 開始", why:"教務處後續發出更正訊息" }
+    ],
+    attachments: [
+      { kind:"file", name:"114學年度校外教學家長同意書.pdf", url:"", purpose:"發給學生帶回家給家長簽名，9/15 前連同 380 元繳回。" },
+      { kind:"link", name:"校務系統 健康檢查名單", url:"https://sso.school.edu.tw/health", purpose:"導師登入後核對班級名單。" }
+    ],
+    ignored: [
+      "導師之間關於開學週忙碌的閒聊",
+      "「同意書要正本還是掃描檔」的提問，答案已併入待辦事項"
+    ],
+    student_post: [
+      "【三年五班 聯絡事項 9/8】",
+      "",
+      "一、英語會考",
+      "　時間：9/12（五）第八節，14:10 開始",
+      "　地點：原班座位",
+      "　攜帶：2B 鉛筆、橡皮擦",
+      "　範圍：第一課～第三課",
+      "　※ 原本公告的第七節已更正，請以第八節為準。",
+      "",
+      "二、校外教學同意書",
+      "　同意書要請家長親筆簽名，交「正本」，掃描檔或拍照不收。",
+      "　費用 380 元，和同意書一起交。",
+      "　繳交期限：9/15（一）前交給我。",
+      "　※ 沒有繳交的同學無法參加校外教學。"
+    ].join("\n"),
+    student_simple: [
+      "★ 9月12日 星期五",
+      "第八節考英文。",
+      "14:10 開始，在自己的教室。",
+      "要帶：2B 鉛筆、橡皮擦。",
+      "考第 1 課到第 3 課。",
+      "",
+      "★ 9月15日 星期一以前",
+      "要交兩樣東西給老師：",
+      "1. 校外教學同意書（要爸爸或媽媽親手簽名）",
+      "2. 380 元",
+      "沒有交，就不能去校外教學。",
+      "",
+      "有問題就來找老師，不用自己猜。"
+    ].join("\n"),
+    parent_post: [
+      "各位家長您好，以下是本週需要您協助的事項：",
+      "",
+      "一、校外教學同意書與費用",
+      "・同意書須由家長親筆簽名，並繳交正本（掃描檔或照片恕不受理）",
+      "・費用 380 元，請與同意書一併交由孩子帶回學校",
+      "・截止日：9/15（一）",
+      "・未於期限內繳交者無法參加，敬請留意",
+      "",
+      "二、英語會考",
+      "・時間：9/12（五）第八節 14:10，範圍為第一課至第三課",
+      "・請提醒孩子攜帶 2B 鉛筆與橡皮擦",
+      "",
+      "三、健康檢查",
+      "・學校近期將辦理健康檢查，若孩子有特殊健康狀況，請主動與我聯繫。",
+      "",
+      "感謝您的配合，有任何疑問歡迎隨時與我聯絡。"
+    ].join("\n")
+  };
+
+  /* ============ 指令 ============ */
+  function buildPrompt(raw, klass, today){
+    return [
+      "你是高中導師的行政訊息整理助手。以下是行政群組的原始訊息（可能包含 LINE 對話、公文片段、檔名、連結，順序混亂並夾雜閒聊）。",
+      "班級：" + (klass || "本班") + "；今天：" + (today || "未提供"),
+      "",
+      "請依下列原則整理：",
+      "1. 版本覆蓋：若後面的訊息更正或取消前面的內容（改時間、改地點、改截止日、出現「更正」「改成」「取消」「補充」），只採用最終版，並把被改掉的舊版列入 superseded。",
+      "2. 分流：需要導師本人動作（收件、造冊、回報、上系統、簽核）放 todos；只需轉達學生或家長的放進布達文字；閒聊、抱怨、貼圖、已被回答的提問放 ignored。",
+      "3. 不編造：訊息沒說的截止日、地點、金額、攜帶物，一律寫「未說明」，絕對不要推測補齊。",
+      "4. 附件與連結：把檔名與網址抽出成 attachments，並寫清楚「這是什麼、要學生或家長做什麼」。網址原樣保留。",
+      "5. student_post（給學生）：分項編號，時間／地點／攜帶／範圍／截止分行寫，句子短，去掉行政術語與導師才需要做的事。",
+      "6. student_simple（白話簡化版，給閱讀理解較弱或特教學生）：每句不超過 25 字，一句只講一件事，順序為「什麼時候→要做什麼→要帶什麼→沒做會怎樣」，用主動語態，不用成語、不用被動句、不用括號註解。",
+      "7. parent_post（給家長）：語氣客氣，聚焦需要家長配合的事（簽名、繳費、回條、健康狀況），並附上截止日與後果。",
+      "8. 全部使用繁體中文，台灣用語。",
+      "",
+      "只輸出 JSON，不要任何說明文字或 markdown 圍籬，格式：",
+      '{"summary":"一句話總結","todos":[{"what":"","from":"","due":"","urgency":"high|normal","note":""}],"superseded":[{"original":"","final":"","why":""}],"attachments":[{"kind":"file|link","name":"","url":"","purpose":""}],"ignored":["..."],"student_post":"","student_simple":"","parent_post":""}',
+      "",
+      "===== 原始訊息開始 =====",
+      raw,
+      "===== 原始訊息結束 ====="
+    ].join("\n");
+  }
+
+  /* ============ DOM ============ */
+  var $ = function(id){ return document.getElementById(id); };
+  var raw=$("raw"), klass=$("klass"), today=$("today"), counter=$("counter"),
+      go=$("go"), draft=$("draft"), draftMeta=$("draftMeta"), draftNote=$("draftNote"),
+      copyDraft=$("copyDraft"), todosEl=$("todos"), todoMeta=$("todoMeta"),
+      fixesEl=$("fixes"), attsEl=$("atts"), skipsEl=$("skips"),
+      secFix=$("secFix"), secAtt=$("secAtt"), secSkip=$("secSkip"),
+      shotsEl=$("shots"), imgHint=$("imgHint"), fallbackHint=$("fallbackHint"),
+      loadDemo=$("loadDemo"), copyPromptBtn=$("copyPrompt");
+
+  var TABS = [
+    { id:"tab-student", key:"student_post",   note:"送出前可以直接在上面修改。" },
+    { id:"tab-simple",  key:"student_simple", note:"適合個別傳給需要的孩子，或印出來貼在聯絡簿。" },
+    { id:"tab-parent",  key:"parent_post",    note:"建議自己再加一句問候，語氣會更像你。" }
+  ];
+
+  var state = { data: DEMO, tab: 0, images: [], edits: {}, busy: false, ctl: null };
+
+  /* ============ 描繪 ============ */
+  function esc(s){
+    return String(s == null ? "" : s).replace(/[&<>"]/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];
+    });
+  }
+
+  function renderDraft(){
+    var t = TABS[state.tab];
+    TABS.forEach(function(tab, i){
+      $(tab.id).setAttribute("aria-selected", i === state.tab ? "true" : "false");
+    });
+    draft.value = state.edits[t.key] != null ? state.edits[t.key] : (state.data[t.key] || "");
+    draft.setAttribute("aria-labelledby", t.id);
+    draftNote.textContent = t.note;
+    draftMeta.textContent = draft.value.length + " 字";
+    copyDraft.textContent = "複製這一版";
+    copyDraft.classList.remove("done");
+  }
+
+  function renderTodos(){
+    var list = state.data.todos || [];
+    todosEl.innerHTML = "";
+    todoMeta.textContent = list.length ? list.length + " 件" : "";
+    if(!list.length){
+      todosEl.innerHTML = '<li class="plain">這批訊息裡沒有需要導師動作的事項。</li>';
+      return;
+    }
+    list.forEach(function(t){
+      var li = document.createElement("li");
+      li.className = "task" + (t.urgency === "high" ? " hot" : "");
+      li.innerHTML =
+        '<span class="due">' + esc(t.due || "未說明") + '</span>' +
+        '<div><p class="what">' + esc(t.what) + '</p>' +
+        (t.from ? '<p class="who">來源：' + esc(t.from) + '</p>' : "") +
+        (t.note ? '<p class="note">' + esc(t.note) + '</p>' : "") +
+        '</div>';
+      todosEl.appendChild(li);
+    });
+  }
+
+  function renderFixes(){
+    var list = state.data.superseded || [];
+    secFix.hidden = !list.length;
+    fixesEl.innerHTML = list.map(function(f){
+      return '<div class="fix"><span class="old">' + esc(f.original) + '</span>' +
+             '<span class="arrow">改為</span><span class="new">' + esc(f.final) + '</span>' +
+             (f.why ? '<span class="why">' + esc(f.why) + '</span>' : "") + '</div>';
+    }).join("");
+  }
+
+  function renderAtts(){
+    var list = state.data.attachments || [];
+    secAtt.hidden = !list.length;
+    attsEl.innerHTML = list.map(function(a){
+      var isLink = a.kind === "link" || (a.url && /^https?:/i.test(a.url));
+      var name = isLink && a.url
+        ? '<a href="' + esc(a.url) + '" target="_blank" rel="noopener noreferrer">' + esc(a.name || a.url) + '</a>'
+        : esc(a.name);
+      return '<div class="att"><span class="kind ' + (isLink ? "link" : "file") + '">' +
+             (isLink ? "連結" : "檔案") + '</span><div class="body"><div class="name">' + name + '</div>' +
+             (a.purpose ? '<p class="purpose">' + esc(a.purpose) + '</p>' : "") + '</div></div>';
+    }).join("");
+  }
+
+  function renderSkips(){
+    var list = state.data.ignored || [];
+    secSkip.hidden = !list.length;
+    skipsEl.innerHTML = list.map(function(s){
+      return '<div class="plain">' + esc(s) + '</div>';
+    }).join("");
+  }
+
+  function renderAll(){
+    state.edits = {};
+    renderDraft(); renderTodos(); renderFixes(); renderAtts(); renderSkips();
+    var head = document.querySelector("#secTodo .section-head");
+    var flag = head.querySelector(".demo-flag");
+    if(state.data.demo){
+      if(!flag){
+        flag = document.createElement("span");
+        flag.className = "demo-flag";
+        flag.textContent = "示範資料";
+        head.insertBefore(flag, head.querySelector(".meta"));
+      }
+    } else if(flag){ flag.remove(); }
+  }
+
+  /* ============ 輸入 ============ */
+  function countChars(){
+    counter.textContent = raw.value.length.toLocaleString("zh-TW") + " 字";
+  }
+  raw.addEventListener("input", function(){
+    countChars();
+    try{ localStorage.setItem("relay.raw", raw.value); }catch(e){}
+  });
+  [klass, today].forEach(function(el){
+    el.addEventListener("input", function(){
+      try{ localStorage.setItem("relay." + el.id, el.value); }catch(e){}
+    });
+  });
+  draft.addEventListener("input", function(){
+    state.edits[TABS[state.tab].key] = draft.value;
+    draftMeta.textContent = draft.value.length + " 字";
+  });
+  TABS.forEach(function(t, i){
+    $(t.id).addEventListener("click", function(){ state.tab = i; renderDraft(); });
+  });
+
+  /* ---- 圖片 ---- */
+  function addImages(files){
+    var arr = Array.prototype.slice.call(files || []).filter(function(f){
+      return f && /^image\/(png|jpeg|webp|gif)$/.test(f.type);
+    });
+    if(!arr.length) return;
+    arr.slice(0, 6 - state.images.length).forEach(function(f){ state.images.push(f); });
+    renderShots();
+  }
+  function renderShots(){
+    shotsEl.innerHTML = "";
+    state.images.forEach(function(f, i){
+      var box = document.createElement("div");
+      box.className = "shot";
+      var img = document.createElement("img");
+      img.alt = "截圖 " + (i + 1);
+      img.src = URL.createObjectURL(f);
+      img.addEventListener("load", function(){ URL.revokeObjectURL(img.src); });
+      var rm = document.createElement("button");
+      rm.type = "button"; rm.textContent = "×"; rm.title = "移除這張截圖";
+      rm.addEventListener("click", function(){ state.images.splice(i, 1); renderShots(); });
+      box.appendChild(img); box.appendChild(rm);
+      shotsEl.appendChild(box);
+    });
+  }
+  raw.addEventListener("paste", function(e){
+    if(e.clipboardData && e.clipboardData.files && e.clipboardData.files.length) addImages(e.clipboardData.files);
+  });
+  ["dragenter","dragover"].forEach(function(ev){
+    raw.addEventListener(ev, function(e){ e.preventDefault(); raw.classList.add("dropping"); });
+  });
+  ["dragleave","drop"].forEach(function(ev){
+    raw.addEventListener(ev, function(e){ e.preventDefault(); raw.classList.remove("dropping"); });
+  });
+  raw.addEventListener("drop", function(e){
+    if(e.dataTransfer && e.dataTransfer.files) addImages(e.dataTransfer.files);
+  });
+
+  /* ---- 複製 ---- */
+  function flash(btn, text){
+    var old = btn.textContent;
+    btn.textContent = text; btn.classList.add("done");
+    setTimeout(function(){ btn.textContent = old; btn.classList.remove("done"); }, 1600);
+  }
+  function copy(text, btn, ok){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ flash(btn, ok); }, function(){ fallbackCopy(text, btn, ok); });
+    } else { fallbackCopy(text, btn, ok); }
+  }
+  function fallbackCopy(text, btn, ok){
+    var ta = document.createElement("textarea");
+    ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); flash(btn, ok); }
+    catch(e){ flash(btn, "無法複製，請手動選取"); }
+    document.body.removeChild(ta);
+  }
+  copyDraft.addEventListener("click", function(){ copy(draft.value, copyDraft, "已複製"); });
+  copyPromptBtn.addEventListener("click", function(){
+    copy(buildPrompt(raw.value || DEMO_RAW, klass.value, today.value), copyPromptBtn, "指令已複製");
+  });
+  loadDemo.addEventListener("click", function(){
+    raw.value = DEMO_RAW; countChars();
+    state.data = DEMO; state.images = []; renderShots(); renderAll();
+    raw.focus();
+  });
+
+  /* ============ 呼叫 Claude ============ */
+  var samplePromise = (window.claude && typeof window.claude.use === "function")
+    ? window.claude.use("sample").catch(function(){ return null; })
+    : Promise.resolve(null);
+
+  samplePromise.then(function(sample){
+    if(!sample){
+      fallbackHint.hidden = false;
+      go.textContent = "複製指令，貼到 AI 整理";
+      imgHint.textContent = "貼上時請把檔名與連結一起帶進來，整理結果會保留它們。";
+      return;
+    }
+    if(sample.limits){
+      sample.limits().then(function(l){
+        if(!l || !l.images){
+          imgHint.textContent = "貼上時請把檔名與連結一起帶進來，整理結果會保留它們。";
+          state.images = []; renderShots();
+        }
+        if(l && l.maxPromptBytes) state.maxBytes = l.maxPromptBytes;
+      }, function(){});
+    }
+  });
+
+  function bytesOf(s){
+    return (typeof TextEncoder !== "undefined") ? new TextEncoder().encode(s).length : s.length * 3;
+  }
+
+  function setBusy(on, msg){
+    state.busy = on;
+    go.disabled = on;
+    if(on){
+      go.innerHTML = '<span class="working"><span class="pulse"></span>' + esc(msg || "整理中…") + '</span>';
+    } else {
+      go.textContent = "整理這段訊息";
+    }
+  }
+
+  function showError(msg){
+    var box = document.createElement("div");
+    box.className = "notice warn";
+    box.textContent = msg;
+    var host = document.querySelector(".intake");
+    var old = host.querySelector(".notice.warn");
+    if(old) old.remove();
+    host.appendChild(box);
+    setTimeout(function(){ if(box.parentNode) box.remove(); }, 9000);
+  }
+
+  go.addEventListener("click", function(){
+    var text = raw.value.trim();
+    if(!text && !state.images.length){
+      showError("先貼上行政訊息，或載入示範對話看看效果。");
+      raw.focus();
+      return;
+    }
+    samplePromise.then(function(sample){
+      if(!sample){
+        copy(buildPrompt(text || DEMO_RAW, klass.value, today.value), go, "指令已複製");
+        return;
+      }
+      var prompt = buildPrompt(text, klass.value, today.value);
+      if(state.maxBytes && bytesOf(prompt) > state.maxBytes){
+        showError("訊息太長了（超過單次上限）。請分兩批貼，或先刪掉閒聊的部分。");
+        return;
+      }
+      if(state.ctl) state.ctl.abort();
+      state.ctl = new AbortController();
+      setBusy(true, "撈訊息中…");
+
+      var opts = {
+        signal: state.ctl.signal,
+        modelTier: "complex",
+        onText: function(u){
+          if(u && u.text && u.text.length > 400) setBusy(true, "整理布達版本…");
+        }
+      };
+      if(state.images.length) opts.images = state.images;
+
+      sample.json(prompt, opts).then(function(data){
+        setBusy(false);
+        if(!data || typeof data !== "object"){
+          showError("這次沒有回傳可用的結果，請再試一次。");
+          return;
+        }
+        data.demo = false;
+        state.data = data;
+        state.tab = 0;
+        renderAll();
+        document.querySelector(".out").scrollIntoView({ behavior:"smooth", block:"start" });
+      }, function(err){
+        setBusy(false);
+        var code = err && err.code;
+        if(code === "cancelled") return;
+        if(code === "not_granted"){
+          fallbackHint.hidden = false;
+          showError("這台裝置無法直接呼叫 Claude，請改用「複製指令到別的 AI」。");
+        } else if(code === "rate_limited"){
+          showError("呼叫太頻繁了，休息一下再按一次。");
+        } else {
+          showError("整理失敗：" + ((err && err.message) || "未知錯誤") + "。可以改用複製指令的方式。");
+        }
+      });
+    });
+  });
+
+  /* ============ 啟動 ============ */
+  try{
+    var saved = localStorage.getItem("relay.raw");
+    if(saved) raw.value = saved;
+    var k = localStorage.getItem("relay.klass"); if(k) klass.value = k;
+    var d = localStorage.getItem("relay.today"); if(d) today.value = d;
+  }catch(e){}
+  if(!raw.value) raw.value = DEMO_RAW;
+  countChars();
+  renderAll();
+})();
+</script>

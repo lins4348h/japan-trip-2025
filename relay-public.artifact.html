@@ -1,0 +1,426 @@
+<title>聯絡事項轉譯機</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap">
+<style>
+:root{
+  --paper:#ECECE8; --surface:#FBFBF8; --surface-2:#F4F4EF;
+  --ink:#191C1E; --ink-2:#565C60; --ink-3:#8A9094;
+  --rule:#D8D8D0; --rule-strong:#BCBCB2;
+  --seal:#B23A2B; --seal-bg:#F5E2DE;
+  --indigo:#28506E; --indigo-bg:#DFE8F0;
+  --moss:#4C6B3C; --moss-bg:#E3EBDD;
+  --shadow:0 1px 2px rgba(25,28,30,.06), 0 6px 20px -12px rgba(25,28,30,.28);
+  --sans:"Noto Sans TC",-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft JhengHei",sans-serif;
+  --serif:"Noto Serif TC",Georgia,"Songti TC",serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#131619; --surface:#1B1F22; --surface-2:#23282C;
+    --ink:#E8E7E0; --ink-2:#A2A8AB; --ink-3:#767D81;
+    --rule:#31373B; --rule-strong:#454C51;
+    --seal:#E28270; --seal-bg:#3A2320;
+    --indigo:#8CB6D6; --indigo-bg:#1C2B37;
+    --moss:#93B382; --moss-bg:#212B1D;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -14px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#131619; --surface:#1B1F22; --surface-2:#23282C;
+  --ink:#E8E7E0; --ink-2:#A2A8AB; --ink-3:#767D81;
+  --rule:#31373B; --rule-strong:#454C51;
+  --seal:#E28270; --seal-bg:#3A2320;
+  --indigo:#8CB6D6; --indigo-bg:#1C2B37;
+  --moss:#93B382; --moss-bg:#212B1D;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -14px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--sans); font-size:15px; line-height:1.72;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1240px; margin:0 auto; padding:28px 20px 72px}
+
+.masthead{
+  display:flex; flex-wrap:wrap; align-items:flex-end; gap:14px 28px;
+  padding-bottom:18px; margin-bottom:24px; border-bottom:2px solid var(--ink);
+}
+.masthead h1{font-family:var(--serif); font-weight:700; font-size:31px; line-height:1.25; margin:0; text-wrap:balance}
+.masthead .sub{margin:6px 0 0; color:var(--ink-2); font-size:14px; max-width:54ch}
+.stamp{
+  margin-left:auto; align-self:center; font-family:var(--mono); font-size:11px;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--seal);
+  border:1.5px solid var(--seal); border-radius:3px; padding:5px 10px;
+  transform:rotate(-1.5deg); white-space:nowrap;
+}
+
+.grid{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:26px; align-items:start}
+@media (max-width:900px){ .grid{grid-template-columns:1fr} }
+
+.panel{background:var(--surface); border:1px solid var(--rule); border-radius:6px; box-shadow:var(--shadow); padding:18px}
+
+.field-label{
+  display:block; font-family:var(--mono); font-size:11px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink-3); margin-bottom:7px;
+}
+textarea, input[type=text]{
+  width:100%; font-family:var(--sans); color:var(--ink); background:var(--surface-2);
+  border:1px solid var(--rule); border-radius:4px; padding:11px 12px;
+  font-size:14px; line-height:1.65; resize:vertical;
+}
+textarea:focus-visible, input[type=text]:focus-visible, button:focus-visible, a:focus-visible{
+  outline:2px solid var(--indigo); outline-offset:2px;
+}
+#raw{min-height:300px; font-size:13.5px; line-height:1.7}
+#prompt{
+  min-height:250px; font-family:var(--mono); font-size:12px; line-height:1.65;
+  color:var(--ink-2); background:var(--surface-2);
+}
+.row{display:flex; gap:10px; margin-top:14px}
+.row > div{flex:1; min-width:0}
+.counter{font-family:var(--mono); font-size:11.5px; color:var(--ink-3); float:right; margin-top:6px}
+.hint{font-size:12.5px; color:var(--ink-3); margin:10px 0 0; line-height:1.65; clear:both}
+
+button, .linkbtn{font-family:var(--sans); cursor:pointer; border-radius:4px; text-decoration:none; display:inline-block; text-align:center;
+  transition:background .13s, border-color .13s, color .13s, filter .13s}
+.btn-copy{
+  width:100%; margin-top:14px; padding:13px 16px;
+  background:var(--seal); color:#fff; border:1px solid var(--seal);
+  font-size:15.5px; font-weight:700; letter-spacing:.03em;
+}
+.btn-copy:hover{filter:brightness(1.08)}
+.btn-copy.done{background:var(--moss); border-color:var(--moss)}
+.btn-ghost{background:transparent; color:var(--ink-2); border:1px solid var(--rule-strong); padding:7px 12px; font-size:12.5px}
+.btn-ghost:hover{border-color:var(--ink-2); color:var(--ink)}
+.btn-row{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap}
+.btn-row button{flex:1; min-width:130px}
+
+/* 三步驟 */
+.steps{list-style:none; margin:0 0 22px; padding:0; display:flex; flex-direction:column; gap:1px}
+.steps li{
+  display:grid; grid-template-columns:34px minmax(0,1fr); gap:0 14px; align-items:baseline;
+  background:var(--surface); border-bottom:1px solid var(--rule); padding:12px 14px;
+}
+.steps .n{
+  font-family:var(--mono); font-size:13px; font-weight:500; color:var(--seal);
+  font-variant-numeric:tabular-nums;
+}
+.steps b{font-weight:500}
+.steps p{margin:2px 0 0; font-size:13px; color:var(--ink-2)}
+
+.jump{display:flex; gap:8px; margin-top:12px; flex-wrap:wrap}
+.linkbtn{
+  flex:1; min-width:98px; padding:9px 8px; font-size:13px; font-weight:500;
+  background:var(--surface-2); color:var(--ink); border:1px solid var(--rule-strong);
+}
+.linkbtn:hover{border-color:var(--indigo); color:var(--indigo)}
+.linkbtn small{display:block; font-family:var(--mono); font-size:10px; color:var(--ink-3); letter-spacing:.06em}
+
+.section-head{display:flex; align-items:baseline; gap:12px; margin:0 0 12px; padding-bottom:8px; border-bottom:1px solid var(--rule)}
+.section-head h2{font-family:var(--serif); font-weight:600; font-size:19px; margin:0}
+.section-head .meta{font-family:var(--mono); font-size:11px; color:var(--ink-3); margin-left:auto; letter-spacing:.06em}
+
+/* 範例產出 */
+details.sample{margin-top:26px; background:var(--surface); border:1px solid var(--rule); border-radius:6px}
+details.sample summary{
+  cursor:pointer; padding:13px 16px; font-weight:500; font-size:14.5px; list-style:none;
+  display:flex; align-items:center; gap:10px;
+}
+details.sample summary::-webkit-details-marker{display:none}
+details.sample summary::after{content:"展開"; margin-left:auto; font-family:var(--mono); font-size:11px; color:var(--ink-3); letter-spacing:.08em}
+details.sample[open] summary::after{content:"收合"}
+details.sample summary:hover{color:var(--indigo)}
+.sample-body{padding:0 16px 18px; border-top:1px solid var(--rule)}
+.sample-body h3{
+  font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--seal); margin:20px 0 6px; font-weight:500;
+}
+.sample-body pre{
+  margin:0; padding:13px 15px; background:var(--surface-2); border-left:3px solid var(--rule-strong);
+  font-family:var(--sans); font-size:13.5px; line-height:1.8; white-space:pre-wrap; word-break:break-word;
+  overflow-x:auto;
+}
+.sample-body pre.hot{border-left-color:var(--seal)}
+
+.notice{
+  margin-top:14px; padding:11px 14px; border-radius:4px; font-size:13.5px; line-height:1.65;
+  background:var(--seal-bg); color:var(--seal);
+}
+.notice[hidden]{display:none}
+
+footer{margin-top:44px; padding-top:16px; border-top:1px solid var(--rule); font-size:12.5px; color:var(--ink-3); line-height:1.8}
+</style>
+<div class="wrap">
+
+  <header class="masthead">
+    <div>
+      <h1>聯絡事項轉譯機</h1>
+      <p class="sub">把行政群組的碎片訊息，換成一份導師待辦，和學生版、白話簡化版、家長版三份可以直接貼出去的文字。</p>
+    </div>
+    <div class="stamp">導師互助 · 非官方</div>
+  </header>
+
+  <div class="grid">
+
+    <section class="panel">
+      <label class="field-label" for="raw">一、貼上原始訊息</label>
+      <textarea id="raw" spellcheck="false" placeholder="從 LINE 群組整段複製貼上即可。&#10;順序亂、夾雜閒聊、後面又改了時間，都不用先整理。&#10;檔名（例：同意書.pdf）和連結請一併貼上。"></textarea>
+      <div class="counter" id="counter">0 字</div>
+
+      <div class="row">
+        <div>
+          <label class="field-label" for="klass">班級</label>
+          <input type="text" id="klass" value="三年五班" autocomplete="off">
+        </div>
+        <div>
+          <label class="field-label" for="today">今天日期</label>
+          <input type="text" id="today" value="9/8（一）" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-ghost" id="loadDemo">載入示範對話</button>
+        <button class="btn-ghost" id="clear">清空重來</button>
+      </div>
+
+      <p class="hint">訊息只留在你的瀏覽器，這個頁面不會把任何內容送到伺服器。</p>
+    </section>
+
+    <div>
+      <ol class="steps">
+        <li><span class="n">01</span><div><b>貼上左邊的訊息</b><p>填一下班級和日期，指令會即時跟著長出來。</p></div></li>
+        <li><span class="n">02</span><div><b>按下方的「複製指令」</b><p>你的訊息會連同整套判斷規則一起被複製。</p></div></li>
+        <li><span class="n">03</span><div><b>貼到任何一個 AI，送出</b><p>Claude、ChatGPT、Gemini 都可以，免費帳號就夠用。</p></div></li>
+      </ol>
+
+      <div class="section-head">
+        <h2>要複製的指令</h2>
+        <span class="meta" id="promptMeta"></span>
+      </div>
+      <textarea id="prompt" readonly spellcheck="false" aria-label="產生的指令"></textarea>
+      <button class="btn-copy" id="copyBtn">複製指令</button>
+      <div class="notice" id="warn" hidden>左邊還沒貼上訊息，複製出去的會是示範對話。</div>
+
+      <div class="jump">
+        <a class="linkbtn" href="https://claude.ai/new" target="_blank" rel="noopener noreferrer">Claude<small>claude.ai</small></a>
+        <a class="linkbtn" href="https://chatgpt.com" target="_blank" rel="noopener noreferrer">ChatGPT<small>chatgpt.com</small></a>
+        <a class="linkbtn" href="https://gemini.google.com" target="_blank" rel="noopener noreferrer">Gemini<small>gemini.google</small></a>
+      </div>
+      <p class="hint">開新分頁後，直接 Ctrl／⌘ + V 貼上再送出即可。</p>
+    </div>
+  </div>
+
+  <details class="sample">
+    <summary>你會拿到什麼？看一份用左邊示範對話跑出來的完整結果</summary>
+    <div class="sample-body">
+
+      <h3>一、我要做的事</h3>
+      <pre class="hot">9/15（一）前｜收齊校外教學家長同意書「正本」與費用 380 元，繳回學務處
+　來源：學務處 陳主任
+　備註：須家長親筆簽名，掃描檔不收；未繳者無法參加
+
+9/12（五）前｜提醒學生英語會考時間已改為第八節
+　來源：教務處 林組長
+
+未說明｜到校務系統確認班級健康檢查名單有無錯誤
+　來源：輔導室 黃老師</pre>
+
+      <h3>二、被後面改掉的訊息</h3>
+      <pre class="hot">英語會考「第七節、13:20 到原班座位」
+　→ 已改為「第八節、14:10 開始」
+　（教務處後續發出更正訊息，請以第八節為準）</pre>
+
+      <h3>三、給學生（可直接貼班級群組）</h3>
+      <pre>【三年五班 聯絡事項 9/8】
+
+一、英語會考
+　時間：9/12（五）第八節，14:10 開始
+　地點：原班座位
+　攜帶：2B 鉛筆、橡皮擦
+　範圍：第一課～第三課
+　※ 原本公告的第七節已更正，請以第八節為準。
+
+二、校外教學同意書
+　同意書要請家長親筆簽名，交「正本」，掃描檔或拍照不收。
+　費用 380 元，和同意書一起交。
+　繳交期限：9/15（一）前交給我。
+　※ 沒有繳交的同學無法參加校外教學。</pre>
+
+      <h3>四、白話簡化版（給閱讀理解較弱或特教學生）</h3>
+      <pre>★ 9月12日 星期五
+第八節考英文。
+14:10 開始，在自己的教室。
+要帶：2B 鉛筆、橡皮擦。
+考第 1 課到第 3 課。
+
+★ 9月15日 星期一以前
+要交兩樣東西給老師：
+1. 校外教學同意書（要爸爸或媽媽親手簽名）
+2. 380 元
+沒有交，就不能去校外教學。
+
+有問題就來找老師，不用自己猜。</pre>
+
+      <h3>五、給家長（可直接貼親師群組）</h3>
+      <pre>各位家長您好，以下是本週需要您協助的事項：
+
+一、校外教學同意書與費用
+・同意書須由家長親筆簽名，並繳交正本（掃描檔或照片恕不受理）
+・費用 380 元，請與同意書一併交由孩子帶回學校
+・截止日：9/15（一）
+・未於期限內繳交者無法參加，敬請留意
+
+二、英語會考
+・時間：9/12（五）第八節 14:10，範圍為第一課至第三課
+・請提醒孩子攜帶 2B 鉛筆與橡皮擦
+
+三、健康檢查
+・學校近期將辦理健康檢查，若孩子有特殊健康狀況，請主動與我聯繫。
+
+感謝您的配合，有任何疑問歡迎隨時與我聯絡。</pre>
+
+      <h3>六、附件與連結</h3>
+      <pre>檔案｜114學年度校外教學家長同意書.pdf
+　發給學生帶回家給家長簽名，9/15 前連同 380 元繳回。
+
+連結｜校務系統 健康檢查名單
+　https://sso.school.edu.tw/health
+　導師登入後核對班級名單。</pre>
+
+      <h3>七、已略過</h3>
+      <pre>・導師之間關於開學週忙碌的閒聊
+・「同意書要正本還是掃描檔」的提問，答案已併入待辦事項</pre>
+
+    </div>
+  </details>
+
+  <footer>
+    產出一律當作草稿看待：日期、金額、繳交方式請對照原訊息再送出。<br>
+    貼到 AI 前請留意訊息中是否有學生姓名或個資，需要的話先以代號取代。
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var DEMO_RAW = [
+    "教務處 林組長：各位導師好，本週五(9/12)第七節全校英語會考，請提醒學生攜帶2B鉛筆與橡皮擦，13:20前回原班座位。",
+    "學務處 陳主任：另外校外教學家長同意書請於9/15(一)前收齊繳回學務處，未繳者無法參加。檔案：114學年度校外教學家長同意書.pdf",
+    "王老師：請問同意書要正本還是掃描檔就可以？",
+    "學務處 陳主任：正本喔，需要家長親筆簽名。",
+    "教務處 林組長：更正！英語會考改到第八節，14:10開始，不好意思。",
+    "輔導室 黃老師：健康檢查名單已上傳，請導師到校務系統確認班級名單有無錯誤 https://sso.school.edu.tw/health",
+    "李老師：欸這週怎麼這麼多事情",
+    "陳老師：+1 開學週真的爆炸",
+    "學務處 陳主任：補充，校外教學費用380元，請隨同意書一起繳交。",
+    "教務處 林組長：英語會考範圍是第一課到第三課。"
+  ].join("\n");
+
+  function buildPrompt(raw, klass, today){
+    return [
+      "你是高中導師的行政訊息整理助手。下面是行政群組的原始訊息，可能包含 LINE 對話、公文片段、檔名與連結，順序混亂並夾雜閒聊。",
+      "班級：" + (klass || "本班") + "　今天：" + (today || "未提供"),
+      "",
+      "【判斷原則】",
+      "1. 版本覆蓋：若後面的訊息更正或取消了前面的內容（改時間、改地點、改截止日，或出現「更正」「改成」「取消」「補充」），一律只採用最終版，並把被改掉的舊版單獨列出來提醒。",
+      "2. 分流：需要導師本人動作的（收件、造冊、回報、上系統、簽核）歸為待辦；只需轉達的寫進布達文字；閒聊、抱怨、貼圖、以及已經被回答掉的提問歸為略過。",
+      "3. 不編造：訊息裡沒說的截止日、地點、金額、攜帶物品，一律寫「未說明」，絕對不要推測補齊。",
+      "4. 附件與連結：把檔名與網址抽出來，寫清楚「這是什麼、要誰做什麼」，網址原樣保留。",
+      "5. 全部使用繁體中文與台灣用語。",
+      "",
+      "【請依序輸出這七個區塊，用純文字，不要用 JSON、不要用表格】",
+      "",
+      "一、我要做的事",
+      "　只列需要導師本人動作的事。每項寫成「截止日｜事項」，下一行縮排寫來源，需要提醒的再加一行備註。依截止日由近到遠排序。",
+      "",
+      "二、被後面改掉的訊息",
+      "　列出舊版內容、改成什麼、以及為什麼改。沒有就寫「無」。",
+      "",
+      "三、給學生（可直接貼班級群組）",
+      "　分項編號，時間／地點／攜帶／範圍／截止各自分行。句子要短，去掉行政術語，也去掉只有導師才需要做的事。若有被更正過的內容，補一句提醒以最終版為準。",
+      "",
+      "四、白話簡化版（給閱讀理解較弱或特教學生）",
+      "　每句不超過 25 個字，一句只講一件事。順序固定為：什麼時候 → 要做什麼 → 要帶什麼 → 沒做會怎樣。用主動語態，不要用成語、不要用被動句、不要用括號註解。結尾加一句鼓勵孩子來問老師的話。",
+      "",
+      "五、給家長（可直接貼親師群組）",
+      "　語氣客氣，只聚焦需要家長配合的事：簽名、繳費、回條、健康狀況。每項附上截止日與未完成的後果。",
+      "",
+      "六、附件與連結",
+      "　每項寫成「檔案｜名稱」或「連結｜名稱」，下一行寫用途，連結另起一行原樣附上。",
+      "",
+      "七、已略過",
+      "　用一行一項說明哪些內容沒有被納入，以及原因。",
+      "",
+      "===== 原始訊息開始 =====",
+      raw,
+      "===== 原始訊息結束 ====="
+    ].join("\n");
+  }
+
+  var $ = function(id){ return document.getElementById(id); };
+  var raw=$("raw"), klass=$("klass"), today=$("today"), counter=$("counter"),
+      prompt=$("prompt"), promptMeta=$("promptMeta"), copyBtn=$("copyBtn"),
+      warn=$("warn"), loadDemo=$("loadDemo"), clearBtn=$("clear");
+
+  function refresh(){
+    var text = raw.value.trim();
+    warn.hidden = !!text;
+    var p = buildPrompt(text || DEMO_RAW, klass.value.trim(), today.value.trim());
+    prompt.value = p;
+    promptMeta.textContent = p.length.toLocaleString("zh-TW") + " 字";
+    counter.textContent = raw.value.length.toLocaleString("zh-TW") + " 字";
+    copyBtn.textContent = "複製指令";
+    copyBtn.classList.remove("done");
+  }
+
+  function save(){
+    try{
+      localStorage.setItem("relayp.raw", raw.value);
+      localStorage.setItem("relayp.klass", klass.value);
+      localStorage.setItem("relayp.today", today.value);
+    }catch(e){}
+  }
+
+  [raw, klass, today].forEach(function(el){
+    el.addEventListener("input", function(){ refresh(); save(); });
+  });
+
+  function flash(text){
+    copyBtn.textContent = text;
+    copyBtn.classList.add("done");
+    setTimeout(refresh, 2200);
+  }
+  copyBtn.addEventListener("click", function(){
+    var text = prompt.value;
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(
+        function(){ flash("已複製，貼到 AI 送出就好"); },
+        function(){ manualCopy(text); }
+      );
+    } else { manualCopy(text); }
+  });
+  function manualCopy(text){
+    prompt.focus(); prompt.select();
+    try{
+      document.execCommand("copy");
+      flash("已複製，貼到 AI 送出就好");
+    }catch(e){
+      flash("請手動選取上方文字後複製");
+    }
+  }
+
+  loadDemo.addEventListener("click", function(){ raw.value = DEMO_RAW; refresh(); save(); raw.focus(); });
+  clearBtn.addEventListener("click", function(){ raw.value = ""; refresh(); save(); raw.focus(); });
+
+  try{
+    var s = localStorage.getItem("relayp.raw"); if(s) raw.value = s;
+    var k = localStorage.getItem("relayp.klass"); if(k) klass.value = k;
+    var d = localStorage.getItem("relayp.today"); if(d) today.value = d;
+  }catch(e){}
+  refresh();
+})();
+</script>
