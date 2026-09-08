@@ -492,6 +492,9 @@ def build(quality, matlib, coll, terr, rng):
             break
         if any(abs(((a - g + math.pi) % TAU) - math.pi) < 0.055 for g in gates):
             continue
+        spokes = [0.12 + TAU * k / 12 for k in range(12)]
+        if any(abs(((a - sp + math.pi) % TAU) - math.pi) < 0.045 for sp in spokes):
+            continue                                  # 讓開放射狀主街
         x = r * math.cos(a)
         y = r * math.sin(a)
         if math.hypot(x - 0, y - 336) < 74:   # 讓開城堡

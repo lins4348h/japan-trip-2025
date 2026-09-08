@@ -97,8 +97,8 @@ python3 build_aincrad.py --quality high --render --shots 01,04,08 --samples 128
 |---|---|---|
 | 01 | aincrad_full | 浮游城全景，完整百層圓錐輪廓 |
 | 02 | underbelly | 城底倒錐與能源結晶，仰視壓迫感 |
-| 03 | tier_detail | 環狀樓層外殼：柱列、扶壁、窗帶特寫 |
-| 04 | cutaway | 剖面缺口：層層樓板與地表的橫切面 |
+| 03 | tier_detail | 外殼特寫：層層樓板與簷口交疊出的巨大尺度 |
+| 04 | cutaway | 剖面缺口：層層樓板與第一層地表的橫切面 |
 | 05 | town_aerial | 初始之街全景與人造天頂 |
 | 06 | town_street | 街道視角：石板路、店鋪、廣場噴泉 |
 | 07 | bridge | 河谷石橋與遠方城牆 |
@@ -108,7 +108,7 @@ python3 build_aincrad.py --quality high --render --shots 01,04,08 --samples 128
 | 11 | boss_room | Boss 房間：巨門、列柱、王座 |
 | 12 | temple | 山丘神殿與遠方湖泊 |
 | 13 | lake | 湖泊、森林、草原與遠方迷宮塔 |
-| 14 | floor_edge | 站在世界的邊緣，望向雲海 |
+| 14 | floor_edge | 世界的邊緣：缺口處的地表斷崖與雲海 |
 | 15 | ruins | 森林中的古代遺跡與魔法水晶 |
 | 16 | sky_wide | 高空俯視：浮空平台與雲海環繞 |
 | 17 | town_cutaway | 從城牆缺口望進第一層的城鎮全貌 |

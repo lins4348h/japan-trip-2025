@@ -33,13 +33,13 @@ def shot_list(ctx):
     add("02_underbelly", (11500 * math.cos(a), 11500 * math.sin(a), -5400),
         (0, 0, 900), lens=35, note="城底倒錐與能源結晶，仰視壓迫感")
 
-    r40 = C.floor_radius(28)
-    z40 = C.floor_z(28)
-    a = 0.46
-    add("03_tier_detail", ((r40 + 880) * math.cos(a), (r40 + 880) * math.sin(a),
-                           z40 - 120),
-        (r40 * math.cos(a + 0.07), r40 * math.sin(a + 0.07), z40 + 330), lens=50,
-        note="環狀樓層外殼：柱列、扶壁、窗帶特寫")
+    r40 = C.floor_radius(34)
+    z40 = C.floor_z(34)
+    a = 0.80
+    add("03_tier_detail", ((r40 + 3300) * math.cos(a), (r40 + 3300) * math.sin(a),
+                           z40 - 900),
+        (r40 * math.cos(a + 0.22), r40 * math.sin(a + 0.22), z40 + 500), lens=105,
+        note="外殼特寫：層層樓板與簷口交疊出的巨大尺度")
 
     a = 0.5 * (C.CUTAWAY_A0 + C.CUTAWAY_A1)
     add("04_cutaway", (11800 * math.cos(a), 11800 * math.sin(a), 2050),
@@ -49,7 +49,7 @@ def shot_list(ctx):
     add("05_town_aerial", (T[0] - 1250, T[1] - 640, 300),
         (T[0] + 60, T[1] + 240, 45), lens=38, note="初始之街全景與人造天頂")
 
-    sa = 0.12 + math.pi / 3.0
+    sa = 0.12 + math.pi / 3.0  # 對齊放射狀主街
     add("06_town_street", _local(town.ORIGIN, 0.0,
                                  (300 * math.cos(sa), 300 * math.sin(sa), 1.72)),
         _local(town.ORIGIN, 0.0, (0, 0, 5.0)), lens=24, dof=200, fstop=5.6,

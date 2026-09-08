@@ -123,7 +123,7 @@ def tavern(rng, w=17.0, d=12.0, h=4.6):
     for i in range(4):
         P.barrel(md, translate(-w / 2 + 1.0 + i * 0.85, d / 2 - 0.9, 0))
     for i in range(3):
-        P.crate(md, chain(translate(w / 2 - 1.1, -d / 2 + 1.0 + i * 0.7, 0.31),
+        P.crate(md, chain(translate(w / 2 - 1.1, -d / 2 + 1.0 + i * 0.7, 0.0),
                           rot_z(rng.uniform(0, 1))))
     P.chest(md, chain(translate(-w / 2 + 1.4, d * 0.42, 0.0), rot_z(0.4)))
     P.chest(md, chain(translate(w * 0.44, d * 0.40, 0.0), rot_z(2.4)), open_lid=True)
@@ -192,12 +192,33 @@ def workshop_interior(rng, w=11.0, d=9.0, h=4.2):
     md = MeshData("Workshop")
     room_shell(md, w, d, h, t=0.4, floor_mat="cobble", wall_mat="stone_wall",
                base_mat="stone_dark", skirt=1.0)
-    # 熔爐
-    md.add(box(2.6, 2.0, 2.2, z0=0), "stone_dark", translate(-w / 2 + 1.6, d / 2 - 1.4, 0))
-    md.add(box(1.2, 1.0, 1.1, z0=0.5), "flame", translate(-w / 2 + 1.3, d / 2 - 1.4, 0))
-    md.add(box(1.2, 1.2, h - 2.2, z0=2.2), "stone_dark", translate(-w / 2 + 1.6, d / 2 - 1.4, 0))
-    P.anvil(md, chain(translate(-w * 0.05, d * 0.12, 0), rot_z(0.5)))
-    md.add(box(0.9, 0.9, 0.6), "wood_dark", translate(-w * 0.05, d * 0.12, 0))
+    # 熔爐（爐口朝向室內，火光外露）
+    fx, fy = -w / 2 + 1.7, d / 2 - 1.5
+    md.add(box(3.0, 2.2, 0.9, z0=0), "stone_dark", translate(fx, fy, 0))
+    for sx in (-1, 1):
+        md.add(box(0.9, 2.2, 1.5, z0=0.9), "stone_dark",
+               translate(fx + sx * 1.05, fy, 0))
+    md.add(box(3.0, 2.2, 0.5, z0=1.9), "stone_dark", translate(fx, fy, 0))
+    md.add(box(3.0, 0.5, 1.0, z0=0.9), "stone_dark", translate(fx, fy + 0.85, 0))
+    md.add(box(1.2, 1.0, 0.55, z0=0.92), "flame_core", translate(fx, fy - 0.2, 0))
+    md.add(uv_sphere(0.55, 12, 8), "flame",
+           chain(translate(fx, fy - 0.25, 1.35), scale(1.4, 1.0, 0.9)))
+    md.add(revolve([(1.5, 2.4), (1.4, 3.1), (0.65, 3.4)], 4), "iron",
+           chain(translate(fx, fy, 0), rot_z(math.pi / 4)))
+    md.add(box(1.1, 1.1, h - 3.4, z0=3.4), "stone_dark", translate(fx, fy, 0))
+    # 風箱與工具
+    md.add(box(1.3, 0.8, 0.6, z0=1.0), "leather", translate(fx - 1.9, fy + 0.2, 0))
+    for i in range(4):
+        md.add(cylinder(0.035, 1.2, 6), "iron",
+               chain(translate(fx + 1.6, fy - 1.4 + i * 0.22, 0.95), rot_y(0.35)))
+    P.barrel(md, translate(fx + 2.2, fy - 0.4, 0), r=0.42, h=0.9)
+    md.add(cylinder(0.55, 0.62, 12), "wood_dark", translate(-w * 0.05, d * 0.10, 0))
+    P.anvil(md, chain(translate(-w * 0.05, d * 0.10, 0.62), rot_z(0.5)))
+    md.add(box(0.9, 0.55, 0.12, z0=0.0), "iron",
+           chain(translate(-w * 0.05 + 1.1, d * 0.10 - 0.5, 0), rot_z(0.4)))
+    P.crate(md, chain(translate(-w * 0.28, d * 0.02, 0.0), rot_z(0.7)))
+    P.weapon_rack(md, rng, chain(translate(-w * 0.30, -d / 2 + 0.6, 0), rot_z(0)),
+                  w=2.2, n=6)
     P.table(md, chain(translate(w * 0.25, -d * 0.2, 0), rot_z(1.2)), w=2.4, d=1.1,
             style="plain")
     P.weapon_rack(md, rng, chain(translate(w / 2 - 0.7, 0, 0), rot_z(math.pi / 2)), w=3.0, n=8)
@@ -206,7 +227,7 @@ def workshop_interior(rng, w=11.0, d=9.0, h=4.2):
     P.armor_stand(md, translate(w * 0.32, d * 0.30, 0))
     for i in range(3):
         P.barrel(md, translate(-w / 2 + 0.9 + i * 0.8, -d / 2 + 0.9, 0))
-    P.crate(md, translate(w * 0.40, -d * 0.40, 0.31))
+    P.crate(md, translate(w * 0.40, -d * 0.40, 0.0))
     for sy in (-1, 1):
         P.torch(md, chain(translate(w * 0.1, sy * (d / 2 - 0.22), 2.1),
                           rot_z(-sy * math.pi / 2)))
