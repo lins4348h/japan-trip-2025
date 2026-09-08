@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+out/
+renders/test/
+renders/check/
+renders/check2/
