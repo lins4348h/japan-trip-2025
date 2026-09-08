@@ -33,12 +33,12 @@ def shot_list(ctx):
     add("02_underbelly", (11500 * math.cos(a), 11500 * math.sin(a), -5400),
         (0, 0, 900), lens=35, note="城底倒錐與能源結晶，仰視壓迫感")
 
-    r40 = C.floor_radius(40)
-    z40 = C.floor_z(40)
-    a = 1.72
-    add("03_tier_detail", ((r40 + 1450) * math.cos(a), (r40 + 1450) * math.sin(a),
-                           z40 - 520),
-        (r40 * math.cos(a + 0.06), r40 * math.sin(a + 0.06), z40 + 260), lens=70,
+    r40 = C.floor_radius(28)
+    z40 = C.floor_z(28)
+    a = 0.46
+    add("03_tier_detail", ((r40 + 880) * math.cos(a), (r40 + 880) * math.sin(a),
+                           z40 - 120),
+        (r40 * math.cos(a + 0.07), r40 * math.sin(a + 0.07), z40 + 330), lens=50,
         note="環狀樓層外殼：柱列、扶壁、窗帶特寫")
 
     a = 0.5 * (C.CUTAWAY_A0 + C.CUTAWAY_A1)
@@ -49,8 +49,10 @@ def shot_list(ctx):
     add("05_town_aerial", (T[0] - 1250, T[1] - 640, 300),
         (T[0] + 60, T[1] + 240, 45), lens=38, note="初始之街全景與人造天頂")
 
-    add("06_town_street", _local(town.ORIGIN, 0.0, (170, 20, 1.75)),
-        _local(town.ORIGIN, 0.0, (0, 0, 4.5)), lens=24, dof=170, fstop=5.6,
+    sa = 0.12 + math.pi / 3.0
+    add("06_town_street", _local(town.ORIGIN, 0.0,
+                                 (300 * math.cos(sa), 300 * math.sin(sa), 1.72)),
+        _local(town.ORIGIN, 0.0, (0, 0, 5.0)), lens=24, dof=200, fstop=5.6,
         note="街道視角：石板路、店鋪、廣場噴泉")
 
     p0 = np.array(N.RIVER[2])
@@ -102,10 +104,11 @@ def shot_list(ctx):
         (N.TOWER[0], N.TOWER[1], tz + 90), lens=45,
         note="湖泊、森林、草原與遠方迷宮塔")
 
-    a = C.CUTAWAY_A0 - 0.06
-    add("14_floor_edge", (R0 * 1.035 * math.cos(a), R0 * 1.035 * math.sin(a), 430),
-        (R0 * 1.5 * math.cos(a + 0.42), R0 * 1.5 * math.sin(a + 0.42), -2100),
-        lens=28, note="世界的邊緣：沿著外殼俯瞰雲海與城底")
+    a = 0.5 * (C.CUTAWAY_A0 + C.CUTAWAY_A1)
+    add("14_floor_edge", (R0 * 1.10 * math.cos(a - 0.16), R0 * 1.10 * math.sin(a - 0.16),
+                          260),
+        (R0 * 0.84 * math.cos(a + 0.02), R0 * 0.84 * math.sin(a + 0.02), -40),
+        lens=35, note="世界的邊緣：缺口處的地表斷崖與雲海")
 
     a = 0.55
     add("15_ruins", (N.RUINS[0] - 190 * math.cos(a), N.RUINS[1] - 190 * math.sin(a),

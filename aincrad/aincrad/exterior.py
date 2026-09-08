@@ -325,7 +325,7 @@ def build_clouds(md, rng, count=90):
     top = C.floor_z(C.FLOOR_COUNT)
     for i in range(count):
         a = rng.uniform(0, TAU)
-        rad = rng.uniform(r0 * 1.15, r0 * 6.0)
+        rad = rng.uniform(r0 * 1.75, r0 * 6.5)
         zz = rng.uniform(-C.UNDERSIDE_DEPTH * 1.6, top * 0.75)
         s = rng.uniform(320, 1500)
         M = chain(translate(rad * math.cos(a), rad * math.sin(a), zz),

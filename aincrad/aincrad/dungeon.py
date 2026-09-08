@@ -189,15 +189,15 @@ def temple(rng):
 # ------------------------------------------------------------- Boss 房間
 def boss_room(rng, w=104.0, d=76.0, h=28.0):
     md = MeshData("BossRoom")
-    room_shell(md, w, d, h, t=1.8, floor_mat="stone_dark", wall_mat="stone_castle",
+    room_shell(md, w, d, h, t=1.8, floor_mat="stone_dark", wall_mat="stone_dark",
                base_mat="stone_dark", ceil_mat="stone_dark", beams=False, skirt=3.0)
     # 地面圖騰
     md.add(revolve([(0, 0.05), (26.0, 0.05)], 60), "marble_dark")
-    md.add(torus(24.0, 0.5, 60, 6), "boss_glow", translate(0, 0, 0.08))
+    md.add(torus(24.0, 0.4, 60, 6), "boss_glow", translate(0, 0, 0.08))
     md.add(torus(15.0, 0.4, 48, 6), "rune_glow", translate(0, 0, 0.08))
     for i in range(8):
         a = TAU * i / 8
-        md.add(box(24.0, 0.7, 0.14, center_xy=False, z0=0.06), "boss_glow",
+        md.add(box(24.0, 0.45, 0.10, center_xy=False, z0=0.06), "boss_glow",
                chain(rot_z(a), translate(0, -0.35, 0)))
     # 列柱
     for sx in (-1, 1):

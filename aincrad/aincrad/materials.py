@@ -311,7 +311,7 @@ def sky_ceiling(name):
         (0.58, (0.44, 0.60, 0.84, 1)),
         (0.86, (0.86, 0.88, 0.92, 1))])
     nt.links.new(r.outputs["Color"], b.inputs["Emission Color"])
-    b.inputs["Emission Strength"].default_value = 0.85
+    b.inputs["Emission Strength"].default_value = 0.62
     b.inputs["Base Color"].default_value = (0.05, 0.07, 0.11, 1)
     b.inputs["Roughness"].default_value = 1.0
     return m

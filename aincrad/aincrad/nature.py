@@ -57,6 +57,17 @@ class Terrain:
         self.seed = seed
         self.R = FLOOR_R
 
+    @staticmethod
+    def cut_mask(x, y):
+        """缺口扇形的平滑遮罩：1 表示位於缺口內。"""
+        a = np.arctan2(y, x) % TAU
+        m = np.zeros_like(a)
+        for a0, a1 in ((C.CUTAWAY_A0, C.CUTAWAY_A1), (C.CUT2_A0, C.CUT2_A1)):
+            w = 0.10
+            m = np.maximum(m, smoothstep(a0 - w, a0 + w, a) *
+                           (1.0 - smoothstep(a1 - w, a1 + w, a)))
+        return m
+
     def height(self, x, y):
         x = np.asarray(x, dtype=np.float64)
         y = np.asarray(y, dtype=np.float64)
@@ -69,8 +80,9 @@ class Terrain:
 
         # 外緣山脈
         m = smoothstep(self.R * 0.80, self.R * 0.995, rr)
-        h += 235.0 * m * (0.50 + 0.50 * fbm(u, v, octaves=5, freq=14,
-                                           seed=self.seed + 77))
+        cm = self.cut_mask(x, y)
+        h += 235.0 * m * (1.0 - 0.92 * cm) * (0.50 + 0.50 * fbm(
+            u, v, octaves=5, freq=14, seed=self.seed + 77))
         # 內側緩降，避免中央過高
         h -= 26.0 * smoothstep(self.R * 0.45, 0.0, rr)
 
@@ -118,7 +130,7 @@ def build_ground(md, terr, res):
     X, Y = np.meshgrid(g, g, indexing="ij")
     Z = terr.height(X, Y)
     rr = np.hypot(X, Y)
-    edge = smoothstep(R * 0.93, R, rr)
+    edge = smoothstep(R * 0.93, R, rr) * (1.0 - terr.cut_mask(X, Y))
     Z = Z * (1 - edge) + (Z + 120.0) * edge
     V = np.stack([X.ravel(), Y.ravel(), Z.ravel()], axis=1)
     nx, ny = Z.shape
@@ -134,9 +146,9 @@ def build_ground(md, terr, res):
     # 外緣護牆
     n = 260
     a = np.linspace(0, TAU, n, endpoint=False)
-    top = np.stack([R * 0.995 * np.cos(a), R * 0.995 * np.sin(a),
-                    terr.height(R * 0.995 * np.cos(a), R * 0.995 * np.sin(a)) + 120.0],
-                   axis=1)
+    ax, ay = R * 0.995 * np.cos(a), R * 0.995 * np.sin(a)
+    top = np.stack([ax, ay, terr.height(ax, ay) +
+                    120.0 * (1.0 - terr.cut_mask(ax, ay))], axis=1)
     bot = top.copy()
     bot[:, 2] = -40.0
     md.add(loft([top, bot]), "stone_hull_dark")

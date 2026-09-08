@@ -91,7 +91,7 @@ def build_inner_sun_lamp(coll, elev=46.0, rot=0.95, energy=13.0):
     return ob
 
 
-def build_world(sun_elev=9.0, sun_rot=2.35, strength=0.6):
+def build_world(sun_elev=26.0, sun_rot=0.75, strength=0.85):
     w = bpy.data.worlds.new("Sky")
     bpy.context.scene.world = w
     w.use_nodes = True
@@ -116,8 +116,8 @@ def build_world(sun_elev=9.0, sun_rot=2.35, strength=0.6):
     nt.links.new(bg.outputs["Background"], out.inputs["Surface"])
 
     sun = bpy.data.lights.new("Sun", 'SUN')
-    sun.energy = 5.5
-    sun.color = (1.0, 0.78, 0.52)
+    sun.energy = 7.0
+    sun.color = (1.0, 0.84, 0.64)
     sun.angle = math.radians(1.6)
     so = bpy.data.objects.new("Sun", sun)
     e = math.radians(sun_elev)
