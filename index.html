@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>入畫</title>
+<meta name="description" content="一幅可以行走的水墨長卷。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@200;300;400;500&family=LXGW+WenKai+TC:wght@300;400&display=swap">
+<style>
+/* ————————————————————————————————————————
+   入畫 · 一幅可以行走的水墨長卷
+   墨不是背景，而是整個網站的空氣。
+   ———————————————————————————————————————— */
+
+:root{
+  --paper:      #f4f0e6;   /* 宣紙 */
+  --paper-deep: #ece7da;   /* 紙的陰面 */
+  --ink-faint:  #c9c4b6;   /* 極淡墨 */
+  --ink-pale:   #b9b4a6;   /* 淡墨 */
+  --ink-mid:    #8b8679;   /* 墨灰 */
+  --ink:        #57534a;   /* 濕墨 */
+  --ink-deep:   #2a2723;   /* 濃墨 */
+  --ink-burnt:  #161512;   /* 焦墨 */
+  --mist-blue:  #7c8b8e;   /* 青灰，極少量 */
+  --seal:       #96493c;   /* 一枚印，僅此一處 */
+  --serif: "Noto Serif TC", "Songti TC", serif;
+  --kai:   "LXGW WenKai TC", "Kaiti TC", "Noto Serif TC", serif;
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; }
+
+html{ scroll-behavior:auto; }
+
+body{
+  background:var(--paper);
+  color:var(--ink-deep);
+  font-family:var(--serif);
+  font-weight:300;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  cursor:default;
+}
+
+::selection{ background:rgba(42,39,35,.85); color:var(--paper); }
+
+/* ——— 紙的呼吸：整頁極緩的明暗 ——— */
+@keyframes paperBreath{
+  0%,100%{ background-color:var(--paper); }
+  50%    { background-color:#f2eee2; }
+}
+body{ animation:paperBreath 47s ease-in-out infinite; }
+
+/* ——— 紙纖維（感受材質，而非看到材質） ——— */
+.grain{
+  position:fixed; inset:-5%;
+  z-index:40;
+  pointer-events:none;
+  opacity:.5;
+  mix-blend-mode:multiply;
+}
+
+/* ——— 墨霧 / 游標墨痕 畫布 ——— */
+#mist{
+  position:fixed; inset:0;
+  width:100vw; height:100vh;
+  z-index:30;
+  pointer-events:none;
+}
+
+/* ——— 長卷本體 ——— */
+#scroll-root{ position:relative; z-index:10; }
+
+.scene{
+  position:relative;
+  width:100%;
+  overflow:visible;
+}
+
+.scene svg.stage{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  overflow:visible;
+  pointer-events:none;
+}
+
+/* ————————————————————————
+   文字：題於畫上，而非置於頁面
+   ———————————————————————— */
+
+.v{
+  writing-mode:vertical-rl;
+  text-orientation:upright;
+}
+
+.inscription{
+  position:absolute;
+  z-index:5;
+}
+
+.inscription .big{
+  font-size:clamp(56px, 9vw, 128px);
+  font-weight:200;
+  letter-spacing:.5em;
+  color:var(--ink-deep);
+  line-height:1.2;
+}
+
+.inscription .line{
+  font-family:var(--kai);
+  font-weight:300;
+  font-size:clamp(14px, 1.25vw, 18px);
+  letter-spacing:.42em;
+  color:var(--ink);
+  line-height:2.1;
+}
+
+.inscription .tiny{
+  font-family:var(--kai);
+  font-size:12px;
+  letter-spacing:.34em;
+  color:var(--ink-mid);
+}
+
+.chapter-mark{
+  font-family:var(--kai);
+  font-size:13px;
+  letter-spacing:.5em;
+  color:var(--ink-mid);
+  writing-mode:vertical-rl;
+  text-orientation:upright;
+}
+.chapter-mark::after{
+  content:"";
+  display:block;
+  width:1px;
+  height:64px;
+  margin:20px auto 0;
+  background:linear-gradient(to bottom, var(--ink-pale), transparent);
+}
+
+p.prose{
+  font-family:var(--kai);
+  font-weight:300;
+  font-size:clamp(15px, 1.3vw, 19px);
+  line-height:2.6;
+  letter-spacing:.16em;
+  color:var(--ink);
+  max-width:34em;
+}
+
+p.prose + p.prose{ margin-top:2.6em; }
+
+.prose em{
+  font-style:normal;
+  color:var(--ink-deep);
+}
+
+/* ——— 墨暈浮現（滾動揭示） ——— */
+.reveal{
+  opacity:0;
+  filter:blur(10px);
+  transform:translateY(14px);
+  transition:
+    opacity 2.6s cubic-bezier(.22,.61,.36,1),
+    filter  2.6s cubic-bezier(.22,.61,.36,1),
+    transform 2.6s cubic-bezier(.22,.61,.36,1);
+  transition-delay:var(--d, 0s);
+  will-change:opacity, filter, transform;
+}
+.reveal.on{
+  opacity:1;
+  filter:blur(0);
+  transform:none;
+}
+
+/* ——— 淡墨藏字：停留其上，墨色漸深 ——— */
+.veil{
+  position:relative;
+  color:var(--ink-deep);
+  opacity:.26;
+  transition:opacity 1.8s ease;
+  cursor:default;
+}
+.veil .note{
+  position:absolute;
+  top:100%;
+  right:50%;
+  transform:translateX(50%);
+  margin-top:18px;
+  writing-mode:vertical-rl;
+  text-orientation:upright;
+  white-space:nowrap;
+  font-size:12px;
+  letter-spacing:.3em;
+  line-height:2;
+  color:var(--ink);
+  opacity:0;
+  filter:blur(6px);
+  transition:opacity 2s ease .2s, filter 2s ease .2s;
+  pointer-events:none;
+}
+.veil:hover{ opacity:.9; }
+.veil:hover .note{ opacity:1; filter:blur(0); }
+
+/* ————————————————————————
+   序 · 首屏
+   ———————————————————————— */
+#hero{ height:108vh; }
+
+#hero .inscription-main{
+  top:20vh;
+  left:clamp(24px, 14vw, 250px);
+  display:flex;
+  flex-direction:row-reverse;
+  gap:clamp(20px, 3vw, 44px);
+}
+
+/* 開卷：墨自紙心暈開 */
+@keyframes inkBloom{
+  0%   { opacity:0; filter:blur(26px); }
+  100% { opacity:1; filter:blur(0); }
+}
+.bloom{ opacity:0; animation:inkBloom 4.2s cubic-bezier(.2,.6,.3,1) forwards; }
+.bloom.b2{ animation-delay:1.1s; animation-duration:4.6s; }
+.bloom.b3{ animation-delay:2.2s; animation-duration:5s; }
+.bloom.b4{ animation-delay:3.4s; animation-duration:5s; }
+
+#hero .drop-hint{
+  position:absolute;
+  left:50%;
+  bottom:7vh;
+  transform:translateX(-50%);
+  z-index:5;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:16px;
+  transition:opacity 1.6s ease;
+}
+#hero .drop-hint .word{
+  font-family:var(--kai);
+  font-size:12px;
+  letter-spacing:.6em;
+  color:var(--ink-mid);
+  writing-mode:vertical-rl;
+}
+#hero .drop-hint .thread{
+  width:1px; height:56px;
+  background:linear-gradient(to bottom, var(--ink-pale), transparent);
+  position:relative;
+  overflow:hidden;
+}
+#hero .drop-hint .thread::after{
+  content:"";
+  position:absolute; left:0; top:-8px;
+  width:1px; height:8px;
+  background:var(--ink);
+  animation:threadDrip 5s ease-in-out infinite;
+}
+@keyframes threadDrip{
+  0%   { top:-10px; opacity:0; }
+  18%  { opacity:1; }
+  70%  { top:100%; opacity:.9; }
+  100% { top:100%; opacity:0; }
+}
+
+/* ————————————————————————
+   各卷
+   ———————————————————————— */
+#s1{ height:150vh; }
+#s2{ height:170vh; }
+#s3{ height:185vh; }
+#s4{ height:190vh; }
+#s5{ height:130vh; }
+
+.body-block{
+  position:absolute;
+  z-index:5;
+}
+
+/* 卷四 · 墨深：一整段被濃墨浸過 */
+#s4 .light{ color:var(--paper-deep); }
+#s4 p.prose{ color:#cfc9ba; }
+#s4 p.prose em{ color:#f0ece0; }
+#s4 .chapter-mark{ color:#9a9485; }
+#s4 .chapter-mark::after{ background:linear-gradient(to bottom, #6d675c, transparent); }
+
+/* ————————————————————————
+   卷五 · 歸白 / 卷尾
+   ———————————————————————— */
+#s5 .colophon{
+  position:absolute;
+  top:34%;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  flex-direction:row-reverse;
+  gap:38px;
+  align-items:flex-start;
+}
+#s5 .colophon .end-line{
+  font-family:var(--kai);
+  font-size:clamp(15px, 1.35vw, 19px);
+  letter-spacing:.4em;
+  line-height:2.4;
+  color:var(--ink);
+}
+#s5 .colophon .credits{
+  font-family:var(--kai);
+  font-size:11.5px;
+  letter-spacing:.3em;
+  line-height:2.2;
+  color:var(--ink-mid);
+}
+.seal{
+  width:34px;
+  height:34px;
+  margin-top:6px;
+  background:var(--seal);
+  color:var(--paper);
+  font-family:var(--serif);
+  font-weight:500;
+  font-size:19px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:2px;
+  transform:rotate(-2.5deg);
+  opacity:.82;
+  filter:url(#bleedFine);
+  user-select:none;
+}
+
+/* ——— 行進之線（滾動進度） ——— */
+#progress{
+  position:fixed;
+  right:clamp(14px, 2.4vw, 34px);
+  top:50%;
+  transform:translateY(-50%);
+  height:34vh;
+  width:1px;
+  background:rgba(87,83,74,.18);
+  z-index:35;
+}
+#progress .dot{
+  position:absolute;
+  left:50%;
+  top:0;
+  width:5px; height:5px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:var(--ink-deep);
+  opacity:.75;
+}
+#progress .plabel{
+  position:absolute;
+  top:calc(100% + 16px);
+  left:50%;
+  transform:translateX(-50%);
+  font-family:var(--kai);
+  font-size:10.5px;
+  letter-spacing:.4em;
+  color:var(--ink-mid);
+  writing-mode:vertical-rl;
+}
+
+/* ——— 慢動作：雲、鳥、舟 ——— */
+@keyframes cloudDrift{
+  from{ transform:translateX(0); }
+  to  { transform:translateX(60px); }
+}
+.drift-a{ animation:cloudDrift 80s ease-in-out infinite alternate; }
+.drift-b{ animation:cloudDrift 110s ease-in-out infinite alternate-reverse; }
+
+@keyframes boatSway{
+  0%,100%{ transform:translateY(0) rotate(0deg); }
+  50%    { transform:translateY(3px) rotate(.6deg); }
+}
+.boat{ animation:boatSway 9s ease-in-out infinite; transform-origin:center; }
+
+@keyframes birdGlide{
+  0%  { transform:translate(0,0); }
+  50% { transform:translate(-40px,10px); }
+  100%{ transform:translate(-90px,-4px); }
+}
+.birds{ animation:birdGlide 90s linear infinite alternate; }
+
+@keyframes moonBreath{
+  0%,100%{ opacity:.85; }
+  50%    { opacity:.65; }
+}
+.moon{ animation:moonBreath 14s ease-in-out infinite; }
+
+/* ——— 視差層由 JS 驅動 ——— */
+[data-depth]{ will-change:transform; }
+
+/* ——— 縮小裝置 ——— */
+@media (max-width:720px){
+  #hero .inscription-main{ left:8vw; top:12vh; }
+  .body-block{ left:8vw !important; right:8vw !important; }
+  p.prose{ max-width:100%; }
+  #progress{ display:none; }
+  #s3 .body-block.notes-row{ position:absolute; }
+}
+
+/* ——— 靜止之選 ——— */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{ animation:none !important; transition-duration:.01s !important; }
+  .reveal{ opacity:1; filter:none; transform:none; }
+  .bloom{ opacity:1; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════ 濾鏡：墨的物理 ════════════ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- 墨邊：筆觸邊緣的暈與破 -->
+    <filter id="inkEdge" x="-25%" y="-25%" width="150%" height="150%">
+      <feTurbulence id="turbMain" type="fractalNoise" baseFrequency="0.013 0.019" numOctaves="3" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="22" xChannelSelector="R" yChannelSelector="G"/>
+      <feGaussianBlur stdDeviation="0.5"/>
+    </filter>
+    <!-- 遠山：濕筆一抹，形將散未散 -->
+    <filter id="inkWash" x="-30%" y="-30%" width="160%" height="160%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.008 0.014" numOctaves="2" seed="3" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="38" xChannelSelector="R" yChannelSelector="G"/>
+      <feGaussianBlur stdDeviation="2.6"/>
+    </filter>
+    <!-- 焦墨：乾筆，邊緣更碎 -->
+    <filter id="inkDry" x="-25%" y="-25%" width="150%" height="150%">
+      <feTurbulence type="turbulence" baseFrequency="0.05 0.03" numOctaves="4" seed="11" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="14" xChannelSelector="R" yChannelSelector="G"/>
+      <feGaussianBlur stdDeviation="0.3"/>
+    </filter>
+    <!-- 細暈：印章與細物 -->
+    <filter id="bleedFine" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="5" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/>
+    </filter>
+    <!-- 雲霧：大塊柔散 -->
+    <filter id="mistBlur" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="26"/>
+    </filter>
+
+    <!-- 山體墨色：上濃下淡（濕墨滲入紙中） -->
+    <linearGradient id="washPeak" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#2a2723" stop-opacity=".92"/>
+      <stop offset=".55" stop-color="#3b3730" stop-opacity=".66"/>
+      <stop offset="1"   stop-color="#57534a" stop-opacity=".06"/>
+    </linearGradient>
+    <linearGradient id="washMid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#57534a" stop-opacity=".6"/>
+      <stop offset="1"   stop-color="#8b8679" stop-opacity=".04"/>
+    </linearGradient>
+    <linearGradient id="washFar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#8b8679" stop-opacity=".4"/>
+      <stop offset="1"   stop-color="#b9b4a6" stop-opacity=".02"/>
+    </linearGradient>
+    <linearGradient id="washBlue" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#7c8b8e" stop-opacity=".34"/>
+      <stop offset="1"   stop-color="#7c8b8e" stop-opacity=".02"/>
+    </linearGradient>
+    <!-- 卷四：濃墨自上而下浸開 -->
+    <linearGradient id="deepPool" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"    stop-color="#161512" stop-opacity="0"/>
+      <stop offset=".16"  stop-color="#161512" stop-opacity=".9"/>
+      <stop offset=".82"  stop-color="#1b1a16" stop-opacity=".96"/>
+      <stop offset="1"    stop-color="#161512" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="moonGlow" cx=".5" cy=".5" r=".5">
+      <stop offset="0"  stop-color="#f4f0e6" stop-opacity=".9"/>
+      <stop offset=".7" stop-color="#f4f0e6" stop-opacity=".16"/>
+      <stop offset="1"  stop-color="#f4f0e6" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>
+
+<!-- ════════════ 墨霧畫布 ════════════ -->
+<canvas id="mist" aria-hidden="true"></canvas>
+
+<!-- ════════════ 紙纖維 ════════════ -->
+<svg class="grain" aria-hidden="true">
+  <filter id="grainF">
+    <feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="3" seed="19" stitchTiles="stitch"/>
+    <feColorMatrix type="matrix" values="0 0 0 0 0.34  0 0 0 0 0.33  0 0 0 0 0.29  0 0 0 0.05 0"/>
+  </filter>
+  <rect width="100%" height="100%" filter="url(#grainF)"/>
+</svg>
+
+<!-- ════════════ 行進之線 ════════════ -->
+<div id="progress" aria-hidden="true">
+  <div class="dot"></div>
+  <div class="plabel">行 於 卷 中</div>
+</div>
+
+<main id="scroll-root">
+
+  <!-- ═══════════ 序 · 入畫 ═══════════ -->
+  <section class="scene" id="hero" aria-label="序">
+    <svg class="stage" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMax slice">
+      <!-- 遠 · 幾乎消失的山 -->
+      <g data-depth="0.16" filter="url(#inkWash)" opacity=".34">
+        <path fill="url(#washFar)" d="M-40,660 C140,618 250,570 420,588 C560,602 640,548 800,562 C930,573 1060,528 1210,548 C1330,563 1400,548 1480,556 L1480,920 L-40,920 Z"/>
+      </g>
+      <!-- 中 · 一抹淡嶺 -->
+      <g data-depth="0.09" filter="url(#inkWash)" opacity=".5">
+        <path fill="url(#washMid)" d="M-40,730 C130,700 230,644 380,668 C520,690 590,640 740,656 C880,670 980,624 1130,650 C1270,674 1360,650 1480,664 L1480,920 L-40,920 Z"/>
+      </g>
+      <!-- 雲 · 橫過山腰 -->
+      <g class="drift-a" data-depth="0.06" filter="url(#mistBlur)" opacity=".8">
+        <ellipse cx="480" cy="712" rx="330" ry="42" fill="#f4f0e6"/>
+        <ellipse cx="1020" cy="746" rx="380" ry="50" fill="#f4f0e6"/>
+      </g>
+      <!-- 近 · 濃墨主峰，偏右，破出畫界 -->
+      <g class="bloom b2" data-depth="-0.05" filter="url(#inkEdge)">
+        <path fill="url(#washPeak)" d="M742,900
+          C776,802 802,716 836,632
+          C862,566 886,502 916,438
+          C934,398 950,360 970,322
+          C982,298 994,276 1010,258
+          C1018,250 1026,246 1034,248
+          C1048,262 1058,286 1066,314
+          C1076,346 1082,378 1092,408
+          C1100,392 1108,382 1120,376
+          C1140,398 1158,438 1176,490
+          C1204,570 1230,660 1258,738
+          C1280,798 1300,852 1316,900 Z"/>
+        <path fill="url(#washPeak)" opacity=".78" d="M1128,900
+          C1160,808 1192,722 1230,644
+          C1254,596 1278,554 1306,520
+          C1318,506 1330,498 1342,496
+          C1360,516 1378,552 1396,598
+          C1424,670 1450,780 1476,900 Z"/>
+        <!-- 前襟小丘，接住主峰 -->
+        <path fill="url(#washMid)" opacity=".8" d="M640,900
+          C676,844 714,796 760,760
+          C792,736 824,722 856,718
+          C896,738 934,776 968,824
+          C986,850 1000,876 1012,900 Z"/>
+        <!-- 山襞 · 幾筆皴 -->
+        <path fill="none" stroke="#2a2723" stroke-opacity=".34" stroke-width="2" d="M1018,268 C1006,346 988,432 962,524 C946,580 928,642 910,700"/>
+        <path fill="none" stroke="#2a2723" stroke-opacity=".22" stroke-width="1.6" d="M1044,292 C1054,368 1070,450 1092,534 C1108,594 1128,656 1150,716"/>
+        <path fill="none" stroke="#2a2723" stroke-opacity=".18" stroke-width="1.4" d="M1120,384 C1136,452 1158,528 1184,606"/>
+      </g>
+      <!-- 近景 · 左緣垂枝 -->
+      <g class="bloom b3" data-depth="-0.14" filter="url(#inkDry)" opacity=".65">
+        <path fill="none" stroke="#2a2723" stroke-width="2.2" d="M-20,36 C40,62 92,72 148,112 C182,138 202,168 216,202"/>
+        <path fill="none" stroke="#2a2723" stroke-width="1.4" d="M104,84 C138,104 160,132 172,166"/>
+        <path fill="#2a2723" d="M152,146 q22,-14 46,-7 q-20,16 -46,7 Z"/>
+        <path fill="#2a2723" d="M182,182 q24,-9 44,3 q-22,12 -44,-3 Z"/>
+        <path fill="#2a2723" d="M204,214 q20,-16 42,-10 q-16,17 -42,10 Z"/>
+        <path fill="#2a2723" opacity=".7" d="M126,116 q18,-13 38,-8 q-15,15 -38,8 Z"/>
+      </g>
+      <!-- 一雙遠鳥 -->
+      <g class="birds bloom b4" data-depth="0.02" opacity=".55">
+        <path fill="none" stroke="#2a2723" stroke-width="1.6" stroke-linecap="round" d="M560,300 q11,-10 22,0 M582,300 q11,-10 22,0"/>
+        <path fill="none" stroke="#2a2723" stroke-width="1.4" stroke-linecap="round" d="M628,330 q9,-8 18,0 M646,330 q9,-8 18,0"/>
+      </g>
+    </svg>
+
+    <div class="inscription inscription-main">
+      <h1 class="v big bloom">入畫</h1>
+      <p class="v line bloom b3">墨分五色<br>紙上自有山河</p>
+      <p class="v tiny bloom b4">此頁非頁 · 乃一卷</p>
+    </div>
+
+    <div class="drop-hint bloom b4" id="dropHint">
+      <span class="word">徐 行</span>
+      <span class="thread"></span>
+    </div>
+  </section>
+
+  <!-- ═══════════ 卷一 · 遠山 ═══════════ -->
+  <section class="scene" id="s1" aria-label="卷一 遠山">
+    <svg class="stage" viewBox="0 0 1440 1200" preserveAspectRatio="xMidYMid slice">
+      <g data-depth="0.14" filter="url(#inkWash)" opacity=".26">
+        <path fill="url(#washFar)" d="M-40,540 C180,500 300,452 470,474 C620,492 720,440 880,458 C1030,474 1150,430 1300,452 C1390,464 1440,452 1480,458 L1480,700 C1200,720 800,730 400,722 C240,718 60,708 -40,700 Z"/>
+      </g>
+      <g data-depth="0.1" filter="url(#inkWash)" opacity=".3">
+        <path fill="url(#washBlue)" d="M-40,640 C160,610 280,566 450,588 C610,608 700,566 860,582 C1020,596 1140,558 1300,580 C1390,592 1440,582 1480,588 L1480,800 C1100,818 600,822 200,810 C110,806 20,800 -40,796 Z"/>
+      </g>
+      <g class="drift-b" data-depth="0.06" filter="url(#mistBlur)" opacity=".9">
+        <ellipse cx="700" cy="640" rx="480" ry="54" fill="#f4f0e6"/>
+      </g>
+    </svg>
+
+    <div class="body-block" style="top:18%; left:clamp(24px,12vw,220px);">
+      <span class="chapter-mark reveal">卷一 · 遠山</span>
+    </div>
+    <div class="body-block" style="top:34%; left:clamp(24px,14vw,300px); max-width:min(560px,80vw);">
+      <p class="prose reveal">最遠的山，其實沒有畫。<br>只是讓紙，留住了一點灰。</p>
+      <p class="prose reveal" style="--d:.5s">眼睛自己會往那裡走——<br>這就是<em>淡墨</em>的用處：<br>不說出來，只是指一指。</p>
+    </div>
+  </section>
+
+  <!-- ═══════════ 卷二 · 雲行 ═══════════ -->
+  <section class="scene" id="s2" aria-label="卷二 雲行">
+    <svg class="stage" viewBox="0 0 1440 1400" preserveAspectRatio="xMidYMid slice">
+      <!-- 遠山群 -->
+      <g data-depth="0.13" filter="url(#inkWash)" opacity=".4">
+        <path fill="url(#washFar)" d="M-40,470 C120,430 240,380 400,404 C540,424 640,368 800,390 C960,410 1080,360 1240,386 C1340,402 1420,392 1480,398 L1480,700 L-40,700 Z"/>
+      </g>
+      <!-- 中山 · 立體些 -->
+      <g data-depth="0.07" filter="url(#inkEdge)" opacity=".85">
+        <path fill="url(#washMid)" d="M-40,780
+          C10,724 60,660 118,600
+          C166,550 216,506 272,474
+          C300,458 328,450 354,452
+          C398,478 442,524 484,584
+          C532,652 584,718 640,772
+          C662,792 682,808 700,820 L700,1000 L-40,1000 Z"/>
+        <path fill="url(#washPeak)" opacity=".6" d="M470,900
+          C524,802 582,704 652,616
+          C692,566 734,524 778,494
+          C800,480 822,474 844,478
+          C884,502 922,546 958,602
+          C972,580 986,568 1002,564
+          C1044,596 1086,654 1128,722
+          C1166,784 1200,844 1226,896 L1226,1080 L470,1080 Z"/>
+        <path fill="none" stroke="#2a2723" stroke-opacity=".28" stroke-width="1.8" d="M842,486 C830,566 810,652 780,742 C762,794 742,842 722,884"/>
+        <path fill="none" stroke="#2a2723" stroke-opacity=".18" stroke-width="1.4" d="M1000,574 C1014,646 1036,724 1064,802"/>
+      </g>
+      <!-- 雲海 · 兩層 -->
+      <g class="drift-a" data-depth="0.045" filter="url(#mistBlur)">
+        <ellipse cx="420" cy="800" rx="420" ry="58" fill="#f4f0e6" opacity=".95"/>
+        <ellipse cx="1100" cy="860" rx="460" ry="64" fill="#f4f0e6" opacity=".9"/>
+      </g>
+      <g class="drift-b" data-depth="0.03" filter="url(#mistBlur)" opacity=".75">
+        <ellipse cx="760" cy="960" rx="560" ry="70" fill="#f4f0e6"/>
+      </g>
+      <!-- 水面 · 一線 -->
+      <g data-depth="-0.02" opacity=".5">
+        <path fill="none" stroke="#7c8b8e" stroke-opacity=".5" stroke-width="1.4" d="M100,1120 C400,1112 900,1112 1380,1122"/>
+        <path fill="none" stroke="#7c8b8e" stroke-opacity=".3" stroke-width="1" d="M240,1150 C560,1144 940,1144 1260,1152"/>
+      </g>
+      <!-- 群鳥南遷 -->
+      <g class="birds" data-depth="0.02" opacity=".6">
+        <path fill="none" stroke="#2a2723" stroke-width="1.5" stroke-linecap="round"
+          d="M980,300 q10,-9 20,0 M1000,300 q10,-9 20,0
+             M1040,282 q9,-8 18,0 M1058,282 q9,-8 18,0
+             M1090,312 q8,-7 16,0 M1106,312 q8,-7 16,0"/>
+      </g>
+    </svg>
+
+    <div class="body-block" style="top:12%; right:clamp(24px,12vw,220px);">
+      <span class="chapter-mark reveal">卷二 · 雲行</span>
+    </div>
+    <div class="body-block" style="top:24%; right:clamp(60px,16vw,340px); max-width:min(520px,78vw);">
+      <p class="prose reveal">雲不趕路。<br>它只是路過山，順便把山藏了一半。</p>
+      <p class="prose reveal" style="--d:.5s">被藏起來的那一半，<br>比畫出來的那一半<em>更高</em>。</p>
+    </div>
+  </section>
+
+  <!-- ═══════════ 卷三 · 棲居 ═══════════ -->
+  <section class="scene" id="s3" aria-label="卷三 棲居">
+    <svg class="stage" viewBox="0 0 1440 1500" preserveAspectRatio="xMidYMid slice">
+      <!-- 背景山 -->
+      <g data-depth="0.11" filter="url(#inkWash)" opacity=".35">
+        <path fill="url(#washFar)" d="M-40,420 C200,376 360,330 560,356 C720,376 840,330 1020,352 C1180,372 1320,340 1480,360 L1480,640 L-40,640 Z"/>
+      </g>
+      <g data-depth="0.07" filter="url(#inkEdge)" opacity=".7">
+        <path fill="url(#washMid)" d="M900,760 C960,650 1040,540 1140,460 C1190,420 1240,392 1290,374 C1340,410 1390,470 1440,540 L1480,600 L1480,860 L900,860 Z"/>
+      </g>
+      <!-- 崖上之亭 -->
+      <g data-depth="0.04" filter="url(#inkDry)" opacity=".88">
+        <!-- 崖 -->
+        <path fill="url(#washPeak)" d="M110,860
+          C136,796 168,738 210,690
+          C244,652 282,626 324,614
+          C348,608 370,608 392,616
+          C424,634 454,664 480,706
+          C508,752 532,806 550,860 L550,940 L110,940 Z"/>
+        <!-- 亭 -->
+        <g transform="translate(300,556)" stroke="#2a2723" fill="none" stroke-width="2.4" stroke-linecap="round">
+          <path d="M-6,36 Q34,-12 74,36" stroke-width="3"/>
+          <path d="M2,36 Q34,0 66,36" stroke-width="1.6" opacity=".7"/>
+          <path d="M34,-4 L34,4" stroke-width="2"/>
+          <line x1="8" y1="38" x2="8" y2="66"/>
+          <line x1="60" y1="38" x2="60" y2="66"/>
+          <line x1="-2" y1="68" x2="70" y2="68" stroke-width="2.8"/>
+        </g>
+        <!-- 松 · 斜出崖外 -->
+        <path fill="none" stroke="#2a2723" stroke-width="2.2" d="M180,760 C220,730 268,712 320,706 C300,712 260,724 236,742"/>
+        <path fill="#2a2723" opacity=".85" d="M300,690 q34,-14 66,-4 q-30,20 -66,4 Z"/>
+        <path fill="#2a2723" opacity=".7" d="M250,714 q30,-16 60,-8 q-26,20 -60,8 Z"/>
+      </g>
+      <!-- 橋 -->
+      <g data-depth="0.02" filter="url(#inkDry)" opacity=".8" stroke="#2a2723" fill="none">
+        <path stroke-width="2.6" d="M560,1030 Q680,952 800,1030"/>
+        <path stroke-width="1.4" opacity=".6" d="M572,1042 Q680,970 788,1042"/>
+        <line x1="616" y1="1004" x2="616" y2="1034" stroke-width="1.4"/>
+        <line x1="680" y1="988" x2="680" y2="1018" stroke-width="1.4"/>
+        <line x1="744" y1="1004" x2="744" y2="1034" stroke-width="1.4"/>
+      </g>
+      <!-- 水與舟 -->
+      <g data-depth="-0.015">
+        <path fill="none" stroke="#7c8b8e" stroke-opacity=".45" stroke-width="1.3" d="M80,1120 C420,1110 980,1110 1400,1120"/>
+        <g class="boat" filter="url(#inkDry)" opacity=".8">
+          <path fill="#2a2723" d="M960,1100 Q1000,1114 1040,1100 L1032,1106 Q1000,1116 968,1106 Z"/>
+          <line x1="996" y1="1070" x2="996" y2="1100" stroke="#2a2723" stroke-width="1.6"/>
+          <path fill="none" stroke="#2a2723" stroke-width="1.3" d="M996,1078 q14,8 6,22"/>
+        </g>
+        <!-- 倒影 -->
+        <g opacity=".14" transform="translate(0,2216) scale(1,-1)" filter="url(#mistBlur)">
+          <path fill="#2a2723" d="M960,1100 Q1000,1114 1040,1100 L1032,1106 Q1000,1116 968,1106 Z"/>
+        </g>
+      </g>
+      <!-- 右緣竹 -->
+      <g data-depth="-0.12" filter="url(#inkDry)" opacity=".65">
+        <path fill="none" stroke="#2a2723" stroke-width="3" d="M1420,1500 C1408,1380 1402,1260 1406,1140 C1408,1080 1414,1020 1424,960"/>
+        <path fill="none" stroke="#2a2723" stroke-width="1.6" d="M1408,1240 C1382,1216 1360,1186 1346,1152"/>
+        <path fill="#2a2723" d="M1350,1160 q-30,-22 -36,-52 q30,18 36,52 Z"/>
+        <path fill="#2a2723" d="M1368,1190 q-36,-12 -52,-38 q34,8 52,38 Z"/>
+        <path fill="#2a2723" opacity=".8" d="M1402,1100 q-26,-26 -28,-58 q26,22 28,58 Z"/>
+      </g>
+    </svg>
+
+    <div class="body-block" style="top:9%; left:clamp(24px,11vw,200px);">
+      <span class="chapter-mark reveal">卷三 · 棲居</span>
+    </div>
+    <div class="body-block" style="top:20%; left:clamp(40px,13vw,260px); max-width:min(500px,78vw);">
+      <p class="prose reveal">山水不是風景，是可以住進去的地方。<br>畫裡的人從不著急，<br>因為畫外的時間，追不進來。</p>
+    </div>
+
+    <!-- 藏字 · 停留其上，淡墨轉深 -->
+    <div class="body-block notes-row reveal" style="top:46%; right:clamp(50px,18vw,340px); display:flex; gap:clamp(40px,6vw,96px);">
+      <span class="v veil" style="font-size:clamp(30px,3.4vw,46px); font-weight:300;">亭
+        <span class="note">供人歇腳<br>也供雨歇腳</span>
+      </span>
+      <span class="v veil" style="font-size:clamp(30px,3.4vw,46px); font-weight:300;">橋
+        <span class="note">兩岸原不相識<br>一彎便成鄰</span>
+      </span>
+      <span class="v veil" style="font-size:clamp(30px,3.4vw,46px); font-weight:300;">舟
+        <span class="note">不繫之舟<br>是水的一枚閒章</span>
+      </span>
+    </div>
+    <div class="body-block reveal" style="top:44%; right:clamp(30px,10vw,180px);">
+      <p class="v tiny" style="color:var(--ink-mid); font-family:var(--kai); font-size:11.5px; letter-spacing:.4em;">凡淡處 · 皆可久留</p>
+    </div>
+  </section>
+
+  <!-- ═══════════ 卷四 · 墨深 ═══════════ -->
+  <section class="scene" id="s4" aria-label="卷四 墨深">
+    <svg class="stage" viewBox="0 0 1440 1600" preserveAspectRatio="xMidYMid slice">
+      <!-- 濃墨浸開，上下皆以亂邊入紙，不見疆界 -->
+      <g filter="url(#inkWash)">
+        <path fill="url(#deepPool)" d="M-60,120 C240,60 560,150 860,96 C1120,50 1330,130 1500,84 L1500,1500 C1220,1560 900,1480 620,1540 C380,1588 140,1520 -60,1560 Z"/>
+      </g>
+      <!-- 墨中之山 · 以紙色鏤出稜線 -->
+      <g data-depth="0.06" filter="url(#inkEdge)" opacity=".5">
+        <path fill="none" stroke="#f4f0e6" stroke-opacity=".3" stroke-width="1.6"
+          d="M120,900 C300,780 420,660 560,600 C660,676 740,790 840,880"/>
+        <path fill="none" stroke="#f4f0e6" stroke-opacity=".2" stroke-width="1.2"
+          d="M700,1000 C880,880 1000,780 1140,720 C1230,790 1310,880 1390,960"/>
+      </g>
+      <!-- 月 -->
+      <g class="moon" data-depth="0.1">
+        <circle cx="1080" cy="420" r="150" fill="url(#moonGlow)"/>
+        <circle cx="1080" cy="420" r="52" fill="#efeadd" opacity=".92" filter="url(#bleedFine)"/>
+      </g>
+      <!-- 一鳥橫渡 -->
+      <g class="birds" opacity=".7">
+        <path fill="none" stroke="#e8e3d5" stroke-width="1.6" stroke-linecap="round" d="M600,480 q12,-10 24,0 M624,480 q12,-10 24,0"/>
+      </g>
+    </svg>
+
+    <div class="body-block" style="top:22%; left:clamp(24px,12vw,220px);">
+      <span class="chapter-mark reveal">卷四 · 墨深</span>
+    </div>
+    <div class="body-block" style="top:33%; left:clamp(40px,14vw,300px); max-width:min(540px,78vw);">
+      <p class="prose reveal">墨到最深處，<br>光才有地方可以停。</p>
+      <p class="prose reveal" style="--d:.5s">夜不是山水的結束。<br>是山水閉上眼睛，<br><em>換一種方式醒著</em>。</p>
+    </div>
+    <div class="body-block reveal" style="bottom:16%; right:clamp(30px,12vw,220px);">
+      <p class="v" style="font-family:var(--kai); font-size:13px; letter-spacing:.5em; color:#8f897b; line-height:2.4;">焦墨一點 · 抵過千言</p>
+    </div>
+  </section>
+
+  <!-- ═══════════ 卷五 · 歸白 ═══════════ -->
+  <section class="scene" id="s5" aria-label="卷五 歸白">
+    <svg class="stage" viewBox="0 0 1440 1100" preserveAspectRatio="xMidYMid slice">
+      <g data-depth="0.1" filter="url(#inkWash)" opacity=".16">
+        <path fill="url(#washFar)" d="M-40,760 C300,730 700,726 1100,738 C1260,742 1400,750 1480,756 L1480,820 L-40,820 Z"/>
+      </g>
+      <g data-depth="-0.03" opacity=".4">
+        <path fill="none" stroke="#8b8679" stroke-opacity=".5" stroke-width="1.2" d="M420,880 C640,874 900,874 1060,880"/>
+      </g>
+    </svg>
+
+    <div class="colophon">
+      <div class="reveal">
+        <p class="v end-line">看完一卷山水<br>把眼睛還給白</p>
+      </div>
+      <div class="reveal" style="--d:.6s">
+        <p class="v credits">乙巳年秋 · 手寫此卷<br>以墨為空氣 · 以白為地</p>
+      </div>
+      <div class="reveal" style="--d:1.1s">
+        <div class="seal" aria-label="印：觀">觀</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(() => {
+  "use strict";
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const paper = { r:244, g:240, b:230 };
+
+  /* ————— 滾動揭示：墨暈浮現 ————— */
+  const io = new IntersectionObserver(entries => {
+    for (const e of entries) if (e.isIntersecting) { e.target.classList.add("on"); io.unobserve(e.target); }
+  }, { threshold: 0.18, rootMargin: "0px 0px -8% 0px" });
+  document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+
+  /* ————— 視差：遠中近，各自的速度 ————— */
+  const layers = [...document.querySelectorAll("[data-depth]")].map(el => ({
+    el, depth: parseFloat(el.dataset.depth), center: 0
+  }));
+  let vh = innerHeight;
+  function measure(){
+    vh = innerHeight;
+    const sy = scrollY;
+    for (const l of layers){
+      const host = l.el.closest(".scene");
+      const r = host.getBoundingClientRect();
+      l.center = sy + r.top + r.height / 2;
+    }
+  }
+  measure();
+  addEventListener("resize", measure);
+  addEventListener("load", measure);
+
+  /* ————— 行進之線 / 徐行提示 ————— */
+  const dot = document.querySelector("#progress .dot");
+  const hint = document.getElementById("dropHint");
+
+  /* ————— 墨霧畫布 ————— */
+  const cv = document.getElementById("mist");
+  const cx = cv.getContext("2d");
+  let W = 0, H = 0, dpr = 1;
+  function sizeCanvas(){
+    dpr = Math.min(devicePixelRatio || 1, 1.6);
+    W = innerWidth; H = innerHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  sizeCanvas();
+  addEventListener("resize", sizeCanvas);
+
+  /* 霧 · 六朵，緩慢漂移，微微避讓游標 */
+  const blobs = Array.from({length: 6}, (_, i) => ({
+    x: Math.random() * innerWidth,
+    y: Math.random() * innerHeight,
+    r: 200 + Math.random() * 260,
+    p1: Math.random() * 1000,
+    p2: Math.random() * 1000,
+    s: 0.00006 + Math.random() * 0.00008,
+    a: 0.05 + Math.random() * 0.05
+  }));
+
+  /* 游標 · 延遲跟隨的墨痕 */
+  const mouse = { x: innerWidth/2, y: innerHeight/2, has:false };
+  const brush = { x: innerWidth/2, y: innerHeight/2 };
+  addEventListener("pointermove", e => { mouse.x = e.clientX; mouse.y = e.clientY; mouse.has = true; }, { passive:true });
+
+  /* 墨痕以離屏畫布累積，緩慢淡去 */
+  const trail = document.createElement("canvas");
+  const tx = trail.getContext("2d");
+  function sizeTrail(){ trail.width = cv.width; trail.height = cv.height; tx.setTransform(dpr,0,0,dpr,0,0); }
+  sizeTrail();
+  addEventListener("resize", sizeTrail);
+
+  /* ————— 濾鏡的呼吸：墨邊極緩地流 ————— */
+  const turb = document.getElementById("turbMain");
+  let turbTick = 0;
+
+  /* ————— 主迴圈 ————— */
+  let smooth = scrollY, target = scrollY;
+  let t0 = performance.now();
+
+  function frame(now){
+    const t = now - t0;
+    target = scrollY;
+    smooth += (target - smooth) * 0.07;
+
+    /* 視差 */
+    const viewCenter = smooth + vh / 2;
+    for (const l of layers){
+      const off = (viewCenter - l.center) * l.depth;
+      l.el.style.transform = `translate3d(0, ${off.toFixed(2)}px, 0)`;
+    }
+
+    /* 進度 */
+    const max = document.documentElement.scrollHeight - vh;
+    if (dot) dot.style.top = `${(max > 0 ? smooth / max : 0) * 100}%`;
+    if (hint) hint.style.opacity = smooth > 60 ? "0" : "1";
+
+    if (!reduced){
+      /* 墨邊呼吸：每 8 幀微調一次頻率 */
+      if (++turbTick % 8 === 0 && turb){
+        const bf = 0.013 + Math.sin(t * 0.00005) * 0.0018;
+        turb.setAttribute("baseFrequency", `${bf.toFixed(5)} ${(bf * 1.45).toFixed(5)}`);
+      }
+
+      /* 墨痕 · 淡去 */
+      tx.globalCompositeOperation = "destination-out";
+      tx.fillStyle = "rgba(0,0,0,0.016)";
+      tx.fillRect(0, 0, W, H);
+      tx.globalCompositeOperation = "source-over";
+
+      /* 墨痕 · 落筆（延遲跟隨） */
+      if (mouse.has){
+        brush.x += (mouse.x - brush.x) * 0.045;
+        brush.y += (mouse.y - brush.y) * 0.045;
+        const g = tx.createRadialGradient(brush.x, brush.y, 0, brush.x, brush.y, 46);
+        g.addColorStop(0, "rgba(42,39,35,0.05)");
+        g.addColorStop(1, "rgba(42,39,35,0)");
+        tx.fillStyle = g;
+        tx.beginPath();
+        tx.arc(brush.x, brush.y, 46, 0, Math.PI * 2);
+        tx.fill();
+      }
+
+      /* 合成 */
+      cx.clearRect(0, 0, W, H);
+      cx.drawImage(trail, 0, 0, W, H);
+
+      /* 霧 */
+      for (const b of blobs){
+        const nx = Math.sin(t * b.s + b.p1) * 90 + Math.sin(t * b.s * 1.7 + b.p2) * 50;
+        const ny = Math.cos(t * b.s * 0.8 + b.p2) * 60;
+        let bx = b.x + nx, by = b.y + ny;
+        if (mouse.has){
+          const dx = bx - mouse.x, dy = by - mouse.y;
+          const d2 = dx*dx + dy*dy;
+          if (d2 < 240*240){
+            const d = Math.sqrt(d2) || 1;
+            const push = (240 - d) / 240 * 22;
+            bx += dx / d * push; by += dy / d * push;
+          }
+        }
+        const g = cx.createRadialGradient(bx, by, 0, bx, by, b.r);
+        g.addColorStop(0, `rgba(${paper.r},${paper.g},${paper.b},${b.a})`);
+        g.addColorStop(1, `rgba(${paper.r},${paper.g},${paper.b},0)`);
+        cx.fillStyle = g;
+        cx.beginPath();
+        cx.arc(bx, by, b.r, 0, Math.PI * 2);
+        cx.fill();
+      }
+    }
+
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
