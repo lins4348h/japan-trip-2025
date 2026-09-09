@@ -79,9 +79,21 @@ python3 build_aincrad.py --quality high --render --shots 01,04,08 --samples 128
 
 輸出在 `renders/`。算圖引擎為 Cycles（CPU），已開啟自適應取樣與 OpenImageDenoise。
 
+### 怎麼打開場景檔（不需要寫任何程式）
+
+1. **裝 Blender**：到 [blender.org/download](https://www.blender.org/download/) 下載 4.5 LTS 或更新版（免費，Windows／macOS 皆可），一路下一步安裝完成。
+2. **拿檔案**：直接用本專案的 `aincrad/aincrad_scene.blend`（已壓縮，20.7 MB）。
+3. **開啟**：雙擊該檔，或開 Blender 後 `File → Open` 選它。第一次載入約需 10–30 秒。
+4. **看鏡頭**：按 `Numpad 0` 進入攝影機視角。要換鏡頭，在右上角 Outliner 點選想要的攝影機（例如 `05_town_aerial`），再按 `Ctrl + Numpad 0`。
+5. **自由飛行**：把滑鼠移到 3D 視窗中央，按 `` Shift + ` ``（Esc 下面那顆鍵）進入飛行模式 → `W/A/S/D` 前後左右、`E/Q` 上升下降、移動滑鼠轉向、滾輪調整速度、左鍵確認、`Esc` 取消。
+6. **顯示模式**：右上角四顆小球，由左到右是線框／實體／材質預覽／算圖預覽。大場景先用**實體**最順，想看材質再切材質預覽。
+7. **筆電沒有數字鍵盤**：`Edit → Preferences → Input → 勾選 Emulate Numpad`，之後用主鍵盤的 `0` 就等於 `Numpad 0`。
+8. **跑不動時**：Outliner 裡把 `01_Exterior`（百層外殼）眼睛圖示關掉，室內瀏覽會快很多。
+9. **想出圖**：按 `F12` 算目前攝影機的畫面。CPU 算圖很慢（1600×900 約 5–10 分鐘），算完在該視窗 `Alt + S` 存檔。
+
 ### 自由探索
 
-用 Blender 開啟 `out/aincrad.blend`：
+用 Blender 開啟 `aincrad/aincrad_scene.blend`（或自行建構的 `out/aincrad.blend`）：
 
 - `` ` ``（重音符）→ 選 **Fly/Walk Navigation**，或按 `Shift + ~` 直接飛行；`W/A/S/D` 移動、滑鼠轉向
 - `Numpad 0` 切換攝影機；場景已內建 17 台命名攝影機（見下表）
