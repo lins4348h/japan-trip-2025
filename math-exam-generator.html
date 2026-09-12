@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>數學出題助手 | 國中數學教師專業備課與試卷生成系統</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        if (window.tailwind) tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#2563eb',
+                            600: '#1d4ed8',
+                            700: '#1e40af',
+                            900: '#1e3a8a',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans TC', 'system-ui', 'sans-serif'],
+                        serif: ['Times New Roman', 'Noto Serif TC', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts for Traditional Chinese & Math -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- KaTeX for Math Formula rendering: 必須先載入 katex 核心，auto-render 才能運作 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+    <!-- html2pdf.js for Reliable Mobile PDF Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- Lucide Icons: 改用 jsdelivr 固定版本，避免 unpkg 被 CSP 擋掉 -->
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.454.0/dist/umd/lucide.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Noto Sans TC', 'Inter', sans-serif;
+            background-color: #f1f5f9;
+            color: #0f172a;
+        }
+
+        /* Paper visual container with standard A4 aspect */
+        .a4-paper {
+            width: 100%;
+            max-width: 210mm;
+            min-height: 297mm;
+            padding: 1.25rem;
+            background: #ffffff;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            margin: 0 auto;
+            position: relative;
+            box-sizing: border-box;
+            word-wrap: break-word;
+        }
+
+        @media (min-width: 768px) {
+            .a4-paper {
+                width: 210mm;
+                padding: 16mm 14mm;
+            }
+        }
+
+        /* 2-Column layout mode for Taiwanese style test paper */
+        .paper-columns-2 {
+            column-count: 2;
+            column-gap: 24px;
+            column-rule: 1px dashed #cbd5e1;
+        }
+
+        .paper-columns-2 .section-block,
+        .paper-columns-2 .question-card {
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        /* Math formula formatting & overflow handling */
+        .math-content {
+            font-family: 'Noto Serif TC', 'Times New Roman', serif;
+            line-height: 1.7;
+        }
+
+        .katex-display {
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 0.2rem 0;
+            margin: 0.4em 0 !important;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        @keyframes pulse-subtle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        .animate-pulse-subtle {
+            animation: pulse-subtle 2s infinite ease-in-out;
+        }
+
+        /* Mobile & Desktop Print Optimization */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 8mm 10mm;
+            }
+
+            html, body {
+                background: #ffffff !important;
+                color: #000000 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
+                height: auto !important;
+                min-height: 0 !important;
+                overflow: visible !important;
+                font-size: 10.5pt !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .h-screen, .overflow-hidden, .overflow-y-auto, .flex-1, main, #sidebarPanel, #paperCanvas, div {
+                height: auto !important;
+                min-height: 0 !important;
+                max-height: none !important;
+                overflow: visible !important;
+                position: static !important;
+                display: block !important;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .a4-paper {
+                box-shadow: none !important;
+                border: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                min-height: auto !important;
+            }
+
+            .question-card,
+            .section-block {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+
+            .katex {
+                font-size: 1.05em !important;
+            }
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden bg-slate-100">
+
+    <!-- Header Toolbar -->
+    <header class="no-print bg-white border-b border-slate-200 px-3 sm:px-6 py-2.5 flex items-center justify-between z-20 shrink-0 shadow-sm">
+        <div class="flex items-center space-x-2 sm:space-x-3">
+            <div class="bg-brand-600 text-white p-2 rounded-xl flex items-center justify-center shrink-0 shadow-md">
+                <i data-lucide="calculator" class="w-5 h-5"></i>
+            </div>
+            <div>
+                <h1 class="text-sm sm:text-base font-bold text-slate-800 leading-tight flex items-center space-x-2">
+                    <span>數學出題助手</span>
+                    <span class="text-[10px] font-normal px-2 py-0.5 bg-brand-50 text-brand-700 border border-brand-200 rounded-full">Gemini AI 加強版</span>
+                </h1>
+                <p class="hidden sm:block text-xs text-slate-500">專業備課、AI原創動態命題與雙欄考卷 PDF 匯出</p>
+            </div>
+        </div>
+
+        <!-- Mode Toggle & Action Buttons -->
+        <div class="flex items-center space-x-1.5 sm:space-x-2">
+            <!-- View Mode Switcher -->
+            <div class="bg-slate-100 p-1 rounded-lg border border-slate-200 flex space-x-0.5">
+                <button id="viewExamBtn" onclick="switchView('exam')" class="px-2.5 py-1 text-xs font-semibold rounded-md transition-all flex items-center space-x-1 bg-white text-slate-800 shadow-sm">
+                    <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+                    <span class="hidden sm:inline">學生卷</span>
+                </button>
+                <button id="viewAnswerBtn" onclick="switchView('answer')" class="px-2.5 py-1 text-xs font-semibold rounded-md transition-all flex items-center space-x-1 text-slate-600 hover:text-slate-900">
+                    <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600"></i>
+                    <span class="hidden sm:inline">解答卷</span>
+                </button>
+            </div>
+
+            <!-- Column Switcher -->
+            <button onclick="toggleColumns()" id="colToggleBtn" title="切換單欄/雙欄版面" class="px-2.5 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-lg transition-all hidden md:flex items-center space-x-1">
+                <i data-lucide="columns-2" class="w-3.5 h-3.5"></i>
+                <span id="colToggleText">單欄版面</span>
+            </button>
+
+            <!-- Direct PDF Export (Mobile Optimization) -->
+            <button onclick="exportToPdf()" title="手機一鍵生成 PDF 檔案" class="px-3 py-1.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-all flex items-center space-x-1 shadow-sm active:scale-95">
+                <i data-lucide="file-down" class="w-4 h-4"></i>
+                <span>下載 PDF</span>
+            </button>
+
+            <!-- Native Print -->
+            <button onclick="triggerPrintToPdf()" title="開啟瀏覽器列印視窗" class="px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-lg transition-all flex items-center space-x-1">
+                <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                <span class="hidden sm:inline">列印</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation Tab Switcher -->
+    <div class="md:hidden no-print bg-slate-800 text-white border-b border-slate-700 px-3 py-1.5 flex items-center justify-between text-xs shrink-0 z-20">
+        <span class="font-medium text-slate-300 flex items-center space-x-1">
+            <i data-lucide="sliders" class="w-3.5 h-3.5 text-brand-400"></i>
+            <span id="mobileStatusText">出題設定</span>
+        </span>
+        <div class="flex bg-slate-900 p-0.5 rounded-lg border border-slate-700">
+            <button id="mobileTabSettingsBtn" onclick="switchMobileTab('settings')" class="px-3 py-1 rounded font-semibold bg-brand-600 text-white transition-all flex items-center space-x-1">
+                <i data-lucide="settings" class="w-3 h-3"></i>
+                <span>設定</span>
+            </button>
+            <button id="mobileTabPreviewBtn" onclick="switchMobileTab('preview')" class="px-3 py-1 rounded font-medium text-slate-400 hover:text-white transition-all flex items-center space-x-1">
+                <i data-lucide="eye" class="w-3 h-3"></i>
+                <span>試卷預覽</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Workspace Layout -->
+    <div class="flex-1 flex overflow-hidden relative">
+
+        <!-- Left Sidebar: Configuration Panel -->
+        <aside id="sidebarPanel" class="no-print w-full md:w-80 lg:w-96 bg-white border-r border-slate-200 flex flex-col shrink-0 overflow-y-auto z-10 md:z-auto md:static absolute inset-0 md:flex transition-all duration-200">
+            <div class="p-4 sm:p-5 space-y-5">
+
+                <!-- AI Status & Auto-Injection Banner -->
+                <div id="aiKeyAlert" class="bg-purple-50 border border-purple-200 p-3.5 rounded-xl text-xs text-purple-900 space-y-2">
+                    <div class="flex items-center justify-between font-bold">
+                        <span class="flex items-center space-x-1.5 text-purple-800">
+                            <i data-lucide="sparkles" class="w-4 h-4 text-purple-600"></i>
+                            <span>Gemini AI 命題狀態</span>
+                        </span>
+                        <span id="aiStatusBadge" class="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded-full text-[10px]">AI 自動注入模式</span>
+                    </div>
+                    <p id="aiStatusText" class="text-[11px] text-purple-700 leading-normal font-medium">
+                        生成時將自動使用執行環境（Gemini Canvas）注入的 API 金鑰進行 AI 命題；若連線失敗會自動改用內建題庫。
+                    </p>
+                </div>
+
+                <!-- 1. Grade Selection -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center justify-between">
+                        <span>一、年級與階段</span>
+                        <span class="text-brand-600 font-semibold text-xs" id="selectedGradeLabel">七年級</span>
+                    </label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button type="button" onclick="selectGrade('G7')" id="btnGradeG7" class="grade-btn px-3 py-2 text-xs font-medium border rounded-lg transition-all text-center border-brand-500 bg-brand-50 text-brand-700 font-semibold shadow-sm">
+                            七年級
+                        </button>
+                        <button type="button" onclick="selectGrade('G8')" id="btnGradeG8" class="grade-btn px-3 py-2 text-xs font-medium border border-slate-200 rounded-lg transition-all text-center text-slate-700 hover:bg-slate-50">
+                            八年級
+                        </button>
+                        <button type="button" onclick="selectGrade('G9')" id="btnGradeG9" class="grade-btn px-3 py-2 text-xs font-medium border border-slate-200 rounded-lg transition-all text-center text-slate-700 hover:bg-slate-50">
+                            九年級
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2. Unit Selection -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">二、選擇課程單元 (108課綱)</label>
+                    <select id="unitSelect" onchange="onUnitChange()" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-800 font-medium">
+                        <!-- Dynamic Options -->
+                    </select>
+                </div>
+
+                <!-- 3. Question Quantity -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">三、題目數量</label>
+                        <span class="text-xs font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded border border-brand-200" id="questionCountDisplay">12 題</span>
+                    </div>
+                    <div class="grid grid-cols-5 gap-1.5">
+                        <button type="button" onclick="setQuestionCount(8)" class="count-btn px-2 py-1.5 text-xs font-medium border border-slate-200 rounded hover:bg-slate-50 text-slate-700">8</button>
+                        <button type="button" onclick="setQuestionCount(12)" class="count-btn px-2 py-1.5 text-xs font-semibold border border-brand-500 bg-brand-50 text-brand-700 rounded">12</button>
+                        <button type="button" onclick="setQuestionCount(16)" class="count-btn px-2 py-1.5 text-xs font-medium border border-slate-200 rounded hover:bg-slate-50 text-slate-700">16</button>
+                        <button type="button" onclick="setQuestionCount(20)" class="count-btn px-2 py-1.5 text-xs font-medium border border-slate-200 rounded hover:bg-slate-50 text-slate-700">20</button>
+                        <button type="button" onclick="setQuestionCount(25)" class="count-btn px-2 py-1.5 text-xs font-medium border border-slate-200 rounded hover:bg-slate-50 text-slate-700">25</button>
+                    </div>
+                </div>
+
+                <!-- 4. Difficulty & Question Type -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">難度配比</label>
+                        <select id="difficultySelect" class="w-full text-xs px-2.5 py-2 border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-brand-500">
+                            <option value="mixed">混合 (標準配比)</option>
+                            <option value="easy">基礎 (概念熟練)</option>
+                            <option value="medium">中等 (進階運算)</option>
+                            <option value="hard">挑戰 (素養應用)</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">題型分佈</label>
+                        <select id="questionTypeSelect" class="w-full text-xs px-2.5 py-2 border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-brand-500">
+                            <option value="mixed">混合 (選擇+填充+計算)</option>
+                            <option value="mcq">純單選題</option>
+                            <option value="fill">純填充題</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 5. Options -->
+                <div class="space-y-2 pt-2 border-t border-slate-200">
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">卷面選項</label>
+                    <div class="space-y-2 text-xs text-slate-700">
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" id="optOrderDiff" class="rounded border-slate-300 text-brand-600 focus:ring-brand-500">
+                            <span>依難度由淺入深排列</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" id="optShuffle" class="rounded border-slate-300 text-brand-600 focus:ring-brand-500">
+                            <span>隨機打亂題目順序</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" id="optTwoColumns" class="rounded border-slate-300 text-brand-600 focus:ring-brand-500" onchange="toggleColumns(this.checked)">
+                            <span>啟用雙欄考卷排版</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Generation Buttons -->
+                <div class="pt-2 space-y-2">
+                    <button type="button" onclick="generateExam(true)" id="generateBtn" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-xl shadow-md border border-brand-700 transition-all flex items-center justify-center space-x-2 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-yellow-300"></i>
+                        <span>開始生成 / 更新試卷</span>
+                    </button>
+
+                    <button type="button" onclick="addManualQuestion()" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-lg border border-slate-300 transition-all flex items-center justify-center space-x-1.5">
+                        <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-brand-600"></i>
+                        <span>手動新增自訂題目</span>
+                    </button>
+                </div>
+
+                <!-- Accordion for Title Config -->
+                <details class="group text-xs pt-2 border-t border-slate-200">
+                    <summary class="cursor-pointer font-bold text-slate-700 hover:text-slate-900 flex items-center justify-between py-1">
+                        <span class="flex items-center space-x-1.5">
+                            <i data-lucide="file-type-2" class="w-3.5 h-3.5 text-brand-600"></i>
+                            <span>抬頭與校名設定</span>
+                        </span>
+                        <i data-lucide="chevron-down" class="w-3.5 h-3.5 group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <div class="mt-2 space-y-2 bg-slate-50 p-2.5 rounded border border-slate-200">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-600">學校名稱</label>
+                            <input type="text" id="cfgSchoolName" value="市立幸福國民中學" oninput="updateHeaderInfo()" class="w-full p-1.5 border rounded text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-600">考試名稱</label>
+                            <input type="text" id="cfgExamTitle" value="114學年度 數學科 平時測驗卷" oninput="updateHeaderInfo()" class="w-full p-1.5 border rounded text-xs">
+                        </div>
+                    </div>
+                </details>
+
+            </div>
+        </aside>
+
+        <!-- Right Main View: Paper Workspace -->
+        <main class="flex-1 bg-slate-200/80 overflow-y-auto p-3 sm:p-6 md:p-8 flex justify-center relative">
+
+            <!-- Prominent AI Generation Loading Modal / Overlay -->
+            <div id="loadingOverlay" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-md z-50 flex items-center justify-center p-4 transition-opacity">
+                <div class="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 max-w-md w-full text-center space-y-5 border border-purple-100 animate-pulse-subtle">
+                    <div class="relative w-20 h-20 mx-auto flex items-center justify-center">
+                        <div class="absolute inset-0 rounded-full bg-purple-500/20 animate-ping"></div>
+                        <div class="w-16 h-16 bg-gradient-to-tr from-purple-600 to-indigo-600 rounded-full flex items-center justify-center text-white shadow-xl">
+                            <i data-lucide="sparkles" class="w-8 h-8 animate-spin" style="animation-duration: 4s;"></i>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h3 id="loadingTitle" class="text-lg font-bold text-slate-900 tracking-wide">🤖 Gemini AI 正在出題中...</h3>
+                        <p id="loadingMessage" class="text-xs text-slate-600 leading-relaxed font-medium">
+                            正在分析108課綱目標，為您生成全新原創題型與詳細解題步驟...
+                        </p>
+                    </div>
+
+                    <!-- Progress Indicator Bar -->
+                    <div class="w-full bg-purple-100 rounded-full h-2.5 overflow-hidden">
+                        <div id="loadingProgressBar" class="bg-gradient-to-r from-purple-600 via-indigo-600 to-brand-600 h-full w-full animate-pulse"></div>
+                    </div>
+
+                    <p class="text-[11px] text-purple-700 bg-purple-50 py-2 px-3 rounded-lg border border-purple-100 font-medium flex items-center justify-center space-x-1">
+                        <i data-lucide="hourglass" class="w-3.5 h-3.5 text-purple-600"></i>
+                        <span>請稍候，題目生成與 KaTeX 數學渲染完畢後自動呈現</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Paper Sheet Canvas -->
+            <div id="paperCanvas" class="a4-paper text-slate-900 selection:bg-brand-100">
+
+                <!-- Exam Header Block -->
+                <div class="border-b-2 border-slate-900 pb-3 mb-5">
+                    <div class="flex justify-between items-start">
+                        <div class="text-left space-y-1">
+                            <h2 id="paperSchoolName" class="text-xl font-bold tracking-wide text-slate-900">市立幸福國民中學</h2>
+                            <h3 id="paperExamTitle" class="text-base font-semibold text-slate-800">114學年度 數學科 平時測驗卷</h3>
+                        </div>
+                        <div id="scoreBox" class="border-2 border-slate-900 px-4 py-1.5 text-center rounded min-w-[95px]">
+                            <div class="text-[10px] text-slate-600 font-bold uppercase tracking-wider">得分 / Score</div>
+                            <div class="text-xl font-bold text-slate-300">/ 100</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-3 flex flex-wrap items-center justify-between text-xs text-slate-800 font-medium pt-2 border-t border-slate-300">
+                        <div class="space-x-3">
+                            <span>年級：<strong id="paperGradeText">七年級</strong></span>
+                            <span>範圍：<strong id="paperUnitText">一元一次方程式的解法</strong></span>
+                        </div>
+                        <div class="space-x-4">
+                            <span>班級：______</span>
+                            <span>座號：___</span>
+                            <span>姓名：___________</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exam Content Area -->
+                <div id="paperBody" class="space-y-5">
+                    <!-- Dynamic Questions Container -->
+                </div>
+
+                <!-- Paper Footer -->
+                <div class="mt-10 pt-3 border-t border-slate-300 text-center text-[10px] text-slate-400 flex justify-between items-center font-mono">
+                    <span>國中數學出題助手 - 教師專業備課系統</span>
+                    <span>頁次：1 / 1</span>
+                    <span>詳細解題過程請參考解答卷</span>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Question Edit Modal -->
+    <div id="editModal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-3">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[92vh] flex flex-col overflow-hidden border border-slate-200">
+            <div class="px-5 py-3.5 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                <h3 class="font-bold text-slate-800 text-xs sm:text-sm flex items-center space-x-2">
+                    <i data-lucide="edit-3" class="w-4 h-4 text-brand-600"></i>
+                    <span id="modalTitle">編輯試題與解析</span>
+                </h3>
+                <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="p-4 sm:p-5 overflow-y-auto space-y-4 text-xs">
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="space-y-1">
+                        <label class="font-bold text-slate-700">題型類別</label>
+                        <select id="editCategory" onchange="onModalCategoryChange()" class="w-full p-2 border border-slate-300 rounded-lg">
+                            <option value="mcq">單選題</option>
+                            <option value="fill">填充題</option>
+                            <option value="calc">計算與應用題</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="font-bold text-slate-700">預設難度</label>
+                        <select id="editDifficulty" class="w-full p-2 border border-slate-300 rounded-lg">
+                            <option value="easy">基礎 (Easy)</option>
+                            <option value="medium">中等 (Medium)</option>
+                            <option value="hard">挑戰 (Hard)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="font-bold text-slate-700">題目敘述 (數學符號支援 KaTeX 語法 $...$)</label>
+                    <textarea id="editQuestionText" rows="3" placeholder="例如：若 $2x + 5 = 15$，求 $x$ 之值。" class="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-1 focus:ring-brand-500 font-mono text-xs"></textarea>
+                </div>
+
+                <div id="optionsEditContainer" class="space-y-2 border p-3 rounded-lg bg-slate-50 border-slate-200">
+                    <label class="font-bold text-slate-700 block mb-1">選項編輯 (選擇題適用)</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <div class="flex items-center space-x-1.5">
+                            <span class="font-bold text-slate-500 w-6">(A)</span>
+                            <input type="text" id="editOptA" placeholder="選項 A" class="flex-1 p-1.5 border border-slate-300 rounded">
+                        </div>
+                        <div class="flex items-center space-x-1.5">
+                            <span class="font-bold text-slate-500 w-6">(B)</span>
+                            <input type="text" id="editOptB" placeholder="選項 B" class="flex-1 p-1.5 border border-slate-300 rounded">
+                        </div>
+                        <div class="flex items-center space-x-1.5">
+                            <span class="font-bold text-slate-500 w-6">(C)</span>
+                            <input type="text" id="editOptC" placeholder="選項 C" class="flex-1 p-1.5 border border-slate-300 rounded">
+                        </div>
+                        <div class="flex items-center space-x-1.5">
+                            <span class="font-bold text-slate-500 w-6">(D)</span>
+                            <input type="text" id="editOptD" placeholder="選項 D" class="flex-1 p-1.5 border border-slate-300 rounded">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="font-bold text-slate-700">標準答案</label>
+                    <input type="text" id="editAnswer" placeholder="例如：A 或 5 或 x = 5" class="w-full p-2 border border-slate-300 rounded-lg font-bold text-brand-700">
+                </div>
+
+                <div class="space-y-1">
+                    <label class="font-bold text-slate-700">完整解題步驟與解析</label>
+                    <textarea id="editExplanation" rows="3" placeholder="詳細計算過程..." class="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-1 focus:ring-brand-500 font-mono text-xs"></textarea>
+                </div>
+            </div>
+
+            <div class="px-5 py-3 bg-slate-50 border-t border-slate-200 flex justify-end space-x-2">
+                <button onclick="closeEditModal()" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-100 font-medium">取消</button>
+                <button onclick="saveQuestionEdit()" class="px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 font-bold shadow-sm">儲存變更</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * Curriculum Database for Taiwan Junior High School Mathematics (108 Curriculum)
+         */
+        const CURRICULUM = {
+            G7: {
+                name: "七年級",
+                units: [
+                    { id: "g7_1", title: "1-1 正負數與數線" },
+                    { id: "g7_2", title: "1-2 整數的加減與乘除" },
+                    { id: "g7_3", title: "1-3 指數記法與科學記號" },
+                    { id: "g7_4", title: "2-1 因數與倍數" },
+                    { id: "g7_5", title: "2-2 分數的加減乘除" },
+                    { id: "g7_6", title: "3-1 一元一次方程式的解法" },
+                    { id: "g7_7", title: "3-2 一元一次方程式的應用" },
+                    { id: "g7_8", title: "4-1 二元一次聯立方程式" },
+                    { id: "g7_9", title: "5-1 比例式與正反比" },
+                    { id: "g7_10", title: "6-1 線型函數與直角座標" }
+                ]
+            },
+            G8: {
+                name: "八年級",
+                units: [
+                    { id: "g8_1", title: "1-1 乘法公式與多項式" },
+                    { id: "g8_2", title: "1-2 多項式的乘除運算" },
+                    { id: "g8_3", title: "2-1 平方根與根式運算" },
+                    { id: "g8_4", title: "2-2 畢氏定理與直角三角形" },
+                    { id: "g8_5", title: "3-1 因式分解與十字相乘" },
+                    { id: "g8_6", title: "4-1 一元二次方程式解法" },
+                    { id: "g8_7", title: "4-2 一元二次方程式應用" },
+                    { id: "g8_8", title: "5-1 等差數列與等差級數" },
+                    { id: "g8_9", title: "6-1 平行線與四邊形性質" }
+                ]
+            },
+            G9: {
+                name: "九年級",
+                units: [
+                    { id: "g9_1", title: "1-1 比例線段與相似三角形" },
+                    { id: "g9_2", title: "2-1 圓心角、圓周角與弧長" },
+                    { id: "g9_3", title: "3-1 三角形的外心、內心與重心" },
+                    { id: "g9_4", title: "4-1 二次函數圖形與頂點" },
+                    { id: "g9_5", title: "4-2 二次函數的最大值與最小值" },
+                    { id: "g9_6", title: "5-1 機率與古典機率算式" }
+                ]
+            }
+        };
+
+        /**
+         * Global Application State
+         */
+        let state = {
+            currentGrade: 'G7',
+            selectedUnitId: 'g7_6',
+            questionCount: 12,
+            difficulty: 'mixed',
+            questionType: 'mixed',
+            viewMode: 'exam',
+            isTwoColumns: false,
+            mobileTab: 'settings',
+            schoolName: '市立幸福國民中學',
+            examTitle: '114學年度 數學科 平時測驗卷',
+            questions: [],
+            editingIndex: -1,
+            isNewQuestion: false
+        };
+
+        // 外部函式庫可能被 CSP 擋掉或載入失敗，所有呼叫一律走安全包裝，
+        // 確保單一函式庫掛掉不會讓整個 App 停擺或卡在 loading。
+        function safeIcons() {
+            try {
+                if (window.lucide && typeof lucide.createIcons === 'function') {
+                    lucide.createIcons();
+                }
+            } catch (e) {
+                console.warn('Lucide icons unavailable:', e);
+            }
+        }
+
+        function safeRenderMath(el) {
+            try {
+                if (typeof renderMathInElement === 'function') {
+                    renderMathInElement(el, {
+                        delimiters: [
+                            { left: '$$', right: '$$', display: true },
+                            { left: '$', right: '$', display: false }
+                        ],
+                        throwOnError: false
+                    });
+                } else {
+                    console.warn('KaTeX auto-render 未載入，數學式將以原始文字顯示');
+                }
+            } catch (e) {
+                console.warn('KaTeX render failed:', e);
+            }
+        }
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                selectGrade('G7', false);
+                updateAiStatusUI();
+
+                if (window.innerWidth < 768) {
+                    switchMobileTab('settings');
+                }
+
+                renderEmptyPlaceholder();
+            } catch (e) {
+                console.error('Init error:', e);
+            }
+            safeIcons();
+        });
+
+        /**
+         * API 金鑰取得策略：
+         * 1. 明確設定的全域變數 / URL 參數 / localStorage
+         * 2. 都沒有時回傳空字串 "" —— 在 Gemini Canvas 環境中，
+         *    以空字串 key 呼叫 generativelanguage API 時，執行環境會自動注入金鑰。
+         *    因此「沒偵測到 key」不代表不能用 AI，一律先嘗試呼叫，失敗再退回內建題庫。
+         */
+        function getApiKey() {
+            if (typeof window !== 'undefined') {
+                if (window.GEMINI_API_KEY) return window.GEMINI_API_KEY;
+                if (window.geminiApiKey) return window.geminiApiKey;
+                if (window.API_KEY) return window.API_KEY;
+                if (window.process && window.process.env && window.process.env.GEMINI_API_KEY) {
+                    return window.process.env.GEMINI_API_KEY;
+                }
+
+                // URL Query Parameter
+                try {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const paramKey = urlParams.get('api_key') || urlParams.get('apiKey') || urlParams.get('key');
+                    if (paramKey) return paramKey;
+                } catch (e) {}
+
+                // Browser Local Storage fallback
+                try {
+                    const localKey = localStorage.getItem('gemini_api_key') || localStorage.getItem('GEMINI_API_KEY');
+                    if (localKey) return localKey;
+                } catch (e) {}
+            }
+            return '';
+        }
+
+        function updateAiStatusUI() {
+            const key = getApiKey();
+            const badge = document.getElementById('aiStatusBadge');
+            const text = document.getElementById('aiStatusText');
+
+            if (!badge || !text) return;
+
+            if (key) {
+                badge.className = "px-2.5 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded-full text-[10px]";
+                badge.textContent = "✅ AI 金鑰已注入";
+                text.textContent = "已偵測到 Gemini API 金鑰，點擊生成將全自動觸發 AI 動態原創命題與解析。";
+            } else {
+                badge.className = "px-2.5 py-0.5 bg-purple-100 text-purple-800 font-bold rounded-full text-[10px]";
+                badge.textContent = "✨ AI 自動注入模式";
+                text.textContent = "生成時將自動使用執行環境（Gemini Canvas）注入的 API 金鑰進行 AI 命題；若連線失敗會自動改用內建 108 課綱題庫。";
+            }
+        }
+
+        function renderEmptyPlaceholder() {
+            const paperBody = document.getElementById('paperBody');
+            paperBody.innerHTML = `
+                <div class="text-center py-16 px-4 border-2 border-dashed border-slate-200 rounded-2xl my-6 bg-slate-50/50">
+                    <div class="w-12 h-12 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-xs">
+                        <i data-lucide="sparkles" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-slate-800">尚未生成考題</h3>
+                    <p class="text-xs text-slate-500 mt-1 max-w-xs mx-auto leading-relaxed">請在左側選擇年級與單元，然後點擊「開始生成 / 更新試卷」按鈕即可立即自動出題。</p>
+                </div>
+            `;
+            safeIcons();
+        }
+
+        function switchMobileTab(tab) {
+            state.mobileTab = tab;
+            const sidebar = document.getElementById('sidebarPanel');
+            const settingsBtn = document.getElementById('mobileTabSettingsBtn');
+            const previewBtn = document.getElementById('mobileTabPreviewBtn');
+            const statusText = document.getElementById('mobileStatusText');
+
+            if (tab === 'settings') {
+                sidebar.classList.remove('hidden');
+                sidebar.classList.add('flex');
+                settingsBtn.className = "px-3 py-1 rounded font-semibold bg-brand-600 text-white transition-all flex items-center space-x-1";
+                previewBtn.className = "px-3 py-1 rounded font-medium text-slate-400 hover:text-white transition-all flex items-center space-x-1";
+                if (statusText) statusText.textContent = "出題設定";
+            } else {
+                sidebar.classList.remove('flex');
+                sidebar.classList.add('hidden');
+                previewBtn.className = "px-3 py-1 rounded font-semibold bg-brand-600 text-white transition-all flex items-center space-x-1";
+                settingsBtn.className = "px-3 py-1 rounded font-medium text-slate-400 hover:text-white transition-all flex items-center space-x-1";
+                if (statusText) statusText.textContent = "試卷預覽區";
+            }
+        }
+
+        function selectGrade(gradeKey, userAction = true) {
+            state.currentGrade = gradeKey;
+
+            document.querySelectorAll('.grade-btn').forEach(btn => {
+                btn.classList.remove('border-brand-500', 'bg-brand-50', 'text-brand-700', 'font-semibold', 'shadow-sm');
+                btn.classList.add('border-slate-200', 'text-slate-700');
+            });
+            const activeBtn = document.getElementById(`btnGrade${gradeKey}`);
+            if (activeBtn) {
+                activeBtn.classList.add('border-brand-500', 'bg-brand-50', 'text-brand-700', 'font-semibold', 'shadow-sm');
+                activeBtn.classList.remove('border-slate-200');
+            }
+
+            document.getElementById('selectedGradeLabel').textContent = CURRICULUM[gradeKey].name;
+
+            const unitSelect = document.getElementById('unitSelect');
+            unitSelect.innerHTML = '';
+            CURRICULUM[gradeKey].units.forEach(unit => {
+                const opt = document.createElement('option');
+                opt.value = unit.id;
+                opt.textContent = unit.title;
+                unitSelect.appendChild(opt);
+            });
+
+            state.selectedUnitId = CURRICULUM[gradeKey].units[0].id;
+
+            document.getElementById('paperGradeText').textContent = CURRICULUM[gradeKey].name;
+            const currentUnitObj = CURRICULUM[gradeKey].units.find(u => u.id === state.selectedUnitId);
+            document.getElementById('paperUnitText').textContent = currentUnitObj ? currentUnitObj.title : "";
+        }
+
+        function onUnitChange() {
+            state.selectedUnitId = document.getElementById('unitSelect').value;
+            const currentUnitObj = CURRICULUM[state.currentGrade].units.find(u => u.id === state.selectedUnitId);
+            if (currentUnitObj) {
+                document.getElementById('paperUnitText').textContent = currentUnitObj.title;
+            }
+        }
+
+        function setQuestionCount(count) {
+            state.questionCount = count;
+            document.getElementById('questionCountDisplay').textContent = `${count} 題`;
+
+            document.querySelectorAll('.count-btn').forEach(btn => {
+                if (parseInt(btn.textContent) === count) {
+                    btn.className = "count-btn px-2 py-1.5 text-xs font-semibold border border-brand-500 bg-brand-50 text-brand-700 rounded";
+                } else {
+                    btn.className = "count-btn px-2 py-1.5 text-xs font-medium border border-slate-200 rounded hover:bg-slate-50 text-slate-700";
+                }
+            });
+        }
+
+        function switchView(mode) {
+            state.viewMode = mode;
+            const examBtn = document.getElementById('viewExamBtn');
+            const ansBtn = document.getElementById('viewAnswerBtn');
+
+            if (mode === 'exam') {
+                examBtn.className = "px-2.5 py-1 text-xs font-semibold rounded-md transition-all flex items-center space-x-1 bg-white text-slate-800 shadow-sm";
+                ansBtn.className = "px-2.5 py-1 text-xs font-semibold rounded-md transition-all flex items-center space-x-1 text-slate-600 hover:text-slate-900";
+            } else {
+                ansBtn.className = "px-2.5 py-1 text-xs font-semibold rounded-md transition-all flex items-center space-x-1 bg-white text-emerald-800 shadow-sm";
+                examBtn.className = "px-2.5 py-1 text-xs font-semibold rounded-md transition-all flex items-center space-x-1 text-slate-600 hover:text-slate-900";
+            }
+
+            renderPaper();
+        }
+
+        function toggleColumns(forceState) {
+            state.isTwoColumns = forceState !== undefined ? forceState : !state.isTwoColumns;
+            document.getElementById('optTwoColumns').checked = state.isTwoColumns;
+            const paperBody = document.getElementById('paperBody');
+            const colBtnText = document.getElementById('colToggleText');
+
+            if (state.isTwoColumns) {
+                paperBody.classList.add('paper-columns-2');
+                if (colBtnText) colBtnText.textContent = "雙欄版面";
+            } else {
+                paperBody.classList.remove('paper-columns-2');
+                if (colBtnText) colBtnText.textContent = "單欄版面";
+            }
+        }
+
+        function updateHeaderInfo() {
+            state.schoolName = document.getElementById('cfgSchoolName').value || '市立國民中學';
+            state.examTitle = document.getElementById('cfgExamTitle').value || '數學科測驗卷';
+
+            document.getElementById('paperSchoolName').textContent = state.schoolName;
+            document.getElementById('paperExamTitle').textContent = state.examTitle;
+        }
+
+        /**
+         * Main Generation Logic
+         * - 一律先嘗試 Gemini API（key 可為空字串，Canvas 會自動注入）
+         * - 失敗自動退回內建題庫
+         * - 全程 try/finally 保證 loading 遮罩一定會關閉，不再卡死
+         */
+        async function generateExam(isUserClick = true) {
+            const unitObj = CURRICULUM[state.currentGrade].units.find(u => u.id === state.selectedUnitId);
+            const unitTitle = unitObj ? unitObj.title : "";
+            const count = state.questionCount;
+            const qType = document.getElementById('questionTypeSelect').value;
+
+            let generatedList = [];
+
+            try {
+                showLoading(
+                    true,
+                    `Gemini AI 正根據 108 課綱【${unitTitle}】進行全自動動態命題與正解排版，請稍候...`,
+                    "🤖 Gemini AI 正在出題中..."
+                );
+
+                try {
+                    generatedList = await generateQuestionsWithGemini(unitTitle, count, qType, getApiKey());
+                } catch (err) {
+                    console.error("AI Generation Error:", err);
+                    showLoading(true, "AI 連線失敗，正在從內建專業題庫為您抽題組卷...", "📚 內建題庫出題中...");
+                    await new Promise(r => setTimeout(r, 300));
+                    generatedList = assembleProceduralList(state.selectedUnitId, unitTitle, count, qType);
+                }
+
+                if (document.getElementById('optOrderDiff').checked) {
+                    const diffMap = { easy: 1, medium: 2, hard: 3 };
+                    generatedList.sort((a, b) => (diffMap[a.difficulty] || 2) - (diffMap[b.difficulty] || 2));
+                } else if (document.getElementById('optShuffle').checked) {
+                    generatedList.sort(() => Math.random() - 0.5);
+                }
+
+                state.questions = generatedList;
+                document.getElementById('paperGradeText').textContent = CURRICULUM[state.currentGrade].name;
+                document.getElementById('paperUnitText').textContent = unitTitle;
+
+                renderPaper();
+
+                if (isUserClick && window.innerWidth < 768) {
+                    switchMobileTab('preview');
+                }
+            } catch (err) {
+                console.error("generateExam fatal error:", err);
+                alert("試卷生成過程發生錯誤：" + (err && err.message ? err.message : err));
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        /**
+         * Gemini API Call
+         * - key 為空字串時仍會呼叫：Gemini Canvas 執行環境會於 fetch 時自動注入金鑰
+         * - 每個端點設 60 秒 timeout，避免網路掛住導致整頁卡死
+         */
+        async function generateQuestionsWithGemini(unitTitle, count, qType, apiKey) {
+            const systemPrompt = "你是一位優秀的台灣國中數學科教師，熟知108課綱與會考命題趨勢。請生成符合題型要求的數學試題。數學符號與算式請嚴格使用單個美元符號 $...$ 包裹（例如：$x + 5 = 10$）。格式必須為 JSON 陣列。";
+
+            const typeInstruction = qType === 'mcq' ? '全部題目皆為四選一單選題 (type: "mcq")'
+                : qType === 'fill' ? '全部題目皆為填充題 (type: "fill")'
+                : '包含選擇題 (mcq)、填充題 (fill) 與計算題 (calc) 的混合題型';
+
+            const userPrompt = `請幫我設計 ${count} 題國中數學試題。
+年級單元：${unitTitle}
+題型要求：${typeInstruction}。
+
+請直接輸出 JSON 陣列（最外層必須是 [ ] 陣列，不要包在任何物件裡），每個物件包含以下欄位：
+- "type": "mcq" | "fill" | "calc"
+- "question": "題目敘述"
+- "options": ["A. ...", "B. ...", "C. ...", "D. ..."] (只有 type 為 mcq 時需要)
+- "answer": "標準答案"
+- "explanation": "詳細步驟與解析算式"
+- "difficulty": "easy" | "medium" | "hard"`;
+
+            // Try primary endpoint gemini-2.5-flash, fallback to newer/older flash models
+            const models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-flash-latest'];
+
+            let response = null;
+            let lastErr = null;
+
+            for (const model of models) {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), 60000);
+                try {
+                    const res = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        signal: controller.signal,
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: userPrompt }] }],
+                            systemInstruction: { parts: [{ text: systemPrompt }] },
+                            generationConfig: {
+                                responseMimeType: "application/json"
+                            }
+                        })
+                    });
+                    if (res.ok) {
+                        response = res;
+                        break;
+                    } else {
+                        const errText = await res.text();
+                        lastErr = new Error(`HTTP ${res.status}: ${errText}`);
+                    }
+                } catch (e) {
+                    lastErr = (e && e.name === 'AbortError') ? new Error("Gemini API 回應逾時（60 秒）") : e;
+                    // 網路層錯誤（斷線、CSP 阻擋）換模型也不會成功，直接放棄改用題庫
+                    if (e && e.name === 'TypeError') { clearTimeout(timer); break; }
+                } finally {
+                    clearTimeout(timer);
+                }
+            }
+
+            if (!response) {
+                throw lastErr || new Error("Gemini API 連線失敗，請檢查 API Key 或網路連線");
+            }
+
+            const resData = await response.json();
+            let rawJson = resData.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (!rawJson) throw new Error("AI 返回內容空白");
+
+            // Remove markdown syntax wrappers like ```json ... ``` if returned
+            rawJson = rawJson.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim();
+
+            // 解析失敗時再嘗試從文字中擷取第一個 JSON 陣列
+            let parsed;
+            try {
+                parsed = JSON.parse(rawJson);
+            } catch (e) {
+                const match = rawJson.match(/\[[\s\S]*\]/);
+                if (!match) throw new Error("AI 回傳內容無法解析為 JSON");
+                parsed = JSON.parse(match[0]);
+            }
+
+            // AI 有時會包成 {"questions": [...]}，自動解開
+            if (!Array.isArray(parsed)) {
+                const arr = Object.values(parsed).find(v => Array.isArray(v));
+                if (!arr) throw new Error("AI 回傳格式不是題目陣列");
+                parsed = arr;
+            }
+
+            if (parsed.length === 0) throw new Error("AI 未生成任何題目");
+
+            return parsed.map((q, idx) => ({
+                id: 'q_ai_' + Date.now() + '_' + idx,
+                type: q.type || 'mcq',
+                question: q.question || '',
+                options: Array.isArray(q.options) ? q.options : [],
+                answer: q.answer !== undefined ? String(q.answer) : '',
+                explanation: q.explanation || '',
+                difficulty: q.difficulty || 'medium'
+            }));
+        }
+
+        /**
+         * Rich Offline Procedural Question Generator
+         */
+        function assembleProceduralList(unitId, unitTitle, count, targetType) {
+            let list = [];
+            for (let i = 0; i < count; i++) {
+                list.push(generateProceduralQuestion(unitId, unitTitle, i, targetType));
+            }
+            return list;
+        }
+
+        function generateProceduralQuestion(unitId, unitTitle, index, targetType) {
+            const randomType = (targetType === 'mixed')
+                ? (index % 3 === 0 ? 'mcq' : index % 3 === 1 ? 'fill' : 'calc')
+                : targetType;
+
+            const a = Math.floor(Math.random() * 8) + 2;
+            const b = Math.floor(Math.random() * 10) + 1;
+            const c = Math.floor(Math.random() * 12) + 2;
+
+            if (unitId.startsWith("g7_1") || unitId.startsWith("g7_2")) {
+                const ans = -a + b - c;
+                if (randomType === 'mcq') {
+                    return {
+                        id: 'q_' + Date.now() + '_' + index,
+                        type: 'mcq',
+                        question: `計算算式 $(-${a}) + ${b} - (${c})$ 之值為何？`,
+                        options: [`A. $${ans}$`, `B. $${ans + 4}$`, `C. $${ans - 2}$`, `D. $${-ans}$`],
+                        answer: 'A',
+                        explanation: `原式 $= -${a} + ${b} - ${c} = ${-a + b} - ${c} = ${ans}$。`,
+                        difficulty: 'easy'
+                    };
+                } else {
+                    return {
+                        id: 'q_' + Date.now() + '_' + index,
+                        type: 'fill',
+                        question: `數線上 $A$ 點表示的數為 $-${a}$，$B$ 點與 $A$ 點距離為 $${c}$ 單位，且 $B$ 在 $A$ 的右邊，則 $B$ 點表示的數為 ________。`,
+                        options: [],
+                        answer: `${-a + c}`,
+                        explanation: `右邊加距離：$-${a} + ${c} = ${-a + c}$。`,
+                        difficulty: 'medium'
+                    };
+                }
+            } else if (unitId.startsWith("g7_6") || unitId.startsWith("g7_7")) {
+                const xVal = Math.floor(Math.random() * 8) + 1;
+                const rhs = a * xVal + b;
+                if (randomType === 'mcq') {
+                    return {
+                        id: 'q_' + Date.now() + '_' + index,
+                        type: 'mcq',
+                        question: `解一元一次方程式 $${a}x + ${b} = ${rhs}$，求 $x$ 之值為何？`,
+                        options: [`A. $x = ${xVal}$`, `B. $x = ${xVal + 2}$`, `C. $x = ${xVal - 1}$`, `D. $x = ${xVal + 3}$`],
+                        answer: 'A',
+                        explanation: `移項得 $${a}x = ${rhs} - ${b} = ${a * xVal}$，同除以 $${a}$ 得 $x = ${xVal}$。`,
+                        difficulty: 'easy'
+                    };
+                } else if (randomType === 'fill') {
+                    return {
+                        id: 'q_' + Date.now() + '_' + index,
+                        type: 'fill',
+                        question: `若 $3(x - ${a}) = 2x + ${b}$，則 $x = $ ________。`,
+                        options: [],
+                        answer: `${3 * a + b}`,
+                        explanation: `展開得 $3x - ${3 * a} = 2x + ${b} \\Rightarrow 3x - 2x = ${b} + ${3 * a} \\Rightarrow x = ${3 * a + b}$。`,
+                        difficulty: 'medium'
+                    };
+                } else {
+                    return {
+                        id: 'q_' + Date.now() + '_' + index,
+                        type: 'calc',
+                        question: `【應用題】小明買了 $${a}$ 本練習簿與 $1$ 支 $${b}$ 元的鋼筆，總共花費 $${a * xVal + b}$ 元。請列出一元一次方程式並求出每本練習簿的價格。`,
+                        options: [],
+                        answer: `每本 ${xVal} 元`,
+                        explanation: `設每本練習簿 $x$ 元。列式：$${a}x + ${b} = ${a * xVal + b} \\Rightarrow ${a}x = ${a * xVal} \\Rightarrow x = ${xVal}$ 元。`,
+                        difficulty: 'medium'
+                    };
+                }
+            } else if (unitId.startsWith("g8_4")) {
+                const pythTriples = [[3,4,5], [5,12,13], [6,8,10], [8,15,17], [9,12,15]];
+                const triple = pythTriples[Math.floor(Math.random() * pythTriples.length)];
+                if (randomType === 'mcq') {
+                    return {
+                        id: 'q_' + Date.now() + '_' + index,
+                        type: 'mcq',
+                        question: `在直角三角形 $\\triangle ABC$ 中，$\\angle C = 90^\\circ$，兩股長分別為 $a = ${triple[0]}$ 與 $b = ${triple[1]}$，求斜邊 $c$ 長度？`,
+                        options: [`A. $${triple[2]}$`, `B. $${triple[2] + 2}$`, `C. $${triple[0] + triple[1]}$`, `D. $${triple[2] + 4}$`],
+                        answer: 'A',
+                        explanation: `由畢氏定理：$c = \\sqrt{a^2 + b^2} = \\sqrt{${triple[0]}^2 + ${triple[1]}^2} = \\sqrt{${triple[0]*triple[0] + triple[1]*triple[1]}} = ${triple[2]}$。`,
+                        difficulty: 'easy'
+                    };
+                } else {
+                    return {
+                        id: 'q_' + Date.now() + '_' + index,
+                        type: 'fill',
+                        question: `直角三角形斜邊長為 $${triple[2]}$，已知其中一股長為 $${triple[0]}$，則另一股長為 ________。`,
+                        options: [],
+                        answer: `${triple[1]}`,
+                        explanation: `另一股 $= \\sqrt{${triple[2]}^2 - ${triple[0]}^2} = \\sqrt{${triple[2]*triple[2] - triple[0]*triple[0]}} = ${triple[1]}$。`,
+                        difficulty: 'medium'
+                    };
+                }
+            } else if (unitId.startsWith("g8_8")) {
+                const a1 = Math.floor(Math.random() * 5) + 1;
+                const d = Math.floor(Math.random() * 4) + 2;
+                const n = 10;
+                const an = a1 + (n - 1) * d;
+                return {
+                    id: 'q_' + Date.now() + '_' + index,
+                    type: randomType === 'mcq' ? 'mcq' : 'fill',
+                    question: `已知一等差數列首項 $a_1 = ${a1}$，公差 $d = ${d}$，則第 $10$ 項 $a_{10} = $ ________。`,
+                    options: randomType === 'mcq' ? [`A. $${an}$`, `B. $${an + 2}$`, `C. $${an - 3}$`, `D. $${an + 5}$`] : [],
+                    answer: randomType === 'mcq' ? 'A' : `${an}`,
+                    explanation: `依等差公式 $a_n = a_1 + (n-1)d \\Rightarrow a_{10} = ${a1} + 9 \\times ${d} = ${an}$。`,
+                    difficulty: 'easy'
+                };
+            } else {
+                return {
+                    id: 'q_' + Date.now() + '_' + index,
+                    type: randomType,
+                    question: `【${unitTitle}】化簡並計算算式：$${a} \\times (${b} + ${c}) - ${a*b}$ 的結果為何？`,
+                    options: randomType === 'mcq' ? [`A. $${a * c}$`, `B. $${a * c + 5}$`, `C. $${a * b}$`, `D. $${a + b + c}$`] : [],
+                    answer: randomType === 'mcq' ? 'A' : `${a * c}`,
+                    explanation: `分配律展開：$${a}\\times ${b} + ${a}\\times ${c} - ${a*b} = ${a*c}$。`,
+                    difficulty: 'medium'
+                };
+            }
+        }
+
+        /**
+         * Render Exam Paper
+         */
+        function renderPaper() {
+            const paperBody = document.getElementById('paperBody');
+            paperBody.innerHTML = '';
+
+            if (state.questions.length === 0) {
+                renderEmptyPlaceholder();
+                return;
+            }
+
+            const mcqs = [];
+            const fills = [];
+            const calcs = [];
+
+            state.questions.forEach((q, index) => {
+                const itemWithIdx = { ...q, globalIdx: index };
+                if (q.type === 'mcq') mcqs.push(itemWithIdx);
+                else if (q.type === 'fill') fills.push(itemWithIdx);
+                else calcs.push(itemWithIdx);
+            });
+
+            if (mcqs.length > 0) {
+                const sec = createSectionHeader('一、選擇題', `(共 ${mcqs.length} 題)`);
+                mcqs.forEach((q, idx) => {
+                    sec.appendChild(renderQuestionCard(q, idx + 1));
+                });
+                paperBody.appendChild(sec);
+            }
+
+            if (fills.length > 0) {
+                const sec = createSectionHeader('二、填充題', `(共 ${fills.length} 題)`);
+                fills.forEach((q, idx) => {
+                    sec.appendChild(renderQuestionCard(q, idx + 1));
+                });
+                paperBody.appendChild(sec);
+            }
+
+            if (calcs.length > 0) {
+                const sec = createSectionHeader('三、計算與應用題', `(共 ${calcs.length} 題)`);
+                calcs.forEach((q, idx) => {
+                    sec.appendChild(renderQuestionCard(q, idx + 1));
+                });
+                paperBody.appendChild(sec);
+            }
+
+            // Render Math Formula with KaTeX（安全包裝：函式庫沒載到也不會讓流程中斷）
+            safeRenderMath(paperBody);
+            safeIcons();
+        }
+
+        function createSectionHeader(title, subtitle) {
+            const div = document.createElement('div');
+            div.className = 'section-block space-y-3 mb-4';
+            div.innerHTML = `
+                <div class="border-b-2 border-slate-800 pb-0.5 flex items-baseline justify-between">
+                    <h4 class="font-bold text-sm text-slate-900 tracking-wide">${title}</h4>
+                    <span class="text-xs text-slate-600 font-normal">${subtitle}</span>
+                </div>
+            `;
+            return div;
+        }
+
+        function renderQuestionCard(q, localNumber) {
+            const card = document.createElement('div');
+            card.className = 'question-card group relative p-2 rounded hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-200 mb-3';
+
+            const isAnswerMode = state.viewMode === 'answer';
+
+            let optionsHtml = '';
+            if (q.type === 'mcq' && q.options && q.options.length > 0) {
+                optionsHtml = `
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 mt-1.5 pl-4 text-xs text-slate-800">
+                        ${q.options.map(opt => `<div>${opt}</div>`).join('')}
+                    </div>
+                `;
+            }
+
+            let answerKeyHtml = '';
+            if (isAnswerMode) {
+                answerKeyHtml = `
+                    <div class="mt-2 p-2 bg-emerald-50 border border-emerald-200 rounded text-xs text-emerald-900 space-y-0.5 font-sans">
+                        <div class="font-bold text-emerald-800 flex items-center space-x-1">
+                            <span>【解答】：</span>
+                            <span class="text-emerald-950 font-mono">${q.answer}</span>
+                        </div>
+                        <div class="text-emerald-800 leading-relaxed">
+                            <span class="font-semibold">【解析】：</span>${q.explanation}
+                        </div>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <div class="no-print absolute top-1 right-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity bg-white/95 backdrop-blur border border-slate-200 shadow-sm rounded-lg p-0.5 flex items-center space-x-0.5 z-10">
+                    <button onclick="moveQuestion(${q.globalIdx}, -1)" title="上移" class="p-1 hover:bg-slate-100 rounded text-slate-600 active:scale-95">
+                        <i data-lucide="arrow-up" class="w-3.5 h-3.5"></i>
+                    </button>
+                    <button onclick="moveQuestion(${q.globalIdx}, 1)" title="下移" class="p-1 hover:bg-slate-100 rounded text-slate-600 active:scale-95">
+                        <i data-lucide="arrow-down" class="w-3.5 h-3.5"></i>
+                    </button>
+                    <button onclick="regenerateSingleQuestion(${q.globalIdx})" title="換一題" class="p-1 hover:bg-slate-100 rounded text-brand-600 active:scale-95">
+                        <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                    </button>
+                    <button onclick="openEditModal(${q.globalIdx})" title="編輯題目" class="p-1 hover:bg-slate-100 rounded text-slate-700 active:scale-95">
+                        <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
+                    </button>
+                    <button onclick="deleteQuestion(${q.globalIdx})" title="刪除題目" class="p-1 hover:bg-red-50 rounded text-red-600 active:scale-95">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+
+                <div class="text-xs leading-relaxed text-slate-900 math-content pr-14 md:pr-0">
+                    <span class="font-bold mr-1.5">${localNumber}.</span>
+                    <span>${q.question}</span>
+                </div>
+
+                ${optionsHtml}
+                ${answerKeyHtml}
+            `;
+
+            return card;
+        }
+
+        /**
+         * Mobile PDF Export via html2pdf.js
+         */
+        function exportToPdf() {
+            if (state.questions.length === 0) {
+                alert("試卷尚無內容，請先點擊「開始生成試卷」。");
+                return;
+            }
+
+            showLoading(true, "正在為您的裝置編譯生成 PDF 檔案...", "📄 PDF 匯出中...");
+
+            const element = document.getElementById('paperCanvas');
+            const fileName = `${state.schoolName}_${state.examTitle}_${state.viewMode === 'answer' ? '解答卷' : '學生卷'}.pdf`;
+
+            const opt = {
+                margin:       [8, 8, 8, 8],
+                filename:     fileName,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            try {
+                html2pdf().set(opt).from(element).save().then(() => {
+                    showLoading(false);
+                }).catch(err => {
+                    showLoading(false);
+                    console.error("PDF export error:", err);
+                    alert("PDF 匯出失敗，正在嘗試直接喚起系統列印視窗...");
+                    window.print();
+                });
+            } catch (e) {
+                showLoading(false);
+                console.error("html2pdf unavailable:", e);
+                alert("PDF 元件未載入，改用系統列印視窗（可另存為 PDF）。");
+                window.print();
+            }
+        }
+
+        function triggerPrintToPdf() {
+            if (window.innerWidth < 768) {
+                switchMobileTab('preview');
+            }
+            showLoading(true, "準備列印預覽中...", "🖨️ 準備列印中...");
+            setTimeout(() => {
+                showLoading(false);
+                window.print();
+            }, 400);
+        }
+
+        function showLoading(show, message = "", title = "") {
+            const overlay = document.getElementById('loadingOverlay');
+            const msgEl = document.getElementById('loadingMessage');
+            const titleEl = document.getElementById('loadingTitle');
+            const btn = document.getElementById('generateBtn');
+
+            if (show) {
+                if (title && titleEl) titleEl.textContent = title;
+                if (message && msgEl) msgEl.textContent = message;
+                if (overlay) overlay.classList.remove('hidden');
+                if (btn) btn.disabled = true;
+            } else {
+                if (overlay) overlay.classList.add('hidden');
+                if (btn) btn.disabled = false;
+            }
+        }
+
+        // Manual Question Modal Operations
+        function addManualQuestion() {
+            state.isNewQuestion = true;
+            state.editingIndex = -1;
+
+            document.getElementById('modalTitle').textContent = "新增自訂試題";
+            document.getElementById('editQuestionText').value = "";
+            document.getElementById('editAnswer').value = "";
+            document.getElementById('editExplanation').value = "";
+            document.getElementById('editCategory').value = "mcq";
+            document.getElementById('editDifficulty').value = "medium";
+
+            document.getElementById('editOptA').value = "";
+            document.getElementById('editOptB').value = "";
+            document.getElementById('editOptC').value = "";
+            document.getElementById('editOptD').value = "";
+
+            onModalCategoryChange();
+            document.getElementById('editModal').classList.remove('hidden');
+        }
+
+        function openEditModal(index) {
+            state.isNewQuestion = false;
+            state.editingIndex = index;
+            const q = state.questions[index];
+            if (!q) return;
+
+            document.getElementById('modalTitle').textContent = "編輯試題與解析";
+            document.getElementById('editQuestionText').value = q.question;
+            document.getElementById('editAnswer').value = q.answer;
+            document.getElementById('editExplanation').value = q.explanation;
+            document.getElementById('editCategory').value = q.type;
+            document.getElementById('editDifficulty').value = q.difficulty || "medium";
+
+            const opts = q.options || [];
+            document.getElementById('editOptA').value = opts[0] ? opts[0].replace(/^A\.\s*/, '') : '';
+            document.getElementById('editOptB').value = opts[1] ? opts[1].replace(/^B\.\s*/, '') : '';
+            document.getElementById('editOptC').value = opts[2] ? opts[2].replace(/^C\.\s*/, '') : '';
+            document.getElementById('editOptD').value = opts[3] ? opts[3].replace(/^D\.\s*/, '') : '';
+
+            onModalCategoryChange();
+            document.getElementById('editModal').classList.remove('hidden');
+        }
+
+        function onModalCategoryChange() {
+            const cat = document.getElementById('editCategory').value;
+            const optsBlock = document.getElementById('optionsEditContainer');
+            if (cat === 'mcq') {
+                optsBlock.classList.remove('hidden');
+            } else {
+                optsBlock.classList.add('hidden');
+            }
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.add('hidden');
+            state.editingIndex = -1;
+        }
+
+        function saveQuestionEdit() {
+            const qType = document.getElementById('editCategory').value;
+            const qText = document.getElementById('editQuestionText').value.trim();
+            const ans = document.getElementById('editAnswer').value.trim();
+            const exp = document.getElementById('editExplanation').value.trim();
+            const diff = document.getElementById('editDifficulty').value;
+
+            if (!qText) {
+                alert("請填寫題目敘述！");
+                return;
+            }
+
+            let options = [];
+            if (qType === 'mcq') {
+                const optA = document.getElementById('editOptA').value.trim();
+                const optB = document.getElementById('editOptB').value.trim();
+                const optC = document.getElementById('editOptC').value.trim();
+                const optD = document.getElementById('editOptD').value.trim();
+                options = [`A. ${optA}`, `B. ${optB}`, `C. ${optC}`, `D. ${optD}`];
+            }
+
+            const itemData = {
+                id: 'q_custom_' + Date.now(),
+                type: qType,
+                question: qText,
+                options: options,
+                answer: ans,
+                explanation: exp,
+                difficulty: diff
+            };
+
+            if (state.isNewQuestion) {
+                state.questions.push(itemData);
+            } else {
+                state.questions[state.editingIndex] = itemData;
+            }
+
+            closeEditModal();
+            renderPaper();
+        }
+
+        function deleteQuestion(index) {
+            if (confirm("確定要刪除此題嗎？")) {
+                state.questions.splice(index, 1);
+                renderPaper();
+            }
+        }
+
+        function moveQuestion(index, direction) {
+            const newIndex = index + direction;
+            if (newIndex < 0 || newIndex >= state.questions.length) return;
+            const temp = state.questions[index];
+            state.questions[index] = state.questions[newIndex];
+            state.questions[newIndex] = temp;
+            renderPaper();
+        }
+
+        async function regenerateSingleQuestion(index) {
+            const q = state.questions[index];
+            const unitObj = CURRICULUM[state.currentGrade].units.find(u => u.id === state.selectedUnitId);
+            const unitTitle = unitObj ? unitObj.title : "";
+
+            try {
+                showLoading(true, "Gemini AI 正在為您重新設計此題與解析...", "🤖 AI 替換單題中...");
+                try {
+                    const singleRes = await generateQuestionsWithGemini(unitTitle, 1, q.type, getApiKey());
+                    if (singleRes && singleRes.length > 0) {
+                        state.questions[index] = singleRes[0];
+                    }
+                } catch (e) {
+                    console.error("Single regen AI error:", e);
+                    showLoading(true, "AI 連線失敗，正在從內建題庫抽取新題目...", "📚 題庫更換單題中...");
+                    await new Promise(r => setTimeout(r, 200));
+                    state.questions[index] = generateProceduralQuestion(state.selectedUnitId, unitTitle, index, q.type);
+                }
+                renderPaper();
+            } finally {
+                showLoading(false);
+            }
+        }
+    </script>
+</body>
+</html>
