@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>我的退休帳本｜學習單</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;900&display=swap">
+<style>
+  :root{--paper:#FBF8F2;--ink:#1E2420;--green:#0F3B30;--gold:#B0833A;--goldSoft:#D8C197;--red:#B4432E;--muted:#6B685C;--rule:#CDBFA6;--tint:#F2ECE1}
+  @page{size:A4;margin:0}
+  *{box-sizing:border-box}
+  body{margin:0;background:#ddd;font-family:"Noto Sans TC",sans-serif;color:var(--ink);font-size:10.5pt;line-height:1.55}
+  .page{width:210mm;height:297mm;margin:0 auto 8mm;background:var(--paper);padding:14mm 15mm 12mm;position:relative;overflow:hidden;page-break-after:always}
+  @media print{body{background:none}.page{margin:0}}
+  .top{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--rule);padding-bottom:2.5mm;margin-bottom:6mm}
+  .mono{font-family:"IBM Plex Mono",monospace;letter-spacing:.16em;font-size:7.5pt;color:var(--gold)}
+  .sec{font-size:8.5pt;color:var(--muted);letter-spacing:.1em}
+  h1,h2,h3{font-family:"Noto Serif TC",serif;font-weight:900;margin:0;letter-spacing:.02em}
+  h2{font-size:19pt;line-height:1.3}
+  h3{font-size:12.5pt;margin:5mm 0 2mm}
+  .lead{color:var(--muted);margin:1.5mm 0 0}
+  .num{font-family:"DM Serif Display",serif}
+  .foot{position:absolute;left:15mm;right:15mm;bottom:8mm;display:flex;justify-content:space-between;font-size:7.5pt;color:var(--muted)}
+  .tag{display:inline-block;background:var(--gold);color:var(--ink);font-family:"IBM Plex Mono",monospace;font-size:7.5pt;letter-spacing:.15em;padding:1mm 2.5mm}
+  .url{font-family:"IBM Plex Mono",monospace;font-size:8pt;color:var(--green);margin-left:2mm}
+  table{width:100%;border-collapse:collapse}
+  td,th{border-bottom:1px solid var(--rule);padding:2.2mm 1.5mm;text-align:left;vertical-align:middle}
+  th{font-weight:500;color:var(--gold);font-size:8.5pt;border-bottom:1.5px double var(--ink)}
+  .code{font-family:"DM Serif Display",serif;color:var(--red);font-size:15pt;width:13mm}
+  .blank{border-bottom:1px solid var(--ink);display:inline-block;min-width:32mm;height:6mm}
+  .field td{height:12mm}
+  .field .hint{font-size:8pt;color:var(--muted)}
+  .field .fill{width:48mm;text-align:right;color:var(--muted);font-size:9pt}
+  .box{border:1px solid var(--rule);background:#fff;padding:4mm 5mm}
+  .dark{background:var(--green);color:var(--tint);padding:5mm 6mm}
+  .dark .mono{color:var(--goldSoft)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:5mm}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:4mm}
+  .step{display:flex;gap:2.5mm;align-items:baseline;border-bottom:1px dashed var(--rule);padding:1.6mm 0}
+  .step b{font-family:"DM Serif Display",serif;color:var(--gold);font-weight:400;font-size:12pt;width:4mm}
+  .prompt{background:#1B2420;color:#E9E3D6;font-family:"IBM Plex Mono","Noto Sans TC",monospace;font-size:8.3pt;line-height:1.65;padding:4mm 5mm}
+  .prompt .k{color:var(--goldSoft)}
+  .lines{background:repeating-linear-gradient(transparent 0 7.4mm,var(--rule) 7.4mm 7.5mm);height:30mm}
+  .eq{font-family:"Noto Serif TC",serif;font-weight:900;font-size:13pt;text-align:center;padding:3mm;border-top:1.5px double var(--ink);border-bottom:1.5px double var(--ink);margin:3mm 0}
+  .eq .num{color:var(--red);font-weight:400;font-size:16pt}
+  .small{font-size:8pt;color:var(--muted)}
+  .red{color:var(--red);font-weight:700}
+  .progress{height:9mm;border:1.5px solid var(--ink);background:repeating-linear-gradient(90deg,transparent 0 calc(10% - 1px),var(--rule) calc(10% - 1px) 10%);position:relative}
+  .progress span{position:absolute;top:10mm;font-size:7pt;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<!-- ============ P1 封面 ============ -->
+<section class="page" style="background:var(--green);color:var(--tint)">
+  <div class="top" style="border-color:rgba(216,193,151,.35)"><span class="mono" style="color:var(--goldSoft)">THE TEACHER'S RETIREMENT LEDGER</span><span class="sec" style="color:var(--goldSoft)">學習單 · 3 小時工作坊</span></div>
+  <div class="mono" style="color:var(--goldSoft);margin-top:14mm">WORKSHEET · A → G</div>
+  <h1 style="font-size:40pt;line-height:1.2;margin-top:5mm">我的<span style="color:var(--goldSoft)">退休帳本</span></h1>
+  <p style="font-size:12pt;opacity:.8;margin-top:4mm">退休不是一個日期，是一條現金流。<br>今天把字母換成你自己的數字——這張只屬於你，不必給任何人看。</p>
+
+  <div style="background:var(--tint);color:var(--ink);padding:6mm 7mm;margin-top:10mm">
+    <div class="mono">QUESTION 00 · 開場先寫，結束再看</div>
+    <div class="grid2" style="margin-top:3mm">
+      <div><div class="small">憑感覺：退休後每月需要</div><div style="font-size:15pt;margin-top:2mm"><span class="blank" style="min-width:45mm"></span> 元</div></div>
+      <div><div class="small">有根據：三小時後的 C3</div><div style="font-size:15pt;margin-top:2mm"><span class="blank" style="min-width:45mm"></span> 元</div></div>
+    </div>
+  </div>
+
+  <h3 style="color:var(--goldSoft);margin-top:10mm">五個工具 · 請先加入書籤</h3>
+  <table style="color:var(--tint)">
+    <tr><td class="code" style="color:var(--goldSoft);border-color:rgba(216,193,151,.3)">01</td><td style="border-color:rgba(216,193,151,.3)">薪資試算</td><td style="border-color:rgba(216,193,151,.3);font-family:'IBM Plex Mono';font-size:8.5pt">teacher-salary-calculator.netlify.app</td><td style="border-color:rgba(216,193,151,.3)">→ A 月薪</td></tr>
+    <tr><td class="code" style="color:var(--goldSoft);border-color:rgba(216,193,151,.3)">02</td><td style="border-color:rgba(216,193,151,.3)">退休金試算</td><td style="border-color:rgba(216,193,151,.3);font-family:'IBM Plex Mono';font-size:8.5pt">pension-calculation.netlify.app</td><td style="border-color:rgba(216,193,151,.3)">→ B 月退</td></tr>
+    <tr><td class="code" style="color:var(--goldSoft);border-color:rgba(216,193,151,.3)">03</td><td style="border-color:rgba(216,193,151,.3)">每月收支體檢</td><td style="border-color:rgba(216,193,151,.3);font-family:'IBM Plex Mono';font-size:8.5pt">grand-clafoutis-b1948b.netlify.app</td><td style="border-color:rgba(216,193,151,.3)">→ C 月支出</td></tr>
+    <tr><td class="code" style="color:var(--goldSoft);border-color:rgba(216,193,151,.3)">04</td><td style="border-color:rgba(216,193,151,.3)">理財試算器</td><td style="border-color:rgba(216,193,151,.3);font-family:'IBM Plex Mono';font-size:8.5pt">toolfinance.netlify.app</td><td style="border-color:rgba(216,193,151,.3)">→ D 缺口 · E 本金</td></tr>
+    <tr><td class="code" style="color:var(--goldSoft);border-color:rgba(216,193,151,.3)">05</td><td style="border-color:rgba(216,193,151,.3)">資產總覽</td><td style="border-color:rgba(216,193,151,.3);font-family:'IBM Plex Mono';font-size:8.5pt">celadon-starship-b44b3c.netlify.app</td><td style="border-color:rgba(216,193,151,.3)">→ F 進度</td></tr>
+  </table>
+
+  <div class="eq" style="color:var(--tint);border-color:var(--goldSoft);margin-top:10mm">
+    <span class="num" style="color:var(--goldSoft)">B1</span> 月退 ＋ <span class="num" style="color:var(--goldSoft)">E</span> 投資現金流　≥　<span class="num" style="color:var(--goldSoft)">C3</span> 退休後月支出
+  </div>
+  <div class="small" style="color:rgba(242,236,225,.6);margin-top:4mm">三個約定：① 數字只寫在自己的學習單　② 估算比精算重要，不確定就填保守值　③ 本課程為觀念與工具分享，非投資建議</div>
+  <div class="foot" style="color:rgba(242,236,225,.55)"><span>姓名／代號 ＿＿＿＿＿＿　日期 ＿＿＿＿＿＿</span><span class="num">01</span></div>
+</section>
+
+<!-- ============ P2 第一關 制度 ============ -->
+<section class="page">
+  <div class="top"><span class="mono">PART I · 制度</span><span class="sec">第一關｜你的退休金怎麼算</span></div>
+  <h2>看懂制度，找出「制度會給我多少」</h2>
+  <p class="lead">舊制月退上限 ＝ 本俸 × 2 × 所得替代率（替代率依「退休年度 × 年資」查表）</p>
+
+  <h3><span class="tag">HANDS-ON 01</span><span class="url">teacher-salary-calculator.netlify.app</span>　薪資試算</h3>
+  <table class="field">
+    <tr><td class="code">A1</td><td>目前薪點／本俸<div class="hint">退休金公式用的是本俸</div></td><td class="fill">薪點＿＿＿／＿＿＿＿＿ 元</td></tr>
+    <tr><td class="code">A2</td><td>每月實領（稅前）<div class="hint">本俸＋學術研究加給＋其他</div></td><td class="fill">＿＿＿＿＿＿ 元</td></tr>
+    <tr><td class="code">A3</td><td>預估退休時本俸<div class="hint">年功薪上限：學士 625／碩士 650（以工具最新俸額為準）</div></td><td class="fill">＿＿＿＿＿＿ 元</td></tr>
+  </table>
+
+  <h3><span class="tag">HANDS-ON 02</span><span class="url">pension-calculation.netlify.app</span>　退休金試算</h3>
+  <table>
+    <tr><th>情境</th><th>退休年度</th><th>年資</th><th>B2 法定替代率</th><th>B1 預估月退（含公保年金）</th></tr>
+    <tr><td>早 5 年</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td><b>預定</b></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>晚 5 年</td><td></td><td></td><td></td><td></td></tr>
+  </table>
+  <table class="field" style="margin-top:2mm">
+    <tr><td class="code">B3</td><td>真實替代率 ＝ B1（預定）÷ A2<div class="hint">「60%」是乘在本俸×2 上，不是乘在實領上。這才是退休當月的體感。</div></td><td class="fill">＿＿＿＿ %</td></tr>
+  </table>
+
+  <div class="grid2" style="margin-top:5mm">
+    <div class="box">
+      <div class="mono">所得替代率上限（節錄）</div>
+      <table style="font-size:8.5pt;margin-top:1mm">
+        <tr><th>年度＼年資</th><th>20</th><th>25</th><th>30</th><th>35</th></tr>
+        <tr><td>115 年度</td><td>42.0%</td><td>49.5%</td><td>57.0%</td><td>64.5%</td></tr>
+        <tr><td>116 年度</td><td>40.5%</td><td>48.0%</td><td>55.5%</td><td>63.0%</td></tr>
+        <tr><td>117 年度</td><td>39.0%</td><td>46.5%</td><td>54.0%</td><td>61.5%</td></tr>
+        <tr><td>118 年後</td><td>37.5%</td><td>45.0%</td><td>52.5%</td><td class="red">60.0%</td></tr>
+      </table>
+      <div class="small" style="margin-top:1.5mm">年資每少 1 年約 −1.5%；實際以主管機關公告為準。</div>
+    </div>
+    <div class="box">
+      <div class="mono">新制老師（112/7/1 後初任）</div>
+      <div class="step"><b>·</b>強制提撥：本俸×2 × 15%（自付 35%、政府 65%）</div>
+      <div class="step"><b>·</b>我的自願增提比例：＿＿＿ %</div>
+      <div class="step"><b>·</b>專戶投資選擇：□ 積極 □ 穩健 □ 保守 □ 人生週期</div>
+      <div class="step"><b>·</b>假設報酬 ＿＿ %，退休時專戶約 ＿＿＿＿ 萬</div>
+    </div>
+  </div>
+
+  <h3>小組討論（只談方法，不談金額）</h3>
+  <p style="margin:0">在三種情境中，哪一個變數讓月退變動最大？ □ 年資　□ 退休年度　□ 退休本俸　□ 其他＿＿＿＿</p>
+  <div class="foot"><span>我的退休帳本 · 第一關</span><span class="num">02</span></div>
+</section>
+
+<!-- ============ P3 第二關 需求 ============ -->
+<section class="page">
+  <div class="top"><span class="mono">PART II · 需求</span><span class="sec">第二關｜退休後你要花多少</span></div>
+  <h2>把現在的支出，搬到退休那天</h2>
+  <p class="lead"><span class="tag">HANDS-ON 03</span><span class="url">grand-clafoutis-b1948b.netlify.app</span>　先用「每月收支體檢」填好現況，再逐項判斷退休後的變化。</p>
+
+  <table style="margin-top:4mm">
+    <tr><th style="width:34%">項目</th><th>現在每月</th><th style="width:22%">退休後 ↓消失 →不變 ↑增加</th><th>退休後每月</th></tr>
+    <tr><td>房貸／房租</td><td></td><td>↓　→　↑</td><td></td></tr>
+    <tr><td>伙食（含外食）</td><td></td><td>↓　→　↑</td><td></td></tr>
+    <tr><td>水電瓦斯、電信網路</td><td></td><td>↓　→　↑</td><td></td></tr>
+    <tr><td>交通（油錢、保養、大眾運輸）</td><td></td><td>↓　→　↑</td><td></td></tr>
+    <tr><td>子女教育／孝親費</td><td></td><td>↓　→　↑</td><td></td></tr>
+    <tr><td>保險費（年繳 ÷ 12）</td><td></td><td>↓　→　↑</td><td></td></tr>
+    <tr><td>醫療保健</td><td></td><td>↓　→　↑</td><td></td></tr>
+    <tr><td>旅遊、興趣、學習</td><td></td><td>↓　→　↑</td><td></td></tr>
+    <tr><td>日常用品、服飾</td><td></td><td>↓　→　↑</td><td></td></tr>
+    <tr><td>紅白包、人情往來</td><td></td><td>↓　→　↑</td><td></td></tr>
+    <tr><td>長照預備金</td><td></td><td>↓　→　↑</td><td></td></tr>
+    <tr><td>其他：＿＿＿＿＿＿</td><td></td><td>↓　→　↑</td><td></td></tr>
+    <tr><td><b>合計</b></td><td><span class="code" style="font-size:12pt">C1</span></td><td></td><td><span class="code" style="font-size:12pt">C2</span></td></tr>
+  </table>
+
+  <div class="grid2" style="margin-top:5mm;align-items:start">
+    <div class="box">
+      <div class="mono">通膨係數（年通膨 2%）</div>
+      <table style="font-size:9pt;margin-top:1mm">
+        <tr><th>距離退休</th><th>10 年</th><th>15 年</th><th>20 年</th><th>25 年</th><th>30 年</th></tr>
+        <tr><td>係數</td><td class="num">1.22</td><td class="num">1.35</td><td class="num">1.49</td><td class="num">1.64</td><td class="num">1.81</td></tr>
+      </table>
+      <div class="small" style="margin-top:1.5mm">想更保守？用 2.5%：20 年 ×1.64、30 年 ×2.10</div>
+    </div>
+    <table class="field">
+      <tr><td class="code">C3</td><td>退休那年的月支出<div class="hint">＝ C2 × 通膨係數</div></td><td class="fill" style="width:30mm">＿＿＿＿＿</td></tr>
+      <tr><td class="code">B1</td><td>月退（抄第一關）</td><td class="fill" style="width:30mm">＿＿＿＿＿</td></tr>
+    </table>
+  </div>
+
+  <div class="dark" style="margin-top:5mm;display:flex;justify-content:space-between;align-items:center">
+    <div><div class="mono">今天最重要的一個數字</div><div style="font-family:'Noto Serif TC';font-weight:900;font-size:15pt;margin-top:1mm">D 每月缺口 ＝ C3 − B1</div><div class="small" style="color:rgba(242,236,225,.7)">註：B1 若為今日幣值，可同樣乘上通膨係數再比較（公保年金、月退會隨調整機制變動）。</div></div>
+    <div style="font-size:15pt;white-space:nowrap">D ＝ <span class="blank" style="border-color:var(--goldSoft);min-width:34mm"></span></div>
+  </div>
+  <div class="foot"><span>我的退休帳本 · 第二關</span><span class="num">03</span></div>
+</section>
+
+<!-- ============ P4 第三關 補缺口 ============ -->
+<section class="page">
+  <div class="top"><span class="mono">PART III · 補缺口</span><span class="sec">第三關｜缺口交給時間來補</span></div>
+  <h2>把缺口變成「每個月要做的一件事」</h2>
+
+  <h3><span class="tag">HANDS-ON 04</span><span class="url">toolfinance.netlify.app</span>　理財試算器</h3>
+  <div class="eq">目標本金 <span class="num">E1</span> ＝ D × 12 × 25（4% 法則；保守者用 × 30）</div>
+  <p style="margin:0 0 2mm">E1 ＝ ＿＿＿＿＿ × 12 × ＿＿ ＝ <span class="blank" style="min-width:40mm"></span> 元　　距離退休：＿＿ 年</p>
+  <table>
+    <tr><th>情境</th><th>年化報酬</th><th>投入年數</th><th>E2 每月需投入</th><th>我付得起？</th></tr>
+    <tr><td>保守</td><td>4%</td><td></td><td></td><td>□</td></tr>
+    <tr><td>中性</td><td>6%</td><td></td><td></td><td>□</td></tr>
+    <tr><td>延後退休 3 年</td><td>6%</td><td></td><td></td><td>□</td></tr>
+  </table>
+  <p class="small" style="margin-top:1.5mm">參考：存到 450 萬、年化 6%，30 年每月約 4,480 元；20 年約 9,740 元；10 年約 27,460 元（僅為示意）。</p>
+
+  <h3><span class="tag">HANDS-ON 05</span><span class="url">celadon-starship-b44b3c.netlify.app</span>　資產總覽</h3>
+  <div class="grid2">
+    <table style="font-size:9.5pt">
+      <tr><th>資產（可用於退休）</th><th>金額</th></tr>
+      <tr><td>活存、定存</td><td></td></tr>
+      <tr><td>股票、ETF、基金</td><td></td></tr>
+      <tr><td>保單價值準備金</td><td></td></tr>
+      <tr><td>退撫專戶／其他</td><td></td></tr>
+      <tr><td><b>資產合計</b></td><td></td></tr>
+    </table>
+    <table style="font-size:9.5pt">
+      <tr><th>負債</th><th>金額</th></tr>
+      <tr><td>房貸</td><td></td></tr>
+      <tr><td>車貸</td><td></td></tr>
+      <tr><td>信貸、卡費</td><td></td></tr>
+      <tr><td>其他</td><td></td></tr>
+      <tr><td><b>負債合計</b></td><td></td></tr>
+    </table>
+  </div>
+  <table class="field" style="margin-top:2mm">
+    <tr><td class="code">F1</td><td>可投入退休的淨資產（不含自住房）</td><td class="fill">＿＿＿＿＿＿ 元</td></tr>
+    <tr><td class="code">F2</td><td>退休進度 ＝ F1 ÷ E1</td><td class="fill">＿＿＿＿ %</td></tr>
+  </table>
+  <div style="margin:3mm 0 8mm"><div class="small" style="margin-bottom:1mm">在進度條上塗到你的 F2：</div><div class="progress"><span style="left:0">0%</span><span style="left:48%">50%</span><span style="right:0">100%</span></div></div>
+  <table class="field">
+    <tr><td class="code">F3</td><td>我下個月要調整的一件事<div class="lines" style="height:15mm;margin-top:1mm"></div></td></tr>
+  </table>
+  <div class="foot"><span>我的退休帳本 · 第三關　｜　本頁內容為觀念與工具練習，非投資建議</span><span class="num">04</span></div>
+</section>
+
+<!-- ============ P5 第四關 AI ============ -->
+<section class="page">
+  <div class="top"><span class="mono">PART IV · AI 文書</span><span class="sec">第四關｜把時間買回來</span></div>
+  <h2>AI 輔導紀錄與家長回應實戰</h2>
+  <p class="lead">兩人一組：A 用提示詞 A 整理紀錄、B 用提示詞 B 回覆家長，再交換用紅筆圈出「臆測」與「過度承諾」。</p>
+
+  <div class="box" style="margin-top:4mm;border-left:4px solid var(--red)">
+    <div class="mono" style="color:var(--red)">貼進 AI 前的四條紅線</div>
+    <div style="font-size:9pt;margin-top:1mm">① 去識別化（姓名→代號，刪校名班級與可辨識事件）　② 最小必要　③ 自傷、性平、家暴等通報案件不上傳，依法定流程　④ AI 產出一律是草稿，專業判斷由你負責</div>
+  </div>
+
+  <div class="grid2" style="margin-top:4mm">
+    <div>
+      <div class="mono">案例 A · 虛構晤談速記</div>
+      <div class="box" style="font-size:9pt;margin-top:1.5mm">小安（代號），國二。導師轉介：近兩週上課趴睡 3 次、數學作業缺交。晤談中說「晚上睡不著，就一直滑手機」，「家裡最近很吵」，問到細節時沉默。提到週末會去阿嬤家，「那邊比較安靜」。願意下週再來。</div>
+      <div class="prompt" style="margin-top:2mm"><span class="k">提示詞 A｜輔導紀錄</span><br>你是具 10 年經驗的學校輔導教師。請將以下「已去識別」的晤談速記整理成輔導紀錄，格式：主述議題／晤談摘要（只寫事實與學生原話）／觀察／初步評估／處遇計畫／下次追蹤。規則：推論標示「推測」；不新增速記沒有的內容；語氣客觀中性。<br><span class="k">【速記】</span>（貼上案例 A）</div>
+    </div>
+    <div>
+      <div class="mono">案例 B · 虛構家長 LINE 訊息</div>
+      <div class="box" style="font-size:9pt;margin-top:1.5mm">「老師，我兒子說班上同學一直排擠他，分組都沒人要跟他一組，這種事情已經很久了，學校到底有沒有在管？？我真的很生氣！」</div>
+      <div class="prompt" style="margin-top:2mm"><span class="k">提示詞 B｜回覆家長</span><br>你是溫和專業的國中導師。家長傳來以下訊息，情緒激動。請寫一則 LINE 回覆（150 字內）：①先同理家長感受 ②說明學校已知事實 ③提出具體下一步 ④邀請約時間面談。不要辯解、不要承諾做不到的事。<br><span class="k">【家長訊息】</span>（貼上案例 B）</div>
+    </div>
+  </div>
+
+  <table class="field" style="margin-top:3mm">
+    <tr><td class="code">G1</td><td>AI 草稿裡，哪一句是「臆測」或「過度承諾」？<div class="lines" style="height:7.5mm"></div></td></tr>
+    <tr><td class="code">G2</td><td>我改了哪三個地方？<div class="lines" style="height:7.5mm"></div></td></tr>
+    <tr><td class="code">G3</td><td>這份文書大約省了幾分鐘？＿＿＿ 分鐘　我會用在：□ 輔導紀錄 □ 家長溝通 □ 會議摘要 □ 其他＿＿</td></tr>
+  </table>
+
+  <div class="dark" style="margin-top:4mm">
+    <div class="mono">離開前 · 我的三個行動承諾</div>
+    <div class="grid3" style="margin-top:2mm;font-size:9.5pt">
+      <div>今晚：<br>□ 把這份學習單拍照存檔</div>
+      <div>這個月：<br>□ 設定一筆自動扣款 ＿＿＿＿ 元</div>
+      <div>今年：<br>□ 查一次自己的年資與專戶</div>
+    </div>
+    <div style="margin-top:3mm;font-size:9pt;color:var(--goldSoft)">簽名 ＿＿＿＿＿＿　日期 ＿＿＿＿＿＿　→ 明年今天，再打開一次。</div>
+  </div>
+  <div class="foot"><span>我的退休帳本 · 第四關</span><span class="num">05</span></div>
+</section>
+
+</body>
+</html>
