@@ -204,7 +204,7 @@ const Cover: Page = () => (
         是一條<span style={{ color: goldSoft }}>現金流</span>
       </h1>
       <div style={{ marginTop: 'auto', fontSize: 32, lineHeight: 1.6, color: 'rgba(242,236,225,0.8)' }}>
-        教師退休制度 × 退休金試算 × 投資理財 × AI 輔導文書
+        教師退休制度 × 退休金試算 × 退休缺口 × 簡單投資
       </div>
     </div>
     {/* 右：帳本收據 */}
@@ -334,7 +334,7 @@ const Agenda: Page = () => (
       <AgendaRow time="15–65′" code="I" title="看懂制度" desc="年改、替代率、新舊制" hands="實作 01 · 02" />
       <AgendaRow time="75–120′" code="II" title="算出需求" desc="退休後到底要花多少" hands="實作 03" />
       <AgendaRow time="120–150′" code="III" title="補上缺口" desc="複利、4% 法則、資產盤點" hands="實作 04 · 05" />
-      <AgendaRow time="155–175′" code="IV" title="AI 文書" desc="輔導紀錄與家長回應" hands="實作 06" />
+      <AgendaRow time="155–175′" code="IV" title="簡單投資" desc="定期定額、買大盤、複利" hands="實作 06" />
     </div>
     <div style={{ marginTop: 28, fontSize: 24, color: muted }}>中場休息兩次：65′ 與 150′，各 5–10 分鐘｜175′ 起 Q&A 與行動承諾</div>
   </Sheet>
@@ -1233,30 +1233,6 @@ const Hands04: Page = () => (
   </Workshop>
 );
 
-const PassiveCard = ({ n, t, d }: { n: string; t: string; d: string }) => (
-  <div style={{ display: 'grid', gridTemplateColumns: '90px 1fr', padding: '24px 0', borderBottom: `1px solid ${rule}` }}>
-    <span style={{ fontFamily: NUM, fontSize: 56, color: gold, lineHeight: 1 }}>{n}</span>
-    <span>
-      <span style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 40 }}>{t}</span>
-      <span style={{ fontSize: 28, color: muted, marginLeft: 24 }}>{d}</span>
-    </span>
-  </div>
-);
-
-const Passive: Page = () => (
-  <Sheet section="III · 補缺口 · 投資觀念">
-    <Eyebrow>講者自己的做法 · 長期被動投資 · 非投資建議</Eyebrow>
-    <H size={60}>忙碌的老師，適合「不用盯盤」的方法</H>
-    <div style={{ marginTop: 40, borderTop: `3px double #1E2420` }}>
-      <PassiveCard n="1" t="先備緊急預備金" d="6 個月生活費，放在不會跌的地方" />
-      <PassiveCard n="2" t="買整個市場" d="低成本、分散的市值型指數 ETF" />
-      <PassiveCard n="3" t="股債配置" d="越接近退休，債券比重越高" />
-      <PassiveCard n="4" t="自動化紀律" d="發薪日定期定額，不猜高低點" />
-      <PassiveCard n="5" t="一年再平衡一次" d="比例跑掉才調整，其餘時間不動" />
-    </div>
-  </Sheet>
-);
-
 const Risk = ({ t, d }: { t: string; d: string }) => (
   <div style={{ background: '#FBF8F2', border: `1px solid ${rule}`, padding: '36px 40px' }}>
     <div style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 44, color: red }}>{t}</div>
@@ -1334,9 +1310,9 @@ const EqItem = ({ code, t, hot }: { code: string; t: string; hot?: boolean }) =>
   </div>
 );
 
-const Break2: Page = () => <Break mins="5′" next="把省下的時間找回來：AI 與輔導文書" />;
+const Break2: Page = () => <Break mins="5′" next="每月那筆錢，要放去哪？" />;
 
-// ─── Part IV：AI ────────────────────────────────────────────
+// ─── Part IV：簡單投資入門 ──────────────────────────────────
 
 const SecIV: Page = () => (
   <Divider
@@ -1344,65 +1320,223 @@ const SecIV: Page = () => (
     kicker="PART FOUR · 155′–175′"
     title={
       <>
-        最好的投資，
+        每月那筆錢，
         <br />
-        是把<span style={{ color: goldSoft }}>時間</span>買回來
+        要<span style={{ color: goldSoft }}>放去哪</span>？
       </>
     }
-    sub="用 AI 整理輔導紀錄、回覆家長訊息"
+    sub="定期定額 × 買大盤 × 讓複利替你工作"
   />
 );
 
-const WhyAI: Page = () => (
-  <Sheet section="IV · AI 文書">
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 100, height: '100%', alignItems: 'center' }}>
+// 複利堆疊長條：本金（墨綠）＋ 複利（紅）
+const StackBar = ({
+  yrs,
+  principal,
+  gain,
+  pH,
+  gH,
+  total,
+}: {
+  yrs: string;
+  principal: string;
+  gain: string;
+  pH: number;
+  gH: number;
+  total: string;
+}) => (
+  <div style={{ width: 240, display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
+    <div style={{ fontFamily: NUM, fontSize: 52, textAlign: 'center', color: red }}>{total}</div>
+    <div
+      style={{
+        height: gH,
+        background: red,
+        marginTop: 8,
+        color: cream,
+        fontSize: 22,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      {gH >= 48 ? `複利 ${gain}` : ''}
+    </div>
+    <div
+      style={{
+        height: pH,
+        background: 'var(--osd-accent)',
+        color: cream,
+        fontSize: 22,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      本金 {principal}
+    </div>
+    <div style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 34, marginTop: 16, textAlign: 'center' }}>
+      {yrs}
+    </div>
+  </div>
+);
+
+const CompoundPower: Page = () => (
+  <Sheet section="IV · 簡單投資 · 複利">
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 560px', gap: 60, height: '100%' }}>
       <div>
-        <H size={60}>輔導老師的時間，花在哪？</H>
-        <Lead>
-          晤談 30 分鐘，紀錄 20 分鐘；
-          <br />
-          一則家長訊息，斟酌半小時。
-          <br />
-          <Mark>AI 不替你判斷，只替你打草稿。</Mark>
-        </Lead>
+        <H size={56}>每月 5,000 元，看複利怎麼長大</H>
+        <div style={{ fontSize: 26, color: muted, marginTop: 12 }}>定期定額，假設年化報酬 6%（每月複利），僅為示意</div>
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 70, height: 640, marginTop: 10 }}>
+          <StackBar yrs="10 年" principal="60 萬" gain="22 萬" pH={60} gH={22} total="82 萬" />
+          <StackBar yrs="20 年" principal="120 萬" gain="111 萬" pH={120} gH={111} total="231 萬" />
+          <StackBar yrs="30 年" principal="180 萬" gain="322 萬" pH={180} gH={322} total="502 萬" />
+        </div>
       </div>
-      <div>
-        <Use t="輔導紀錄" d="口述／速記 → 結構化紀錄草稿" />
-        <Use t="家長回應" d="情緒化訊息 → 同理、清楚、邀請合作的回覆" />
-        <Use t="會議摘要" d="個案會議逐字稿 → 決議與分工清單" />
+      <div style={{ alignSelf: 'center', borderLeft: `1px solid ${rule}`, paddingLeft: 56 }}>
+        <H size={52}>
+          第 30 年，
+          <br />
+          <span style={{ color: red }}>利息比本金還多</span>
+        </H>
+        <Lead>
+          前 10 年幾乎看不出差別，
+          <br />
+          後 10 年才是複利真正發力的時候。
+        </Lead>
+        <div style={{ marginTop: 40, padding: '24px 28px', background: '#FBF8F2', border: `1px solid ${rule}` }}>
+          <div style={{ fontFamily: MONO, fontSize: 20, letterSpacing: '0.16em', color: gold }}>72 法則</div>
+          <div style={{ fontSize: 30, marginTop: 8 }}>
+            72 ÷ 報酬率 ≈ 翻倍年數
+            <br />
+            <span style={{ color: muted, fontSize: 26 }}>6% → 約 12 年翻一倍</span>
+          </div>
+        </div>
       </div>
     </div>
   </Sheet>
 );
 
-const Use = ({ t, d }: { t: string; d: string }) => (
-  <div style={{ padding: '26px 0', borderBottom: `1px solid ${rule}` }}>
-    <div style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 44, color: 'var(--osd-accent)' }}>{t}</div>
-    <div style={{ fontSize: 30, color: muted, marginTop: 8 }}>{d}</div>
+const IndexCard = ({ big, t, d }: { big: string; t: string; d: string }) => (
+  <div style={{ borderTop: `3px solid var(--osd-accent)`, paddingTop: 26 }}>
+    <div style={{ fontFamily: NUM, fontSize: 84, color: red, lineHeight: 1 }}>{big}</div>
+    <div style={{ fontSize: 36, fontWeight: 700, marginTop: 20 }}>{t}</div>
+    <div style={{ fontSize: 28, color: muted, lineHeight: 1.6, marginTop: 10 }}>{d}</div>
   </div>
 );
 
-const RedLine = ({ n, t, d }: { n: string; t: string; d: string }) => (
-  <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', padding: '24px 0', borderBottom: '1px solid rgba(216,193,151,0.25)' }}>
-    <span style={{ fontFamily: NUM, fontSize: 60, color: goldSoft, lineHeight: 1 }}>{n}</span>
-    <span>
-      <span style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 40 }}>{t}</span>
-      <span style={{ fontSize: 28, color: 'rgba(242,236,225,0.75)', marginLeft: 24 }}>{d}</span>
-    </span>
+const IndexWhy: Page = () => (
+  <Sheet section="IV · 簡單投資 · 買大盤">
+    <Eyebrow>不選股，直接買下整個市場</Eyebrow>
+    <H size={64}>什麼是「買大盤」？</H>
+    <Lead style={{ marginTop: 20 }}>
+      用一檔市值型指數 ETF，一次持有一籃子大公司：台灣前 50 大、美國 500 大，或全世界股市。
+    </Lead>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 56, marginTop: 64 }}>
+      <IndexCard big="不用猜" t="不必選股" d="公司會變強也會變弱，指數會自動汰弱留強。" />
+      <IndexCard big="低成本" t="費用率低" d="內扣費用長期影響很大，指數型通常最便宜。" />
+      <IndexCard big="夠分散" t="一次買很多家" d="單一公司出事，對整體影響有限。" />
+    </div>
+  </Sheet>
+);
+
+const DcaRow = ({ m, price, units, hot }: { m: string; price: string; units: string; hot?: boolean }) => (
+  <div
+    style={{
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr 1fr 1fr',
+      padding: '16px 0',
+      borderBottom: `1px solid ${rule}`,
+      fontSize: 32,
+      alignItems: 'baseline',
+    }}
+  >
+    <span>{m}</span>
+    <span style={{ fontFamily: NUM, fontSize: 40, textAlign: 'right' }}>3,000</span>
+    <span style={{ fontFamily: NUM, fontSize: 40, textAlign: 'right', color: hot ? red : 'var(--osd-text)' }}>{price}</span>
+    <span style={{ fontFamily: NUM, fontSize: 40, textAlign: 'right', color: hot ? red : 'var(--osd-text)' }}>{units}</span>
   </div>
 );
 
-const Ethics: Page = () => (
-  <Sheet section="IV · AI 文書 · 倫理紅線" dark>
-    <div style={{ fontFamily: MONO, fontSize: 24, letterSpacing: '0.2em', color: goldSoft }}>BEFORE YOU PASTE</div>
-    <h2 style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 72, margin: '20px 0 0' }}>
-      貼進 AI 之前，四條紅線
-    </h2>
-    <div style={{ marginTop: 40 }}>
-      <RedLine n="1" t="去識別化" d="姓名→代號，刪校名、班級、地址、可辨識事件" />
-      <RedLine n="2" t="最小必要" d="只給 AI 寫紀錄需要的事實，不給全部背景" />
-      <RedLine n="3" t="高風險不上傳" d="自傷、性平、家暴等通報案件，依法定流程處理" />
-      <RedLine n="4" t="人做最後判斷" d="AI 產出一律視為草稿，專業評估由你簽名負責" />
+const DCA: Page = () => (
+  <Sheet section="IV · 簡單投資 · 定期定額">
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 820px', gap: 90, height: '100%' }}>
+      <div>
+        <Eyebrow>固定日期 · 固定金額 · 自動扣款</Eyebrow>
+        <H size={60}>
+          跌的時候，
+          <br />
+          你其實買到<span style={{ color: red }}>更多</span>
+        </H>
+        <Lead>
+          價格繞了一圈回到 100，
+          <br />
+          每月 3,000 元扣了 4 個月，
+          <br />
+          帳面卻是<Mark>賺 23%</Mark>。
+        </Lead>
+      </div>
+      <div style={{ alignSelf: 'center' }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr 1fr 1fr',
+            paddingBottom: 14,
+            borderBottom: `3px double #1E2420`,
+            fontSize: 24,
+            color: gold,
+          }}
+        >
+          <span>月份</span>
+          <span style={{ textAlign: 'right' }}>投入</span>
+          <span style={{ textAlign: 'right' }}>價格</span>
+          <span style={{ textAlign: 'right' }}>買到單位</span>
+        </div>
+        <DcaRow m="1 月" price="100" units="30" />
+        <DcaRow m="2 月" price="80" units="37.5" />
+        <DcaRow m="3 月" price="60" units="50" hot />
+        <DcaRow m="4 月" price="100" units="30" />
+        <LedgerRow label="投入 12,000 → 147.5 單位 × 100" value="14,750" strong />
+      </div>
+    </div>
+  </Sheet>
+);
+
+const Hands06: Page = () => (
+  <Workshop
+    no="06"
+    mins="10 分鐘"
+    tool="看見複利的力量"
+    url="toolfinance.netlify.app"
+    goal="把你的 E2 放進去，看它 10、20、30 年後長成什麼樣"
+    fields={
+      <>
+        <Field code="G1" label="我的每月定期定額" hint="先用 E2，付不起就用付得起的金額" />
+        <Field code="G2" label="30 年後：本金 vs 終值" hint="試 4%、6% 兩種報酬率" />
+        <Field code="G3" label="第幾年，利息超過本金？" hint="6% 約在第 22 年" />
+      </>
+    }
+  >
+    <StepRow n="1">選「定期定額／複利」試算，輸入 G1 金額</StepRow>
+    <StepRow n="2">年數分別填 10、20、30，抄下終值</StepRow>
+    <StepRow n="3">把報酬率從 6% 改成 4%，看差多少</StepRow>
+    <StepRow n="4">再試「晚 5 年開始」，感受時間的價格</StepRow>
+  </Workshop>
+);
+
+const HowStart: Page = () => (
+  <Sheet section="IV · 簡單投資 · 開始">
+    <H size={60}>從今天到第一筆扣款，四步</H>
+    <div style={{ display: 'flex', gap: 14, marginTop: 64 }}>
+      <Flow n="1" t="先留預備金" d="6 個月生活費放存款，投資的錢才不會被迫賣" />
+      <Arrow />
+      <Flow n="2" t="開證券戶" d="線上開戶約 15 分鐘，順便綁定扣款帳戶" />
+      <Arrow />
+      <Flow n="3" t="選一檔大盤" d="市值型指數 ETF，一檔就夠，不用收集" hot />
+      <Arrow />
+      <Flow n="4" t="設定扣款" d="發薪日後扣款，一年只檢視一次" />
+    </div>
+    <div style={{ marginTop: 44, fontSize: 24, color: muted }}>
+      講者自己的做法，僅供參考、非投資建議；標的請自行研究費用率、規模與追蹤指數。
     </div>
   </Sheet>
 );
@@ -1418,127 +1552,52 @@ const Flow = ({ n, t, d, hot }: { n: string; t: string; d: string; hot?: boolean
       minHeight: 400,
     }}
   >
-    <div style={{ fontFamily: NUM, fontSize: 52, color: hot ? goldSoft : gold, lineHeight: 1 }}>{n}</div>
-    <div style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 38, marginTop: 20 }}>{t}</div>
-    <div style={{ fontSize: 26, lineHeight: 1.55, marginTop: 12, opacity: 0.8 }}>{d}</div>
+    <div style={{ fontFamily: NUM, fontSize: 60, color: hot ? goldSoft : gold, lineHeight: 1 }}>{n}</div>
+    <div style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 42, marginTop: 24 }}>{t}</div>
+    <div style={{ fontSize: 28, lineHeight: 1.6, marginTop: 14, opacity: 0.85 }}>{d}</div>
   </div>
 );
 
-const RecordFlow: Page = () => (
-  <Sheet section="IV · AI 文書 · 輔導紀錄">
-    <H size={60}>一筆紀錄的五個步驟</H>
-    <div style={{ display: 'flex', gap: 14, marginTop: 64 }}>
-      <Flow n="1" t="速記" d="晤談後 3 分鐘口述或條列重點" />
-      <Arrow />
-      <Flow n="2" t="去識別" d="換代號、刪可辨識細節" />
-      <Arrow />
-      <Flow n="3" t="AI 結構化" d="套固定格式產出草稿" hot />
-      <Arrow />
-      <Flow n="4" t="校正" d="刪臆測、補專業判斷" />
-      <Arrow />
-      <Flow n="5" t="入系統" d="還原真名，存入學校系統" />
-    </div>
-    <Lead style={{ marginTop: 56, fontSize: 36, color: 'var(--osd-text)' }}>重點在第 4 步：AI 容易把「學生說」寫成「事實是」，要改回來。</Lead>
-  </Sheet>
-);
-
-const Prompt = ({ title, children }: { title: string; children: ReactNode }) => (
-  <div style={{ background: '#1B2420', color: '#E9E3D6', padding: '40px 48px', fontFamily: MONO, fontSize: 26, lineHeight: 1.7 }}>
-    <div style={{ color: goldSoft, fontSize: 22, letterSpacing: '0.16em', marginBottom: 16 }}>{title}</div>
-    {children}
+const QA = ({ q, a }: { q: string; a: string }) => (
+  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.25fr', gap: 48, padding: '28px 0', borderBottom: '1px solid rgba(216,193,151,0.25)' }}>
+    <span style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 40 }}>「{q}」</span>
+    <span style={{ fontSize: 30, lineHeight: 1.55, color: 'rgba(242,236,225,0.85)' }}>{a}</span>
   </div>
 );
 
-const PromptRecord: Page = () => (
-  <Sheet section="IV · AI 文書 · 提示詞 A">
-    <H size={56}>提示詞範本 A｜輔導紀錄</H>
+const Myths: Page = () => (
+  <Sheet section="IV · 簡單投資 · 常見問題" dark>
+    <div style={{ fontFamily: MONO, fontSize: 24, letterSpacing: '0.2em', color: goldSoft }}>FAQ · 老師最常問的三句話</div>
+    <h2 style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 68, margin: '20px 0 0' }}>
+      紀律，比時機重要
+    </h2>
     <div style={{ marginTop: 36 }}>
-      <Prompt title="PROMPT · 複製到學習單第 4 頁可直接使用">
-        你是具 10 年經驗的學校輔導教師。請將以下「已去識別」的晤談速記，
-        <br />
-        整理成輔導紀錄，格式：主述議題／晤談摘要（只寫事實與學生原話）／
-        <br />
-        觀察／初步評估／處遇計畫／下次追蹤。
-        <br />
-        規則：推論要標示「推測」；不要新增速記沒有的內容；語氣客觀中性。
-        <br />
-        <span style={{ color: goldSoft }}>【速記】</span>＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
-      </Prompt>
-    </div>
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 36, marginTop: 48 }}>
-      <Check t="事實與推測分開" d="「學生表示⋯」≠「學生確實⋯」" />
-      <Check t="原話加引號" d="保留學生用詞，不美化、不改寫" />
-      <Check t="沒說的不要寫" d="AI 自行補的細節一律刪除" />
+      <QA q="現在是高點，要不要等？" a="沒人猜得準。定期定額的意義，就是不用猜。" />
+      <QA q="大跌了，要不要停扣？" a="跌的時候正在買便宜貨。停扣，才是真的虧。" />
+      <QA q="錢不多，有差嗎？" a="3,000 元也可以開始。先養成習慣，再慢慢加碼。" />
     </div>
   </Sheet>
 );
 
-const Check = ({ t, d }: { t: string; d: string }) => (
-  <div style={{ borderTop: `6px solid ${red}`, paddingTop: 22 }}>
-    <div style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 38 }}>✓ {t}</div>
-    <div style={{ fontSize: 28, color: muted, marginTop: 10 }}>{d}</div>
-  </div>
-);
-
-const PromptParent: Page = () => (
-  <Sheet section="IV · AI 文書 · 提示詞 B">
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 560px', gap: 64 }}>
-      <div>
-        <H size={56}>提示詞範本 B｜回覆家長</H>
-        <div style={{ marginTop: 36 }}>
-          <Prompt title="PROMPT">
-            你是溫和專業的國中導師。家長傳來以下訊息，
-            <br />
-            情緒激動。請寫一則 LINE 回覆（150 字內）：
-            <br />
-            ①先同理家長感受 ②說明學校已知事實
-            <br />
-            ③提出具體下一步 ④邀請約時間面談。
-            <br />
-            不要辯解、不要承諾做不到的事。
-            <br />
-            <span style={{ color: goldSoft }}>【家長訊息】</span>＿＿＿＿＿＿
-          </Prompt>
-        </div>
-      </div>
-      <div style={{ paddingTop: 24 }}>
-        <div style={{ fontFamily: MONO, fontSize: 22, color: gold, letterSpacing: '0.16em' }}>回覆四拍</div>
-        <Beat n="同理" d="「聽得出您很擔心⋯」" />
-        <Beat n="事實" d="「目前我們了解到的是⋯」" />
-        <Beat n="行動" d="「這週我會先⋯」" />
-        <Beat n="邀請" d="「想跟您約個時間⋯」" />
-      </div>
+const Summary: Page = () => (
+  <Sheet section="IV · 小結">
+    <Eyebrow>今天的一句話</Eyebrow>
+    <div
+      style={{
+        marginTop: 60,
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, 1fr)',
+        gap: 36,
+      }}
+    >
+      <EqItem code="定期定額" t="用紀律取代猜測" />
+      <EqItem code="買大盤" t="用分散取代選股" />
+      <EqItem code="複利" t="用時間取代本金" hot />
     </div>
+    <Lead style={{ marginTop: 90, fontSize: 40, color: 'var(--osd-text)' }}>
+      你不需要很會投資，只需要<Mark>很早開始、很久不停</Mark>。
+    </Lead>
   </Sheet>
-);
-
-const Beat = ({ n, d }: { n: string; d: string }) => (
-  <div style={{ padding: '22px 0', borderBottom: `1px solid ${rule}` }}>
-    <span style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 40, color: red }}>{n}</span>
-    <div style={{ fontSize: 28, color: muted, marginTop: 6 }}>{d}</div>
-  </div>
-);
-
-const Hands06: Page = () => (
-  <Workshop
-    no="06"
-    mins="15 分鐘"
-    tool="AI 文書實戰"
-    url="任一 AI 工具：ChatGPT／Gemini／Claude"
-    goal="用學習單上的虛構案例，兩人一組練習"
-    fields={
-      <>
-        <Field code="G1" label="AI 草稿裡，哪句是臆測？" />
-        <Field code="G2" label="我改了哪三個地方？" />
-        <Field code="G3" label="這份紀錄省了幾分鐘？" />
-      </>
-    }
-  >
-    <StepRow n="1">A 同學：用提示詞 A 整理「小安」的晤談速記</StepRow>
-    <StepRow n="2">B 同學：用提示詞 B 回覆「家長訊息」</StepRow>
-    <StepRow n="3">交換檢查：用紅筆圈出臆測、過度承諾</StepRow>
-    <StepRow n="4">改寫一版，比較 AI 版與你的版本差在哪</StepRow>
-  </Workshop>
 );
 
 // ─── 結尾 ───────────────────────────────────────────────────
@@ -1559,7 +1618,7 @@ const Actions: Page = () => (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 56, marginTop: 64 }}>
       <Action when="TONIGHT · 今晚" t="把學習單拍照存檔" d="明年同一天再算一次，看進度條走了多少。" />
       <Action when="THIS MONTH · 這個月" t="設定一筆自動扣款" d="金額不重要，先讓「發薪日投入」變成習慣。" />
-      <Action when="THIS YEAR · 今年" t="查一次自己的年資與專戶" d="確認制度資料正確，退休前不留驚喜。" />
+      <Action when="THIS YEAR · 今年" t="查一次自己的年資與專戶" d="確認制度資料正確，一年檢視一次投資。" />
     </div>
     <div
       style={{
@@ -1673,10 +1732,8 @@ export const notes = [
   '【124′–128′】示意計算：年化 6%、每月複利。重點是時間，不是報酬率。',
   // Hands04
   '【128′–138′】實作 04。請大家至少試兩種報酬率。',
-  // Passive
-  '【138′–141′】分享自己的被動投資原則，再次聲明非投資建議，不提特定標的代號。',
   // Risks
-  '【141′–143′】四個風險快速帶過，醫療長照建議獨立準備。',
+  '【138′–143′】四個風險，醫療長照建議獨立準備。順序風險可預告：Part IV 會談怎麼用紀律面對下跌。',
   // Hands05
   '【143′–149′】實作 05。進度條 F2 是今天的收穫之一，明年再算一次。',
   // Equation
@@ -1684,19 +1741,21 @@ export const notes = [
   // Break2
   '【150′–155′】休息 5 分鐘。',
   // SecIV
-  '【155′】轉場：理財是把錢放進時間，AI 是把時間買回來。',
-  // WhyAI
-  '【155′–157′】輔導老師的文書負擔。AI 只打草稿、不做判斷。',
-  // Ethics
-  '【157′–160′】紅線務必講清楚，尤其第 3 條：通報案件依法定流程，不經過 AI。',
-  // RecordFlow
-  '【160′–161′】五步驟，重點在第 4 步校正。',
-  // PromptRecord
-  '【161′–162′】提示詞 A 已印在學習單第 4 頁，可直接複製。',
-  // PromptParent
-  '【162′–163′】提示詞 B 與回覆四拍。',
+  '【155′】轉場：Part III 算出每月要投入 E2，現在回答「那筆錢放哪裡」。再次聲明：分享觀念與自己的做法，非投資建議。',
+  // CompoundPower
+  '【155′–158′】先讓大家猜 30 年後有多少，再揭曉 502 萬。重點：本金 180 萬，其餘 322 萬是複利。帶 72 法則。',
+  // IndexWhy
+  '【158′–160′】大盤＝市值型指數 ETF。可口頭舉台灣 50、S&P 500、全世界股市等指數類型，不推薦特定商品。',
+  // DCA
+  '【160′–162′】請老師先心算：價格跌到 60 又回 100，到底賺還賠？再揭曉 +23%。這就是定期定額不怕跌的原因。',
   // Hands06
-  '【163′–175′】實作 06。兩人一組，用學習單的虛構案例。最後請一組分享 AI 草稿中被圈出的臆測句。',
+  '【162′–170′】實作 06，用理財試算器定期定額功能。請大家找出「利息超過本金」的年份（6% 約第 22 年）。',
+  // HowStart
+  '【170′–172′】四步驟，強調先有預備金。一檔大盤就夠。',
+  // Myths
+  '【172′–174′】三個常見問題，可開放 1 題現場提問。',
+  // Summary
+  '【174′–175′】三句話收束。',
   // Actions
   '【175′–178′】行動承諾寫在學習單最後一欄。',
   // Closing
@@ -1737,18 +1796,18 @@ export default [
   Rule4,
   Compound,
   Hands04,
-  Passive,
   Risks,
   Hands05,
   Equation,
   Break2,
   SecIV,
-  WhyAI,
-  Ethics,
-  RecordFlow,
-  PromptRecord,
-  PromptParent,
+  CompoundPower,
+  IndexWhy,
+  DCA,
   Hands06,
+  HowStart,
+  Myths,
+  Summary,
   Actions,
   Closing,
 ] satisfies Page[];
