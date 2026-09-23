@@ -48,6 +48,19 @@
   .tight td{padding:1.5mm 1.5mm}
   .tight.field td{height:10mm}
   .progress span{position:absolute;top:10mm;font-size:7pt;color:var(--muted)}
+  .key{display:flex;align-items:stretch;border:1.6px solid var(--red);background:#fff;border-radius:1.2mm;min-height:11.5mm;margin:1.8mm 0;overflow:hidden}
+  .key .b{background:var(--red);color:#fff;font-family:"DM Serif Display",serif;font-size:14pt;width:12mm;display:flex;align-items:center;justify-content:center;flex:none}
+  .key .l{padding:1.2mm 3mm;flex:1;font-size:10pt;font-weight:500;line-height:1.4;align-self:center}
+  .key .l small{display:block;font-weight:400;font-size:7.5pt;color:var(--muted);margin-top:.3mm}
+  .key .v{width:42mm;flex:none;border-left:1px dashed var(--rule);display:flex;align-items:flex-end;justify-content:flex-end;padding:0 2.5mm 1.2mm;font-size:8.5pt;color:var(--muted);background:#FFFDF8}
+  .key .v.s{width:30mm}
+  .key.big{min-height:15mm}.key.big .b{width:15mm;font-size:19pt}.key.big .v{width:52mm}
+  .keys2{display:grid;grid-template-columns:1fr 1fr;gap:0 4mm}
+  .ref{font-style:normal;display:inline-block;border:1.1px solid var(--red);color:var(--red);font-family:"DM Serif Display",serif;font-size:9pt;line-height:1;padding:.5mm 1.1mm;border-radius:.8mm;margin:0 .3mm}
+  .mini{font-style:normal;display:inline-block;background:var(--red);color:#fff;font-family:"DM Serif Display",serif;font-size:8.5pt;line-height:1;padding:.7mm 1.3mm;border-radius:.8mm;margin-left:1mm}
+  .need{font-size:8pt;color:var(--muted);letter-spacing:.05em}
+  .draft td{color:var(--muted)}
+  .draft th{color:var(--muted);border-bottom:1px solid var(--muted)}
 </style>
 </head>
 <body>
@@ -63,11 +76,19 @@
     <div class="mono">QUESTION 00 · 開場先寫，結束再看</div>
     <div class="grid2" style="margin-top:3mm">
       <div><div class="small">憑感覺：退休後每月需要</div><div style="font-size:15pt;margin-top:2mm"><span class="blank" style="min-width:45mm"></span> 元</div></div>
-      <div><div class="small">有根據：三小時後的 C2</div><div style="font-size:15pt;margin-top:2mm"><span class="blank" style="min-width:45mm"></span> 元</div></div>
+      <div><div class="small">有根據：三小時後的 <i class="ref">C2</i></div><div style="font-size:15pt;margin-top:2mm"><span class="blank" style="min-width:45mm"></span> 元</div></div>
     </div>
   </div>
 
-  <h3 style="color:var(--goldSoft);margin-top:10mm">五個工具 · 請先加入書籤</h3>
+  <div style="background:var(--tint);color:var(--ink);padding:4mm 6mm;margin-top:5mm">
+    <div class="mono">怎麼用這份學習單</div>
+    <div style="display:flex;gap:5mm;align-items:center;margin-top:2mm;font-size:9.5pt">
+      <div class="key" style="margin:0;width:62mm;min-height:9mm"><span class="b" style="width:10mm;font-size:12pt">A1</span><span class="l" style="font-size:8.5pt">紅框 ＝ 要寫數字的地方</span></div>
+      <div><i class="ref">A1</i> 空心小框 ＝ 引用前面寫過的數字</div>
+    </div>
+    <div class="small" style="margin-top:1.5mm">灰色草稿表隨手記即可，只有紅框要工整。全份共 17 個紅框，每頁右上角標出本頁要填哪幾格。</div>
+  </div>
+  <h3 style="color:var(--goldSoft);margin-top:6mm">五個工具 · 請先加入書籤</h3>
   <table style="color:var(--tint)">
     <tr><td class="code" style="color:var(--goldSoft);border-color:rgba(216,193,151,.3)">01</td><td style="border-color:rgba(216,193,151,.3)">薪資試算</td><td style="border-color:rgba(216,193,151,.3);font-family:'IBM Plex Mono';font-size:8.5pt">teacher-salary-calculator.netlify.app</td><td style="border-color:rgba(216,193,151,.3)">→ A 月薪</td></tr>
     <tr><td class="code" style="color:var(--goldSoft);border-color:rgba(216,193,151,.3)">02</td><td style="border-color:rgba(216,193,151,.3)">退休金試算</td><td style="border-color:rgba(216,193,151,.3);font-family:'IBM Plex Mono';font-size:8.5pt">pension-calculation.netlify.app</td><td style="border-color:rgba(216,193,151,.3)">→ B 月退</td></tr>
@@ -76,7 +97,7 @@
     <tr><td class="code" style="color:var(--goldSoft);border-color:rgba(216,193,151,.3)">05</td><td style="border-color:rgba(216,193,151,.3)">資產總覽</td><td style="border-color:rgba(216,193,151,.3);font-family:'IBM Plex Mono';font-size:8.5pt">celadon-starship-b44b3c.netlify.app</td><td style="border-color:rgba(216,193,151,.3)">→ F 進度</td></tr>
   </table>
 
-  <div class="eq" style="color:var(--tint);border-color:var(--goldSoft);margin-top:10mm">
+  <div class="eq" style="color:var(--tint);border-color:var(--goldSoft);margin-top:6mm">
     <span class="num" style="color:var(--goldSoft)">B1</span> 月退 ＋ <span class="num" style="color:var(--goldSoft)">E1</span>×4%÷12 自備本金提領　≥　<span class="num" style="color:var(--goldSoft)">C2</span> 退休後月支出
   </div>
   <div class="small" style="color:rgba(242,236,225,.6);margin-top:4mm">三個約定：① 數字只寫在自己的學習單　② 估算比精算重要，不確定就填保守值　③ 本課程為觀念與工具分享，非投資建議</div>
@@ -85,63 +106,64 @@
 
 <!-- ============ P2 第一關 制度 ============ -->
 <section class="page">
-  <div class="top"><span class="mono">PART I · 制度</span><span class="sec">第一關｜你的退休金怎麼算</span></div>
-  <h2>看懂制度，找出「制度會給我多少」</h2>
+  <div class="top"><span class="mono">PART I · 制度</span><span class="need">本頁要填 <i class="mini">A1</i><i class="mini">A2</i><i class="mini">A3</i><i class="mini">B1</i><i class="mini">B2</i><i class="mini">B3</i></span></div>
+  <h2>第一關｜制度會給我多少？</h2>
   <p class="lead">舊制月退上限 ＝ 本俸 × 2 × 所得替代率（替代率依「退休年度 × 年資」查表）</p>
 
   <h3><span class="tag">HANDS-ON 01</span><span class="url">teacher-salary-calculator.netlify.app</span>　薪資試算</h3>
-  <table class="field">
-    <tr><td class="code">A1</td><td>目前薪點／本俸<div class="hint">退休金公式用的是本俸</div></td><td class="fill">薪點＿＿＿／＿＿＿＿＿ 元</td></tr>
-    <tr><td class="code">A2</td><td>每月實領（稅前）<div class="hint">本俸＋學術研究加給＋其他</div></td><td class="fill">＿＿＿＿＿＿ 元</td></tr>
-    <tr><td class="code">A3</td><td>預估退休時本俸<div class="hint">年功薪上限：學士 625／碩士 650（以工具最新俸額為準）</div></td><td class="fill">＿＿＿＿＿＿ 元</td></tr>
-  </table>
+  <div class="key"><span class="b">A1</span><span class="l">目前本俸<small>薪點 ＿＿＿（看薪資單）；退休金公式用的是本俸</small></span><span class="v">元</span></div>
+  <div class="key"><span class="b">A2</span><span class="l">每月實領（稅前）<small>本俸＋學術研究加給＋其他</small></span><span class="v">元</span></div>
+  <div class="key"><span class="b">A3</span><span class="l">預估退休時本俸<small>年功薪上限：學士 625／碩士 650（以工具最新俸額為準）</small></span><span class="v">元</span></div>
 
   <h3><span class="tag">HANDS-ON 02</span><span class="url">pension-calculation.netlify.app</span>　退休金試算</h3>
-  <table>
-    <tr><th>情境</th><th>退休年度</th><th>年資</th><th>B2 法定替代率<br>（新制免填）</th><th>B1 預估月退（含公保年金）</th></tr>
+  <div class="small" style="margin-bottom:1mm">① 先在草稿表試三種情境（隨手記，不必工整）</div>
+  <table class="tight draft">
+    <tr><th>情境</th><th>退休年度</th><th>年資</th><th>法定替代率</th><th>預估月退（含公保年金）</th></tr>
     <tr><td>早 5 年</td><td></td><td></td><td></td><td></td></tr>
     <tr><td><b>預定</b></td><td></td><td></td><td></td><td></td></tr>
     <tr><td>晚 5 年</td><td></td><td></td><td></td><td></td></tr>
   </table>
-  <table class="field" style="margin-top:2mm">
-    <tr><td class="code">B3</td><td>真實替代率 ＝ B1（預定）÷ A2<div class="hint">「60%」是乘在本俸×2 上，不是乘在實領上。這才是退休當月的體感。</div></td><td class="fill">＿＿＿＿ %</td></tr>
-  </table>
+  <div class="small" style="margin:2.5mm 0 0">② 把「預定」那一列抄進紅框</div>
+  <div class="key"><span class="b">B1</span><span class="l">預估月退（含公保年金）<small>新制老師：公保年金＋專戶 × 4% ÷ 12（右下方換算）</small></span><span class="v">元</span></div>
+  <div class="keys2">
+    <div class="key"><span class="b">B2</span><span class="l">法定替代率<small>新制免填</small></span><span class="v s">%</span></div>
+    <div class="key"><span class="b">B3</span><span class="l">真實替代率<small>＝ <i class="ref">B1</i> ÷ <i class="ref">A2</i></small></span><span class="v s">%</span></div>
+  </div>
 
-  <div class="grid2" style="margin-top:5mm">
+  <div class="grid2" style="margin-top:3mm">
     <div class="box">
-      <div class="mono">所得替代率上限（節錄）</div>
-      <table style="font-size:8.5pt;margin-top:1mm">
+      <div class="mono">參考 · 所得替代率上限（節錄）</div>
+      <table style="font-size:8.5pt;margin-top:1mm" class="tight">
         <tr><th>年度＼年資</th><th>20</th><th>25</th><th>30</th><th>35</th></tr>
         <tr><td>115 年度</td><td>42.0%</td><td>49.5%</td><td>57.0%</td><td>64.5%</td></tr>
         <tr><td>116 年度</td><td>40.5%</td><td>48.0%</td><td>55.5%</td><td>63.0%</td></tr>
         <tr><td>117 年度</td><td>39.0%</td><td>46.5%</td><td>54.0%</td><td>61.5%</td></tr>
         <tr><td>118 年後</td><td>37.5%</td><td>45.0%</td><td>52.5%</td><td class="red">60.0%</td></tr>
       </table>
-      <div class="small" style="margin-top:1.5mm">年資每少 1 年約 −1.5%；實際以主管機關公告為準。</div>
+      <div class="small" style="margin-top:1mm">年資每少 1 年約 −1.5%；以主管機關公告為準。</div>
     </div>
     <div class="box">
-      <div class="mono">新制老師（112/7/1 後初任）</div>
-      <div class="step"><b>·</b>強制提撥：本俸×2 × 15%（自付 35%、政府 65%）</div>
-      <div class="step"><b>·</b>我的自願增提比例：＿＿＿ %</div>
-      <div class="step"><b>·</b>專戶投資選擇：□ 積極 □ 穩健 □ 保守 □ 人生週期</div>
-      <div class="step"><b>·</b>退休時專戶約 ＿＿＿＿ 萬</div>
-      <div class="step" style="color:var(--red)"><b>→</b>B1＝公保年金＋專戶×4%÷12</div>
+      <div class="mono">新制老師（112/7/1 後初任）換算 B1</div>
+      <div class="step"><b>·</b>公保年金（工具結果）＿＿＿＿ 元／月</div>
+      <div class="step"><b>·</b>退休時專戶 ＿＿＿＿ 元 × 4% ÷ 12 ＝ ＿＿＿＿</div>
+      <div class="step"><b>·</b>兩者相加 → 填入 <i class="ref">B1</i></div>
+      <div class="small" style="margin-top:1.5mm">專戶投資選擇：□ 積極 □ 穩健 □ 保守 □ 人生週期</div>
     </div>
   </div>
 
-  <h3>小組討論（只談方法，不談金額）</h3>
-  <p style="margin:0">在三種情境中，哪一個變數讓月退變動最大？ □ 年資　□ 退休年度　□ 退休本俸　□ 其他＿＿＿＿</p>
+  <p style="margin:3mm 0 0;font-size:9.5pt"><b>小組討論</b>（只談方法）：哪一個變數讓月退變動最大？ □ 年資 □ 退休年度 □ 退休本俸 □ 其他＿＿</p>
   <div class="foot"><span>我的退休帳本 · 第一關</span><span class="num">02</span></div>
 </section>
 
 <!-- ============ P3 第二關 需求 ============ -->
 <section class="page">
-  <div class="top"><span class="mono">PART II · 需求</span><span class="sec">第二關｜退休後你要花多少</span></div>
-  <h2>把現在的支出，搬到退休那天</h2>
-  <p class="lead"><span class="tag">HANDS-ON 03</span><span class="url">grand-clafoutis-b1948b.netlify.app</span>　先用「每月收支體檢」填好現況，再逐項判斷退休後的變化。<br><span class="small">沒記帳？最快估法：每月實際入帳 − 每月存下來的 ≈ C1。工具分類對不上時合併填即可。</span></p>
+  <div class="top"><span class="mono">PART II · 需求</span><span class="need">本頁要填 <i class="mini">C1</i><i class="mini">C2</i><i class="mini">D</i></span></div>
+  <h2>第二關｜退休後要花多少？</h2>
+  <p class="lead"><span class="tag">HANDS-ON 03</span><span class="url">grand-clafoutis-b1948b.netlify.app</span>　先用工具填好現況，再逐項判斷退休後的變化。</p>
+  <div class="small" style="margin-top:1mm">① 草稿表（沒記帳？最快估法：每月實際入帳 − 每月存下來的 ≈ 現在每月總支出。分類對不上就合併填。一律用「今天的錢」）</div>
 
-  <table class="tight" style="margin-top:3mm">
-    <tr><th style="width:34%">項目</th><th>現在每月</th><th style="width:22%">退休後 ↓消失 →不變 ↑增加</th><th>退休後每月</th></tr>
+  <table class="tight draft" style="margin-top:1mm">
+    <tr><th style="width:36%">項目</th><th>現在每月</th><th style="width:21%">退休後 ↓消失 →不變 ↑增加</th><th>退休後每月</th></tr>
     <tr><td>房貸／房租（退休前繳清就選↓）</td><td></td><td>↓　→　↑</td><td></td></tr>
     <tr><td>伙食（含外食）</td><td></td><td>↓　→　↑</td><td></td></tr>
     <tr><td>水電瓦斯、電信網路</td><td></td><td>↓　→　↑</td><td></td></tr>
@@ -155,130 +177,124 @@
     <tr><td>長照預備金</td><td></td><td>↓　→　↑</td><td></td></tr>
     <tr><td>年度大筆支出 ÷ 12（旅遊、換車）</td><td></td><td>↓　→　↑</td><td></td></tr>
     <tr><td>其他：＿＿＿＿＿＿</td><td></td><td>↓　→　↑</td><td></td></tr>
-    <tr><td><b>合計</b></td><td><span class="code" style="font-size:12pt">C1</span></td><td></td><td><span class="code" style="font-size:12pt">C2</span></td></tr>
   </table>
-
-  <div class="grid2" style="margin-top:4mm;align-items:start">
-    <div class="box">
-      <div class="mono">全部用「今天的錢」算</div>
-      <div style="font-size:9pt;margin-top:1mm">月退有隨物價檢討調整的機制，支出也用今天的物價估，<b>不必乘通膨</b>。通膨改從報酬率扣掉：</div>
-      <div style="font-size:9.5pt;margin-top:1mm">名目報酬 6% − 通膨 2% ＝ <span class="red">實質報酬 4%</span>（第三關用這個）</div>
-    </div>
-    <table class="field">
-      <tr><td class="code">C2</td><td>退休後月支出（上表合計）</td><td class="fill" style="width:30mm">＿＿＿＿＿</td></tr>
-      <tr><td class="code">B1</td><td>月退（抄第一關「預定」）</td><td class="fill" style="width:30mm">＿＿＿＿＿</td></tr>
-    </table>
+  <div class="small" style="margin:2.5mm 0 0">② 兩欄各自加總，抄進紅框</div>
+  <div class="keys2">
+    <div class="key"><span class="b">C1</span><span class="l">現在每月總支出<small>「現在每月」合計</small></span><span class="v s">元</span></div>
+    <div class="key"><span class="b">C2</span><span class="l">退休後每月支出<small>「退休後每月」合計</small></span><span class="v s">元</span></div>
   </div>
 
-  <div class="dark" style="margin-top:4mm;display:flex;justify-content:space-between;align-items:center">
-    <div><div class="mono">今天最重要的一個數字</div><div style="font-family:'Noto Serif TC';font-weight:900;font-size:15pt;margin-top:1mm">D 每月缺口 ＝ C2 − B1</div><div class="small" style="color:rgba(242,236,225,.75)">D ≤ 0？恭喜！請改填一筆「夢想預算」（例如每月旅遊 5,000）當 D，繼續往下算。</div></div>
-    <div style="font-size:15pt;white-space:nowrap">D ＝ <span class="blank" style="border-color:var(--goldSoft);min-width:34mm"></span></div>
+  <div class="box" style="margin-top:2.5mm;padding:2.5mm 4mm;font-size:9pt">
+    <b>為什麼不用乘通膨？</b>月退有隨物價檢討調整的機制，支出也用今天的物價估，兩邊同一把尺。通膨改從報酬率扣：名目 6% − 通膨 2% ＝ <span class="red">實質 4%</span>（第三關用這個）。
+  </div>
+
+  <div class="dark" style="margin-top:3mm">
+    <div class="mono">③ 今天最重要的一個數字</div>
+    <div class="key big" style="margin-top:2mm;border-color:var(--goldSoft)"><span class="b">D</span><span class="l" style="color:var(--ink)">每月缺口 ＝ <i class="ref">C2</i> − <i class="ref">B1</i><small>B1 抄第一關。D ≤ 0？恭喜！改填一筆「夢想預算」（例如每月旅遊 5,000）繼續算</small></span><span class="v">元</span></div>
   </div>
   <div class="foot"><span>我的退休帳本 · 第二關</span><span class="num">03</span></div>
 </section>
 
 <!-- ============ P4 第三關 補缺口 ============ -->
 <section class="page">
-  <div class="top"><span class="mono">PART III · 補缺口</span><span class="sec">第三關｜缺口交給時間來補</span></div>
-  <h2>把缺口變成「每個月要做的一件事」</h2>
+  <div class="top"><span class="mono">PART III · 補缺口</span><span class="need">本頁要填 <i class="mini">E1</i><i class="mini">E2</i><i class="mini">F1</i><i class="mini">F2</i><i class="mini">F3</i></span></div>
+  <h2>第三關｜缺口要準備多少？</h2>
 
-  <h3 style="margin:3.5mm 0 1.5mm"><span class="tag">HANDS-ON 04</span><span class="url">toolfinance.netlify.app</span>　理財試算器</h3>
-  <div class="eq">目標本金 <span class="num">E1</span> ＝ D × 12 × 25（4% 法則；保守者用 × 30）</div>
-  <p style="margin:0 0 1mm">E1 ＝ ＿＿＿＿＿ × 12 × ＿＿ ＝ <span class="blank" style="min-width:40mm"></span> 元　　距離退休：＿＿ 年</p>
-  <table class="tight">
-    <tr><th>情境</th><th>年化報酬</th><th>投入年數</th><th>E2 每月需投入</th><th>我付得起？</th></tr>
+  <h3 style="margin:3mm 0 1.5mm"><span class="tag">HANDS-ON 04</span><span class="url">toolfinance.netlify.app</span>　理財試算器</h3>
+  <div class="key"><span class="b">E1</span><span class="l">目標本金 ＝ <i class="ref">D</i> × 12 × 25<small>4% 法則；保守者用 × 30。距離退休 ＿＿ 年</small></span><span class="v">元</span></div>
+  <div class="small" style="margin:2mm 0 1mm">① 草稿表：試算每月要投入多少（試算器沒有反推功能，就用下方速查表）</div>
+  <table class="tight draft">
+    <tr><th>情境</th><th>報酬率</th><th>投入年數</th><th>每月需投入</th><th>付得起？</th></tr>
     <tr><td>主算（實質）</td><td>4%</td><td></td><td></td><td>□</td></tr>
     <tr><td>樂觀</td><td>6%</td><td></td><td></td><td>□</td></tr>
     <tr><td>延後退休 3 年</td><td>4%</td><td></td><td></td><td>□</td></tr>
   </table>
-  <div class="box" style="margin-top:2mm;padding:2.5mm 4mm">
-    <div class="mono">速查表 · 試算器沒有反推功能時用　E2 ＝ E1 ÷ 100 萬 × 表中數字</div>
-    <table style="font-size:8.8pt;margin-top:1mm">
-      <tr><th>每存到 100 萬，每月需投入</th><th>10 年</th><th>15 年</th><th>20 年</th><th>25 年</th><th>30 年</th></tr>
+  <div class="box" style="margin-top:1.5mm;padding:2mm 4mm">
+    <div class="mono">參考 · 速查表　每月需投入 ＝ <i class="ref">E1</i> ÷ 100 萬 × 表中數字</div>
+    <table style="font-size:8.6pt;margin-top:.5mm" class="tight">
+      <tr><th>每存到 100 萬</th><th>10 年</th><th>15 年</th><th>20 年</th><th>25 年</th><th>30 年</th></tr>
       <tr><td>報酬 4%</td><td class="num">6,791</td><td class="num">4,064</td><td class="num">2,726</td><td class="num">1,945</td><td class="num">1,441</td></tr>
       <tr><td>報酬 6%</td><td class="num">6,102</td><td class="num">3,439</td><td class="num">2,164</td><td class="num">1,443</td><td class="num">996</td></tr>
     </table>
   </div>
+  <div class="small" style="margin:2mm 0 0">② 圈一個付得起的版本，抄進紅框</div>
+  <div class="key"><span class="b">E2</span><span class="l">我決定的每月投入金額</span><span class="v">元</span></div>
 
   <h3 style="margin:3.5mm 0 1.5mm"><span class="tag">HANDS-ON 05</span><span class="url">celadon-starship-b44b3c.netlify.app</span>　資產總覽</h3>
   <div class="grid2">
-    <table class="tight" style="font-size:9.5pt">
+    <table class="tight draft" style="font-size:9pt">
       <tr><th>資產（可用於退休）</th><th>金額</th></tr>
-      <tr><td>活存、定存</td><td></td></tr>
-      <tr><td>股票、ETF、基金</td><td></td></tr>
-      <tr><td>保單價值準備金</td><td></td></tr>
-      <tr><td>退撫專戶／其他</td><td></td></tr>
+      <tr><td>存款、股票、ETF、基金</td><td></td></tr>
+      <tr><td>保單價值、退撫專戶、其他</td><td></td></tr>
       <tr><td><b>資產合計</b></td><td></td></tr>
     </table>
-    <table class="tight" style="font-size:9.5pt">
+    <table class="tight draft" style="font-size:9pt">
       <tr><th>負債（自住房與房貸都不列）</th><th>金額</th></tr>
-      <tr><td>車貸</td><td></td></tr>
-      <tr><td>信貸、卡費</td><td></td></tr>
+      <tr><td>車貸、信貸、卡費</td><td></td></tr>
       <tr><td>其他</td><td></td></tr>
       <tr><td><b>負債合計</b></td><td></td></tr>
     </table>
   </div>
-  <table class="field tight" style="margin-top:2mm">
-    <tr><td class="code">F1</td><td>可投入退休的淨資產 ＝ 資產合計 − 負債合計</td><td class="fill">＿＿＿＿＿＿ 元</td></tr>
-    <tr><td class="code">F2</td><td>退休進度 ＝ F1 ÷ E1</td><td class="fill">＿＿＿＿ %</td></tr>
-  </table>
-  <div style="margin:1mm 0 4mm"><div class="small" style="margin-bottom:1mm">在進度條上塗到你的 F2：</div><div class="progress"><span style="left:0">0%</span><span style="left:48%">50%</span><span style="right:0">100%</span></div></div>
-  <table class="field">
-    <tr><td class="code">F3</td><td>我下個月要調整的一件事<div class="lines" style="height:8mm;margin-top:1mm"></div></td></tr>
-  </table>
+  <div class="keys2">
+    <div class="key"><span class="b">F1</span><span class="l">淨資產<small>資產合計 − 負債合計</small></span><span class="v s">元</span></div>
+    <div class="key"><span class="b">F2</span><span class="l">退休進度<small>＝ <i class="ref">F1</i> ÷ <i class="ref">E1</i></small></span><span class="v s">%</span></div>
+  </div>
+  <div style="margin:1mm 0 6mm"><div class="small" style="margin-bottom:1mm">在進度條上塗到你的 F2：</div><div class="progress"><span style="left:0">0%</span><span style="left:48%">50%</span><span style="right:0">100%</span></div></div>
+  <div class="key"><span class="b">F3</span><span class="l">我下個月要調整的一件事</span><span class="v" style="width:110mm"></span></div>
   <div class="foot"><span>我的退休帳本 · 第三關　｜　本頁內容為觀念與工具練習，非投資建議</span><span class="num">04</span></div>
 </section>
 
 <!-- ============ P5 第四關 簡單投資 ============ -->
 <section class="page">
-  <div class="top"><span class="mono">PART IV · 簡單投資</span><span class="sec">第四關｜每月那筆錢，要放去哪</span></div>
-  <h2>定期定額 × 買大盤 × 看見複利</h2>
+  <div class="top"><span class="mono">PART IV · 簡單投資</span><span class="need">本頁要填 <i class="mini">G1</i><i class="mini">G2</i><i class="mini">G3</i></span></div>
+  <h2>第四關｜定期定額 × 買大盤 × 看見複利</h2>
   <p class="lead">講者分享的是觀念與自己的做法，非投資建議；標的請自行研究。</p>
 
-  <div class="grid2" style="margin-top:4mm;align-items:start">
+  <div class="grid2" style="margin-top:3mm;align-items:start">
     <div>
-      <div class="mono">練習 1 · 定期定額心算（每月投入 3,000 元）</div>
-      <table style="font-size:9.5pt;margin-top:1mm">
+      <div class="mono">練習 · 定期定額心算（每月投入 3,000 元）</div>
+      <table class="tight draft" style="font-size:9.5pt;margin-top:1mm">
         <tr><th>月份</th><th>價格</th><th>買到單位 ＝ 3,000 ÷ 價格</th></tr>
         <tr><td>1 月</td><td class="num">100</td><td></td></tr>
         <tr><td>2 月</td><td class="num">80</td><td></td></tr>
         <tr><td>3 月</td><td class="num">60</td><td></td></tr>
         <tr><td>4 月</td><td class="num">100</td><td></td></tr>
-        <tr><td><b>合計</b></td><td>投入 12,000</td><td>共＿＿＿單位 × 100 ＝ ＿＿＿＿ 元</td></tr>
       </table>
-      <p style="margin:2mm 0 0;font-size:9pt">價格回到原點，我 □ 賺 □ 賠 □ 打平，報酬率＿＿%</p>
+      <p style="margin:1.5mm 0 0;font-size:9pt">共＿＿單位 × 100 ＝ ＿＿＿＿ 元（投入 12,000）<br>價格回到原點，我 □ 賺 □ 賠 □ 打平</p>
     </div>
     <div class="box">
-      <div class="mono">買大盤 · 三個理由</div>
+      <div class="mono">參考 · 買大盤三個理由</div>
       <div class="step"><b>1</b>不用選股：指數自動汰弱留強</div>
-      <div class="step"><b>2</b>費用率低：長期省下的都是自己的</div>
+      <div class="step"><b>2</b>費用率低：省下的都是自己的</div>
       <div class="step"><b>3</b>夠分散：一次買下一籃子大公司</div>
-      <div class="small" style="margin-top:2mm">72 法則：72 ÷ 報酬率 ≈ 翻倍年數<br>6% → ＿＿ 年翻一倍；4% → ＿＿ 年翻一倍</div>
+      <div class="small" style="margin-top:1.5mm">72 法則：72 ÷ 報酬率 ≈ 翻倍年數<br>6% → ＿＿ 年翻倍；4% → ＿＿ 年翻倍</div>
     </div>
   </div>
 
   <h3><span class="tag">HANDS-ON 06</span><span class="url">toolfinance.netlify.app</span>　看見複利的力量</h3>
-  <p style="margin:0 0 2mm">我的每月定期定額 <span class="code" style="font-size:12pt">G1</span> ＝ <span class="blank" style="min-width:30mm"></span> 元（先用 E2，付不起就填付得起的金額）</p>
-  <table>
-    <tr><th>投入年數</th><th>累積本金 ＝ G1 × 12 × 年數</th><th>終值（報酬 6%）</th><th>複利賺到的 ＝ 終值 − 本金</th></tr>
-    <tr><td>10 年</td><td></td><td></td><td></td></tr>
-    <tr><td>20 年</td><td></td><td></td><td></td></tr>
-    <tr><td>25 年（＝晚 5 年開始）</td><td></td><td></td><td></td></tr>
-    <tr><td>30 年</td><td></td><td></td><td></td></tr>
+  <div class="key"><span class="b">G1</span><span class="l">我的每月定期定額<small>先用 <i class="ref">E2</i>，付不起就填付得起的金額</small></span><span class="v">元</span></div>
+  <div class="small" style="margin:2mm 0 1mm">① 草稿表：用試算器「定期定額」、報酬 6% 算終值（這裡是未來的錢，不必跟 E1 比）</div>
+  <table class="tight draft">
+    <tr><th>投入年數</th><th>累積本金 ＝ G1 × 12 × 年數</th><th>終值（報酬 6%）</th></tr>
+    <tr><td>10 年</td><td></td><td></td></tr>
+    <tr><td>20 年</td><td></td><td></td></tr>
+    <tr><td>25 年（＝晚 5 年開始）</td><td></td><td></td></tr>
+    <tr><td>30 年</td><td></td><td></td></tr>
   </table>
-  <table class="field" style="margin-top:1mm">
-    <tr><td class="code">G2</td><td>30 年後，終值是本金的幾倍？</td><td class="fill">＿＿＿ 倍</td></tr>
-    <tr><td class="code">G3</td><td>晚 5 年開始，少了多少？<div class="hint">＝ 30 年終值 − 25 年終值（這裡是未來的錢，不必跟 E1 比）</div></td><td class="fill">＿＿＿＿＿ 元</td></tr>
-  </table>
+  <div class="small" style="margin:2mm 0 0">② 算出兩個答案，抄進紅框</div>
+  <div class="keys2">
+    <div class="key"><span class="b">G2</span><span class="l">30 年終值是本金幾倍<small>30 年終值 ÷ 30 年本金</small></span><span class="v s">倍</span></div>
+    <div class="key"><span class="b">G3</span><span class="l">晚 5 年少了多少<small>30 年終值 − 25 年終值</small></span><span class="v s">元</span></div>
+  </div>
 
-  <div class="dark" style="margin-top:4mm">
+  <div class="dark" style="margin-top:3mm">
     <div class="mono">我的定期定額計畫 · 離開前三個行動承諾</div>
     <div class="grid3" style="margin-top:2mm;font-size:9.5pt">
       <div>今晚：<br>□ 把這份學習單拍照存檔<br>□ 確認緊急預備金 ＿＿ 個月</div>
       <div>這個月：<br>□ 開證券戶／設定扣款<br>每月 ＿＿＿＿ 元，每月 ＿＿ 日</div>
       <div>今年：<br>□ 查一次自己的年資與專戶<br>□ 年底檢視一次，不停扣</div>
     </div>
-    <div style="margin-top:3mm;font-size:9pt;color:var(--goldSoft)">簽名 ＿＿＿＿＿＿　日期 ＿＿＿＿＿＿　→ 很早開始、很久不停。明年今天，再打開一次。</div>
+    <div style="margin-top:2.5mm;font-size:9pt;color:var(--goldSoft)">簽名 ＿＿＿＿＿＿　日期 ＿＿＿＿＿＿　→ 很早開始、很久不停。明年今天，再打開一次。</div>
   </div>
   <div class="foot"><span>我的退休帳本 · 第四關　｜　本頁內容為觀念與工具練習，非投資建議</span><span class="num">05</span></div>
 </section>

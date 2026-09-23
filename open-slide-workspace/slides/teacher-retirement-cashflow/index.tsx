@@ -783,7 +783,7 @@ const Workshop = ({
           marginTop: 10,
         }}
       >
-        <div style={{ fontFamily: MONO, fontSize: 20, letterSpacing: '0.18em', color: gold }}>抄進學習單</div>
+        <div style={{ fontSize: 24, fontWeight: 700, color: gold, letterSpacing: '0.08em' }}>寫進學習單的紅框</div>
         {fields}
       </div>
     </div>
@@ -791,12 +791,36 @@ const Workshop = ({
 );
 
 const Field = ({ code, label, hint }: { code: string; label: string; hint?: string }) => (
-  <div style={{ borderBottom: `1px solid ${rule}`, padding: '22px 0 16px' }}>
-    <div style={{ display: 'flex', alignItems: 'baseline', gap: 18 }}>
-      <span style={{ fontFamily: NUM, fontSize: 40, color: red, width: 64 }}>{code}</span>
-      <span style={{ fontSize: 30, fontWeight: 500 }}>{label}</span>
-    </div>
-    {hint && <div style={{ fontSize: 22, color: muted, marginLeft: 82, marginTop: 6 }}>{hint}</div>}
+  <div
+    style={{
+      display: 'flex',
+      alignItems: 'stretch',
+      border: `3px solid ${red}`,
+      borderRadius: 6,
+      background: '#fff',
+      marginTop: 18,
+      overflow: 'hidden',
+    }}
+  >
+    <span
+      style={{
+        background: red,
+        color: '#fff',
+        fontFamily: NUM,
+        fontSize: 40,
+        width: 84,
+        flex: 'none',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      {code}
+    </span>
+    <span style={{ padding: '14px 20px' }}>
+      <span style={{ display: 'block', fontSize: 28, fontWeight: 500, lineHeight: 1.35 }}>{label}</span>
+      {hint && <span style={{ display: 'block', fontSize: 21, color: muted, marginTop: 4 }}>{hint}</span>}
+    </span>
   </div>
 );
 
@@ -809,7 +833,7 @@ const Hands01: Page = () => (
     goal="先知道「現在」：你的本俸與每月實領"
     fields={
       <>
-        <Field code="A1" label="目前薪點 / 本俸" hint="退休金公式要用的是這個" />
+        <Field code="A1" label="目前本俸" hint="退休金公式要用的是這個" />
         <Field code="A2" label="每月實領（稅前）" hint="本俸＋學術研究加給＋其他" />
         <Field code="A3" label="預估退休時本俸" hint="年功薪上限：學士 625／碩士 650" />
       </>
@@ -1228,13 +1252,13 @@ const Hands04: Page = () => (
     goal="把缺口變成「每個月要做的一件事」"
     fields={
       <>
-        <Field code="D" label="每月缺口 ＝ C2 − B1" />
+        <Field code="D" label="每月缺口 ＝ C2 − B1" hint="第二關已填，直接用" />
         <Field code="E1" label="目標本金 ＝ D × 12 × 25" />
         <Field code="E2" label="每月需投入金額" hint="主算 4%，樂觀可試 6%" />
       </>
     }
   >
-    <StepRow n="1">算出 D 與 E1，寫進學習單</StepRow>
+    <StepRow n="1">拿第二關的 D，算出 E1 寫進紅框</StepRow>
     <StepRow n="2">試算器輸入目標金額、年數、報酬率 4%</StepRow>
     <StepRow n="3">找不到反推功能？用學習單的「速查表」</StepRow>
     <StepRow n="4">再試 6%、延後退休 3 年，圈出付得起的版本</StepRow>
@@ -1269,14 +1293,14 @@ const Hands05: Page = () => (
     goal="最後一步：你已經走了多遠？"
     fields={
       <>
-        <Field code="F1" label="目前可投入退休的淨資產" hint="不含自住房" />
+        <Field code="F1" label="淨資產 ＝ 資產 − 負債" hint="自住房與房貸都不列" />
         <Field code="F2" label="進度 ＝ F1 ÷ E1" hint="用百分比表示" />
         <Field code="F3" label="我下個月要調整的一件事" />
       </>
     }
   >
     <StepRow n="1">列出資產：存款、股票、ETF、保單價值、專戶</StepRow>
-    <StepRow n="2">列出負債：房貸、車貸、信貸</StepRow>
+    <StepRow n="2">列出負債：車貸、信貸（房貸不列）</StepRow>
     <StepRow n="3">看資產配置圖：現金是否太多、太集中？</StepRow>
     <StepRow n="4">算出 F2，這是你的「退休進度條」</StepRow>
   </Workshop>
