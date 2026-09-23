@@ -222,13 +222,13 @@ const Cover: Page = () => (
     >
       <div style={{ fontFamily: MONO, fontSize: 20, letterSpacing: '0.2em', color: gold }}>MY RETIREMENT EQUATION</div>
       <div style={{ borderBottom: `1px solid ${rule}`, padding: '28px 0 18px', fontSize: 30 }}>
-        月退休金 <span style={{ float: 'right', fontFamily: NUM, fontSize: 36 }}>B</span>
+        月退（含公保年金） <span style={{ float: 'right', fontFamily: NUM, fontSize: 36 }}>B1</span>
       </div>
       <div style={{ borderBottom: `1px solid ${rule}`, padding: '28px 0 18px', fontSize: 30 }}>
-        ＋ 投資現金流 <span style={{ float: 'right', fontFamily: NUM, fontSize: 36 }}>E</span>
+        ＋ 自備本金每月提領 <span style={{ float: 'right', fontFamily: NUM, fontSize: 36 }}>E1</span>
       </div>
       <div style={{ borderBottom: `3px double #1E2420`, padding: '28px 0 18px', fontSize: 30 }}>
-        ≥ 退休後月支出 <span style={{ float: 'right', fontFamily: NUM, fontSize: 36 }}>C</span>
+        ≥ 退休後月支出 <span style={{ float: 'right', fontFamily: NUM, fontSize: 36 }}>C2</span>
       </div>
       <div style={{ marginTop: 36, fontSize: 26, lineHeight: 1.6, color: muted }}>
         今天三小時，
@@ -248,7 +248,7 @@ const Cover: Page = () => (
 
 const Opening: Page = () => (
   <Sheet section="開場 · 暖身">
-    <Eyebrow>QUESTION 00 · 寫在便利貼上，先不要跟隔壁討論</Eyebrow>
+    <Eyebrow>QUESTION 00 · 寫在學習單封面，先不要跟隔壁討論</Eyebrow>
     <H size={96} style={{ marginTop: 40 }}>
       退休後，你一個月
       <br />
@@ -831,14 +831,14 @@ const Hands02: Page = () => (
     goal="再看「制度會給多少」：月退與替代率"
     fields={
       <>
-        <Field code="B1" label="預估月退（含公保年金）" hint="不同退休年度都試一次" />
+        <Field code="B1" label="預估月退（含公保年金）" hint="新制：公保年金＋專戶 × 4% ÷ 12" />
         <Field code="B2" label="法定所得替代率" hint="工具查表結果" />
         <Field code="B3" label="真實替代率 ＝ B1 ÷ A2" hint="這才是你退休當月的體感" />
       </>
     }
   >
     <StepRow n="1">輸入 A3 的退休本俸、預計年資、預計退休年度</StepRow>
-    <StepRow n="2">新制老師：輸入提撥率與假設報酬，看專戶累積</StepRow>
+    <StepRow n="2">新制老師：看專戶累積，再換算成每月（×4%÷12）</StepRow>
     <StepRow n="3">試三種退休年度（早 5 年／預定／晚 5 年）</StepRow>
     <StepRow n="4">小組只討論：「哪個變數影響最大？」</StepRow>
   </Workshop>
@@ -1004,16 +1004,15 @@ const Hands03: Page = () => (
     goal="先看現在的錢流向哪裡，再把它「搬」到退休那天"
     fields={
       <>
-        <Field code="C1" label="現在每月總支出" hint="固定＋變動，含年繳攤提" />
-        <Field code="C2" label="退休後每月支出" hint="用下一頁的調整表" />
-        <Field code="C3" label="換算成退休那年的錢" hint="C2 × 通膨係數" />
+        <Field code="C1" label="現在每月總支出" hint="沒記帳？每月入帳 − 每月存下來的" />
+        <Field code="C2" label="退休後每月支出" hint="用調整表，一律用「今天的錢」" />
       </>
     }
   >
-    <StepRow n="1">填入近三個月的平均支出（沒記帳就先估）</StepRow>
+    <StepRow n="1">填入近三個月平均支出（沒記帳就用 C1 的估法）</StepRow>
     <StepRow n="2">看體檢結果：儲蓄率、固定支出佔比</StepRow>
     <StepRow n="3">逐項判斷：退休後會「消失、減少、增加」？</StepRow>
-    <StepRow n="4">算出 C2，再乘上通膨係數得到 C3</StepRow>
+    <StepRow n="4">加總得到 C2：用今天的錢，不必乘通膨</StepRow>
   </Workshop>
 );
 
@@ -1081,22 +1080,27 @@ const Inflation: Page = () => (
   <Sheet section="II · 需求 · 通膨">
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 100, height: '100%', alignItems: 'center' }}>
       <div>
-        <Eyebrow>看不見的支出：通膨</Eyebrow>
+        <Eyebrow>那通膨怎麼辦？</Eyebrow>
         <H size={60}>
-          今天的 5 萬，
+          全部用
           <br />
-          20 年後要 <span style={{ color: red }}>7.4 萬</span>
-          <br />
-          才買得到一樣的生活
+          <span style={{ color: red }}>「今天的錢」</span>算到底
         </H>
-        <Lead>假設年通膨 2%。C3 就是把 C2 乘上下表的係數。</Lead>
+        <Lead>
+          月退有隨物價檢討調整的機制，
+          <br />
+          支出也用今天的物價估，兩邊同一把尺。
+          <br />
+          通膨，改從報酬率裡扣掉。
+        </Lead>
       </div>
       <div style={{ borderTop: `3px double #1E2420` }}>
-        <LedgerRow label="距離退休 10 年" value="× 1.22" />
-        <LedgerRow label="距離退休 15 年" value="× 1.35" />
-        <LedgerRow label="距離退休 20 年" value="× 1.49" />
-        <LedgerRow label="距離退休 25 年" value="× 1.64" />
-        <LedgerRow label="距離退休 30 年" value="× 1.81" />
+        <LedgerRow label="投資的名目報酬（示意）" value="6%" />
+        <LedgerRow label="− 每年通膨" value="2%" />
+        <LedgerRow label="＝ 實質報酬" note="Part III 用這個算" value="4%" strong />
+        <div style={{ fontSize: 26, color: muted, marginTop: 24, lineHeight: 1.6 }}>
+          為什麼要扣？今天的 5 萬，20 年後要約 7.4 萬才買得到一樣的生活。
+        </div>
       </div>
     </div>
   </Sheet>
@@ -1119,11 +1123,15 @@ const Gap: Page = () => (
     >
       <GapBox code="D" t="每月缺口" hot />
       <span style={{ fontSize: 80, color: gold }}>＝</span>
-      <GapBox code="C3" t="退休後月支出" />
+      <GapBox code="C2" t="退休後月支出" />
       <span style={{ fontSize: 80, color: gold }}>−</span>
       <GapBox code="B1" t="月退＋公保年金" />
     </div>
-    <Lead style={{ marginTop: 56 }}>D 小於零？恭喜，你有餘裕。D 大於零？接下來 30 分鐘就是為你準備的。</Lead>
+    <Lead style={{ marginTop: 56 }}>
+      D 大於零？接下來 30 分鐘就是為你準備的。
+      <br />
+      D 小於零？恭喜！請改填一筆「夢想預算」（例如每月旅遊 5,000）當作 D，一起算下去。
+    </Lead>
   </Sheet>
 );
 
@@ -1199,14 +1207,14 @@ const TimeBar = ({ yrs, monthly, w, hot }: { yrs: string; monthly: string; w: nu
 const Compound: Page = () => (
   <Sheet section="III · 補缺口 · 複利反推">
     <H size={60}>同樣存到 450 萬，越早開始越便宜</H>
-    <div style={{ fontSize: 28, color: muted, marginTop: 14 }}>每月定期投入，假設年化報酬 6%（每月複利），僅為示意</div>
+    <div style={{ fontSize: 28, color: muted, marginTop: 14 }}>每月定期投入，實質報酬 4%（已扣通膨，每月複利），僅為示意</div>
     <div style={{ marginTop: 56, borderTop: `3px double #1E2420` }}>
-      <TimeBar yrs="還有 30 年" monthly="每月 4,480" w={147} />
-      <TimeBar yrs="還有 20 年" monthly="每月 9,740" w={319} />
-      <TimeBar yrs="還有 10 年" monthly="每月 27,460" w={900} hot />
+      <TimeBar yrs="還有 30 年" monthly="每月 6,480" w={191} />
+      <TimeBar yrs="還有 20 年" monthly="每月 12,270" w={361} />
+      <TimeBar yrs="還有 10 年" monthly="每月 30,560" w={900} hot />
     </div>
     <div style={{ marginTop: 48, fontSize: 34 }}>
-      晚 20 年開始，每月要多付 <Mark>6 倍</Mark>。複利不是魔法，是時間的租金。
+      晚 20 年開始，每月要付將近 <Mark>5 倍</Mark>。複利不是魔法，是時間的租金。
     </div>
   </Sheet>
 );
@@ -1220,16 +1228,16 @@ const Hands04: Page = () => (
     goal="把缺口變成「每個月要做的一件事」"
     fields={
       <>
-        <Field code="D" label="每月缺口 ＝ C3 − B1" />
+        <Field code="D" label="每月缺口 ＝ C2 − B1" />
         <Field code="E1" label="目標本金 ＝ D × 12 × 25" />
-        <Field code="E2" label="每月需投入金額" hint="試 4%／6% 兩種報酬率" />
+        <Field code="E2" label="每月需投入金額" hint="主算 4%，樂觀可試 6%" />
       </>
     }
   >
     <StepRow n="1">算出 D 與 E1，寫進學習單</StepRow>
-    <StepRow n="2">在試算器輸入目標金額、距離退休年數、報酬率</StepRow>
-    <StepRow n="3">試三種情境：保守 4%、中性 6%、延後退休 3 年</StepRow>
-    <StepRow n="4">圈出你「現在就付得起」的那個版本</StepRow>
+    <StepRow n="2">試算器輸入目標金額、年數、報酬率 4%</StepRow>
+    <StepRow n="3">找不到反推功能？用學習單的「速查表」</StepRow>
+    <StepRow n="4">再試 6%、延後退休 3 年，圈出付得起的版本</StepRow>
   </Workshop>
 );
 
@@ -1289,14 +1297,14 @@ const Equation: Page = () => (
         fontSize: 56,
       }}
     >
-      <EqItem code="B1" t="月退" />
+      <EqItem code="B1" t="月退（含公保年金）" />
       <span style={{ color: gold }}>＋</span>
-      <EqItem code="E2" t="每月投入 → 投資現金流" />
+      <EqItem code="E1" t="× 4% ÷ 12 ＝ 自備本金每月提領" />
       <span style={{ color: gold }}>≥</span>
-      <EqItem code="C3" t="退休後月支出" hot />
+      <EqItem code="C2" t="退休後月支出" hot />
     </div>
     <Lead style={{ marginTop: 100, fontSize: 36 }}>
-      翻回學習單第一頁，把開場的「憑感覺」數字，和 C3 放在一起看。差多少？
+      翻回學習單封面，把開場的「憑感覺」數字，和 C2 放在一起看。差多少？
     </Lead>
   </Sheet>
 );
@@ -1507,19 +1515,19 @@ const Hands06: Page = () => (
     mins="10 分鐘"
     tool="看見複利的力量"
     url="toolfinance.netlify.app"
-    goal="把你的 E2 放進去，看它 10、20、30 年後長成什麼樣"
+    goal="用名目 6% 看複利長相（這是未來的錢，不必跟 E1 比）"
     fields={
       <>
         <Field code="G1" label="我的每月定期定額" hint="先用 E2，付不起就用付得起的金額" />
-        <Field code="G2" label="30 年後：本金 vs 終值" hint="試 4%、6% 兩種報酬率" />
-        <Field code="G3" label="第幾年，利息超過本金？" hint="6% 約在第 22 年" />
+        <Field code="G2" label="30 年後，終值是本金的幾倍？" />
+        <Field code="G3" label="晚 5 年開始，少了多少？" hint="30 年終值 − 25 年終值" />
       </>
     }
   >
-    <StepRow n="1">選「定期定額／複利」試算，輸入 G1 金額</StepRow>
+    <StepRow n="1">選「定期定額」試算，輸入 G1、報酬率 6%</StepRow>
     <StepRow n="2">年數分別填 10、20、30，抄下終值</StepRow>
-    <StepRow n="3">把報酬率從 6% 改成 4%，看差多少</StepRow>
-    <StepRow n="4">再試「晚 5 年開始」，感受時間的價格</StepRow>
+    <StepRow n="3">再算一次 25 年（＝晚 5 年開始）</StepRow>
+    <StepRow n="4">算出 G2、G3，感受時間的價格</StepRow>
   </Workshop>
 );
 
@@ -1679,7 +1687,7 @@ export const notes = [
   // Cover
   '【0′】自我介紹 1 分鐘。強調：今天不賣商品、不報明牌，是陪大家把自己的數字算出來。發學習單、確認手機或筆電可上網。',
   // Opening
-  '【2′–6′】發便利貼，請大家寫下直覺數字，折起來夾在學習單第一頁。不討論、不分享，結尾再打開。',
+  '【2′–6′】請大家直接寫在學習單封面「憑感覺」欄。不討論、不分享，Part III 結尾再回來對照。',
   // BigAnxiety
   '【6′–8′】工具使用次數來自自己開發的試算工具後台統計。帶出：焦慮很普遍，缺的是陪算的人。',
   // Agenda
@@ -1705,7 +1713,7 @@ export const notes = [
   // Hands01
   '【36′–46′】實作 01。巡場協助找薪點。不知道薪點的老師可用學歷起敘＋年資估。',
   // Hands02
-  '【46′–60′】實作 02。提醒三種退休年度都要試。最後 3 分鐘小組討論「影響最大的變數」。',
+  '【46′–60′】實作 02。提醒三種退休年度都要試。新制老師沒有月退，B1 ＝ 公保年金＋專戶金額 × 4% ÷ 12（學習單第 2 頁右下有換算格）。最後 3 分鐘小組討論「影響最大的變數」。',
   // RealRate
   '【60′–63′】回收 B3：多數舊制老師的真實替代率會高於法定替代率。接著轉折——替代率高不代表夠用，要看退休後支出，帶入 Part II。請 2–3 位老師分享 B3 區間（不說金額）。',
   // NewSystem
@@ -1717,27 +1725,27 @@ export const notes = [
   // TwoWays
   '【75′–78′】兩把尺。今天用支出盤點法，因為輔導老師最懂「了解需求才能介入」。',
   // Hands03
-  '【78′–98′】實作 03（20 分鐘）。沒有記帳的老師用手機銀行、信用卡帳單回推近三個月。',
+  '【78′–98′】實作 03（20 分鐘）。沒有記帳的老師用最快估法：每月實際入帳 − 每月存下來的 ≈ 每月花掉的。工具分類與調整表對不上時，合併填即可。',
   // Adjust
-  '【98′–106′】帶大家逐欄判斷，完成學習單第 3 頁的調整表，算出 C2。',
+  '【98′–106′】帶大家逐欄判斷，完成調整表，加總得到 C2。提醒：全部用今天的錢估；別漏掉年度大筆支出（旅遊、換車、修繕）÷ 12。',
   // Inflation
-  '【106′–112′】查表乘上通膨係數得到 C3。2% 為示意，可自行用 2.5% 保守估算。',
+  '【106′–112′】老師常問「那通膨呢？」：月退有隨物價檢討調整的機制，支出也用今天的錢估，兩邊同一把尺；通膨改從報酬率扣掉，所以 Part III 一律用實質報酬 4% 計算。這樣學習單不用再乘係數。',
   // Gap
-  '【112′–120′】全場最重要的數字 D。請大家寫在學習單上並圈起來。',
+  '【112′–120′】全場最重要的數字 D。請大家寫在學習單上並圈起來。D ≤ 0 的老師（多為資深舊制）請改填一筆「夢想預算」當 D，才能跟上後面的實作。',
   // SecIII
   '【120′】進入 Part III。',
   // Rule4
   '【120′–124′】4% 法則是起點不是保證。偏保守者用 ×30。',
   // Compound
-  '【124′–128′】示意計算：年化 6%、每月複利。重點是時間，不是報酬率。',
+  '【124′–128′】示意計算：實質報酬 4%（已扣通膨）、每月複利。重點是時間，不是報酬率。',
   // Hands04
-  '【128′–138′】實作 04。請大家至少試兩種報酬率。',
+  '【128′–138′】實作 04。主算 4%。試算器若沒有「目標反推每月投入」的功能，請大家用學習單第 4 頁速查表：E2 ＝ E1 ÷ 100 萬 × 表中數字。',
   // Risks
   '【138′–143′】四個風險，醫療長照建議獨立準備。順序風險可預告：Part IV 會談怎麼用紀律面對下跌。',
   // Hands05
   '【143′–149′】實作 05。進度條 F2 是今天的收穫之一，明年再算一次。',
   // Equation
-  '【149′–150′】請大家打開開場的便利貼，對照 C3。邀請一兩位分享「感覺 vs 計算」的差距（不說金額）。',
+  '【149′–150′】請大家翻回封面，對照「憑感覺」與 C2。邀請一兩位分享差距（不說金額）。',
   // Break2
   '【150′–155′】休息 5 分鐘。',
   // SecIV
@@ -1749,7 +1757,7 @@ export const notes = [
   // DCA
   '【160′–162′】請老師先心算：價格跌到 60 又回 100，到底賺還賠？再揭曉 +23%。這就是定期定額不怕跌的原因。',
   // Hands06
-  '【162′–170′】實作 06，用理財試算器定期定額功能。請大家找出「利息超過本金」的年份（6% 約第 22 年）。',
+  '【162′–170′】實作 06，用理財試算器定期定額功能，名目 6%。提醒這是未來的錢，不必和 E1 比。重點看 G2（30 年約 2.8 倍）與 G3（晚 5 年少掉的金額）。',
   // HowStart
   '【170′–172′】四步驟，強調先有預備金。一檔大盤就夠。',
   // Myths
