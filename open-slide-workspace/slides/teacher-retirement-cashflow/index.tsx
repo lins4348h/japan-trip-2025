@@ -1,6 +1,11 @@
 import type { DesignSystem, Page, SlideMeta } from '@open-slide/core';
 import { Step, Steps, useSlidePageNumber } from '@open-slide/core';
 import type { CSSProperties, ReactNode } from 'react';
+import qrSalary from './assets/qr-salary.svg';
+import qrPension from './assets/qr-pension.svg';
+import qrBudget from './assets/qr-budget.svg';
+import qrFinance from './assets/qr-finance.svg';
+import qrAssets from './assets/qr-assets.svg';
 
 // ─────────────────────────────────────────────────────────────
 // 教師退休現金流工作坊｜3 小時講座（國高中輔導／綜合領域教師）
@@ -470,6 +475,104 @@ const SecI: Page = () => (
   />
 );
 
+// ─── 退撫制度時間軸 ─────────────────────────────────────────
+
+const Milestone = ({ year, t, d, hot }: { year: string; t: string; d: string; hot?: boolean }) => (
+  <div style={{ flex: 1, position: 'relative', paddingTop: 56 }}>
+    <div
+      style={{
+        position: 'absolute',
+        top: 12,
+        left: 0,
+        width: 28,
+        height: 28,
+        borderRadius: '50%',
+        background: hot ? red : 'var(--osd-accent)',
+        border: `5px solid var(--osd-bg)`,
+        boxShadow: `0 0 0 2px ${hot ? red : 'var(--osd-accent)'}`,
+      }}
+    />
+    <div style={{ fontFamily: NUM, fontSize: 44, color: hot ? red : gold, lineHeight: 1 }}>{year}</div>
+    <div style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 36, marginTop: 16, lineHeight: 1.3 }}>
+      {t}
+    </div>
+    <div style={{ fontSize: 26, color: muted, lineHeight: 1.6, marginTop: 12, paddingRight: 24 }}>{d}</div>
+  </div>
+);
+
+const Timeline: Page = () => (
+  <Sheet section="I · 制度 · 先看全貌">
+    <Eyebrow>3 分鐘看懂退撫制度</Eyebrow>
+    <H size={64}>三十年來，退撫制度走了五步</H>
+    <div style={{ position: 'relative', marginTop: 90 }}>
+      <div style={{ position: 'absolute', top: 25, left: 0, right: 0, height: 3, background: rule }} />
+      <div style={{ display: 'flex', gap: 12 }}>
+        <Milestone year="84 年前" t="恩給制" d="退休金由政府全額編列預算支應" />
+        <Milestone year="84/7/1" t="退撫基金制" d="老師與政府共同提撥，確定給付（DB）" />
+        <Milestone year="107/7/1" t="年金改革" d="替代率原訂逐年調降至 118 年" />
+        <Milestone year="112/7/1" t="個人專戶制" d="新進教師改為確定提撥（DC），帳戶隨人走" hot />
+        <Milestone year="113 起" t="替代率停砍" d="修法停在 112 年水準（釋憲審理中）" hot />
+      </div>
+    </div>
+    <Lead style={{ marginTop: 70, color: 'var(--osd-text)' }}>
+      你在哪一年初任，決定你適用哪一套規則。
+    </Lead>
+  </Sheet>
+);
+
+// ─── 提早離職 ───────────────────────────────────────────────
+
+const LeaveCell = ({ children, hot }: { children: ReactNode; hot?: boolean }) => (
+  <div
+    style={{
+      fontSize: 28,
+      lineHeight: 1.5,
+      padding: '22px 28px',
+      background: hot ? 'rgba(180,67,46,0.06)' : '#FBF8F2',
+      border: `1px solid ${rule}`,
+    }}
+  >
+    {children}
+  </div>
+);
+
+const LeaveRow = ({ k, a, b }: { k: string; a: ReactNode; b: ReactNode }) => (
+  <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr 1fr', gap: 16, marginTop: 16 }}>
+    <div style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 38, alignSelf: 'center' }}>{k}</div>
+    <LeaveCell>{a}</LeaveCell>
+    <LeaveCell hot>{b}</LeaveCell>
+  </div>
+);
+
+const EarlyLeave: Page = () => (
+  <Sheet section="I · 制度 · 提早離職">
+    <H size={60}>如果提早離職，錢拿得回來嗎？</H>
+    <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr 1fr', gap: 16, marginTop: 40 }}>
+      <span style={{ fontSize: 24, color: gold }}>任職年資</span>
+      <span style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 34 }}>舊制 · 退撫基金制</span>
+      <span style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 34, color: red }}>新制 · 個人專戶制</span>
+    </div>
+    <LeaveRow
+      k="未滿 5 年"
+      a={<>可申請發還<strong>自己繳的</strong>本息；政府撥繳部分不發還</>}
+      b={<>只能領回<strong>自己提繳的 35%</strong>；政府提撥 65% 不能領</>}
+    />
+    <LeaveRow
+      k="滿 5 年"
+      a={<>同上；或<strong>保留年資</strong>，日後轉任他職退休時併計</>}
+      b={<>政府提撥部分可領回 <strong>50%</strong></>}
+    />
+    <LeaveRow
+      k="滿 10 年"
+      a={<>同上</>}
+      b={<>政府提撥部分 <strong>100%</strong> 全部領回</>}
+    />
+    <div style={{ marginTop: 28, fontSize: 22, color: muted }}>
+      講者依相關條例整理，申請期限與細節以《公立學校教職員退休資遣撫卹條例》《個人專戶制條例》及學校人事室說明為準。
+    </div>
+  </Sheet>
+);
+
 // ─── 07 三層收入 ─────────────────────────────────────────────
 
 const Layer = ({ tag, name, who, h, bg, fg }: { tag: string; name: string; who: string; h: number; bg: string; fg: string }) => (
@@ -582,7 +685,7 @@ const Formula: Page = () => (
       <div>
         <div style={{ fontSize: 34, fontWeight: 700, color: red }}>所得替代率</div>
         <div style={{ fontSize: 28, lineHeight: 1.65, color: muted, marginTop: 12 }}>
-          依「退休年度 × 任職年資」查表。年改後每年調降 1.5%，至 118 年度後定錨。
+          依「退休年度 × 任職年資」查表。年改後逐年調降，113 年起修法停在 112 年度的水準。
         </div>
       </div>
     </div>
@@ -606,9 +709,22 @@ const Cell = ({ v, hot }: { v: string; hot?: boolean }) => (
   </span>
 );
 
-const RateRow = ({ y, c }: { y: string; c: [string, string, string, string, string] }) => (
+const RateRow = ({
+  y,
+  c,
+  hot,
+  gone,
+}: {
+  y: string;
+  c: [string, string, string, string, string];
+  hot?: boolean;
+  gone?: boolean;
+}) => (
   <div
     style={{
+      opacity: gone ? 0.45 : 1,
+      textDecoration: gone ? 'line-through' : undefined,
+      background: hot ? 'rgba(180,67,46,0.06)' : undefined,
       display: 'grid',
       gridTemplateColumns: '260px repeat(5, 1fr)',
       alignItems: 'baseline',
@@ -616,18 +732,18 @@ const RateRow = ({ y, c }: { y: string; c: [string, string, string, string, stri
       borderBottom: `1px solid ${rule}`,
     }}
   >
-    <span style={{ fontSize: 30, fontWeight: 500 }}>{y}</span>
-    <Cell v={c[0]} />
-    <Cell v={c[1]} />
-    <Cell v={c[2]} />
-    <Cell v={c[3]} />
-    <Cell v={c[4]} hot={y === '118 年度以後'} />
+    <span style={{ fontSize: 30, fontWeight: hot ? 700 : 500, color: hot ? red : undefined }}>{y}</span>
+    <Cell v={c[0]} hot={hot} />
+    <Cell v={c[1]} hot={hot} />
+    <Cell v={c[2]} hot={hot} />
+    <Cell v={c[3]} hot={hot} />
+    <Cell v={c[4]} hot={hot} />
   </div>
 );
 
 const RateTable: Page = () => (
   <Sheet section="I · 制度 · 法規">
-    <H size={60}>所得替代率上限：年資 × 退休年度</H>
+    <H size={60}>所得替代率上限：113 年起停在 112 年水準</H>
     <div style={{ marginTop: 40 }}>
       <div
         style={{
@@ -646,14 +762,12 @@ const RateTable: Page = () => (
         <span style={{ textAlign: 'right', paddingRight: 18 }}>30 年</span>
         <span style={{ textAlign: 'right', paddingRight: 18 }}>35 年</span>
       </div>
-      <RateRow y="107/7 – 108 年" c={['45.0%', '52.5%', '60.0%', '67.5%', '75.0%']} />
-      <RateRow y="112 年度" c={['39.0%', '46.5%', '54.0%', '61.5%', '69.0%']} />
-      <RateRow y="115 年度" c={['34.5%', '42.0%', '49.5%', '57.0%', '64.5%']} />
-      <RateRow y="117 年度" c={['31.5%', '39.0%', '46.5%', '54.0%', '61.5%']} />
-      <RateRow y="118 年度以後" c={['30.0%', '37.5%', '45.0%', '52.5%', '60.0%']} />
+      <RateRow y="107 年（年改起點）" c={['45.0%', '52.5%', '60.0%', '67.5%', '75.0%']} />
+      <RateRow y="現行：112 年度" c={['39.0%', '46.5%', '54.0%', '61.5%', '69.0%']} hot />
+      <RateRow y="原訂 118 年後" c={['30.0%', '37.5%', '45.0%', '52.5%', '60.0%']} gone />
     </div>
     <div style={{ marginTop: 28, fontSize: 24, color: muted }}>
-      資料：公立學校教職員退休資遣撫卹條例附表（節錄）。35 年以上另有級距；實際以銓敘部／教育部公告為準。
+      114 年 12 月立法院三讀停止調降，不論何時退休皆以 112 年度上限計；行政院、考試院已聲請釋憲，最終以憲法法庭判決及主管機關公告為準。
     </div>
   </Sheet>
 );
@@ -664,23 +778,23 @@ const Drop: Page = () => (
   <Sheet section="I · 制度 · 法規">
     <div style={{ display: 'flex', alignItems: 'center', height: '100%', gap: 60 }}>
       <div style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: 28, color: muted }}>年資 35 年 · 107 年退休</div>
+        <div style={{ fontSize: 28, color: muted }}>年資 35 年 · 年改前</div>
         <div style={{ fontFamily: NUM, fontSize: 260, lineHeight: 1, color: muted, marginTop: 12 }}>75%</div>
       </div>
       <div style={{ fontFamily: NUM, fontSize: 120, color: goldSoft }}>→</div>
       <div style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: 28, color: muted }}>年資 35 年 · 118 年後退休</div>
-        <div style={{ fontFamily: NUM, fontSize: 260, lineHeight: 1, color: red, marginTop: 12 }}>60%</div>
+        <div style={{ fontSize: 28, color: muted }}>年資 35 年 · 現行上限</div>
+        <div style={{ fontFamily: NUM, fontSize: 260, lineHeight: 1, color: red, marginTop: 12 }}>69%</div>
       </div>
       <div style={{ flex: 1, borderLeft: `1px solid ${rule}`, paddingLeft: 56 }}>
-        <H size={52}>
-          同樣教 35 年，
+        <H size={46}>
+          原訂砍到 60%，
           <br />
-          天花板低了
+          修法後
           <br />
-          <span style={{ color: red }}>15 個百分點</span>。
+          <span style={{ color: red }}>停在 69%</span>。
         </H>
-        <Lead>這 15%，就是第三層要自己補的起點。</Lead>
+        <Lead>制度會變，自己的準備不會變。替代率是天花板，不是你的生活費。</Lead>
       </div>
     </div>
   </Sheet>
@@ -696,21 +810,21 @@ const Example: Page = () => (
         <H size={60}>
           碩士・年功薪 650
           <br />
-          年資 35 年・118 年後退休
+          年資 35 年・現行上限
         </H>
         <Lead>
-          法定天花板約 6.4 萬。
+          法定天花板約 7.3 萬。
           <br />
           公式的分母（10.6 萬）比她的實領還高，
           <br />
-          換算成實領，<Mark>真實替代率</Mark>其實超過 60%。
+          換算成實領，<Mark>真實替代率</Mark>其實超過 69%。
         </Lead>
       </div>
       <div style={{ alignSelf: 'center', borderTop: `3px double #1E2420` }}>
         <LedgerRow label="本俸（薪點 650）" value="53,075" />
         <LedgerRow label="× 2" note="本俸加一倍" value="106,150" />
-        <LedgerRow label="× 替代率" note="35 年 · 118 年後" value="60%" />
-        <LedgerRow label="月退上限" value="63,690" strong />
+        <LedgerRow label="× 替代率" note="35 年 · 112 年度上限" value="69%" />
+        <LedgerRow label="月退上限" value="73,244" strong />
       </div>
     </div>
   </Sheet>
@@ -732,6 +846,7 @@ const Workshop = ({
   url,
   goal,
   fields,
+  qr,
   children,
 }: {
   no: string;
@@ -740,6 +855,7 @@ const Workshop = ({
   url: string;
   goal: string;
   fields: ReactNode;
+  qr: string;
   children: ReactNode;
 }) => (
   <Sheet section={`實作 ${no} · ${mins}`} dark>
@@ -774,17 +890,24 @@ const Workshop = ({
         <div style={{ fontSize: 30, color: 'rgba(242,236,225,0.75)', marginTop: 12 }}>{goal}</div>
         <div style={{ marginTop: 32 }}>{children}</div>
       </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 24, marginTop: 10 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 24, background: cream, color: '#1E2420', padding: 16 }}>
+        <img src={qr} alt={url} style={{ width: 170, height: 170, display: 'block' }} />
+        <div>
+          <div style={{ fontSize: 30, fontWeight: 700 }}>手機掃描開啟</div>
+          <div style={{ fontSize: 22, color: muted, marginTop: 8 }}>先加入書籤，等等還會用到</div>
+        </div>
+      </div>
       <div
         style={{
           background: cream,
           color: '#1E2420',
-          padding: '40px 40px',
-          alignSelf: 'start',
-          marginTop: 10,
+          padding: '32px 36px',
         }}
       >
         <div style={{ fontSize: 24, fontWeight: 700, color: gold, letterSpacing: '0.08em' }}>寫進學習單的紅框</div>
         {fields}
+      </div>
       </div>
     </div>
   </Sheet>
@@ -830,6 +953,7 @@ const Hands01: Page = () => (
     mins="10 分鐘"
     tool="薪資試算"
     url="teacher-salary-calculator.netlify.app"
+    qr={qrSalary}
     goal="先知道「現在」：你的本俸與每月實領"
     fields={
       <>
@@ -849,9 +973,10 @@ const Hands01: Page = () => (
 const Hands02: Page = () => (
   <Workshop
     no="02"
-    mins="20 分鐘"
+    mins="15 分鐘"
     tool="退休金試算"
     url="pension-calculation.netlify.app"
+    qr={qrPension}
     goal="再看「制度會給多少」：月退與替代率"
     fields={
       <>
@@ -872,14 +997,14 @@ const Hands02: Page = () => (
 
 const RealRate: Page = () => (
   <Sheet section="I · 制度 · 實作回饋">
-    <H size={64}>法定 60%，換算實領可能接近八成</H>
+    <H size={64}>法定 69%，換算實領可能超過九成</H>
     <div style={{ display: 'flex', alignItems: 'flex-end', gap: 80, marginTop: 40, height: 620 }}>
       <Bar label="本俸 × 2" note="公式的分母" h={340} v="136" color={muted} />
       <Bar label="每月實領" note="A2 ＝ 100" h={250} v="100" color="var(--osd-accent)" />
-      <Bar label="月退上限" note="B3 ＝ B1 ÷ A2" h={205} v="≈82" color={red} />
+      <Bar label="月退上限" note="B3 ＝ B1 ÷ A2" h={235} v="≈94" color={red} />
       <div style={{ flex: 1, alignSelf: 'center', paddingLeft: 30, borderLeft: `1px solid ${rule}` }}>
         <div style={{ fontSize: 32, lineHeight: 1.7 }}>
-          「60%」是乘在本俸×2 上，
+          「69%」是乘在本俸×2 上，
           <br />
           不是乘在你的實領上。
         </div>
@@ -1025,6 +1150,7 @@ const Hands03: Page = () => (
     mins="20 分鐘"
     tool="每月收支體檢"
     url="grand-clafoutis-b1948b.netlify.app"
+    qr={qrBudget}
     goal="先看現在的錢流向哪裡，再把它「搬」到退休那天"
     fields={
       <>
@@ -1249,6 +1375,7 @@ const Hands04: Page = () => (
     mins="15 分鐘"
     tool="理財試算器"
     url="toolfinance.netlify.app"
+    qr={qrFinance}
     goal="把缺口變成「每個月要做的一件事」"
     fields={
       <>
@@ -1290,6 +1417,7 @@ const Hands05: Page = () => (
     mins="10 分鐘"
     tool="資產總覽"
     url="celadon-starship-b44b3c.netlify.app"
+    qr={qrAssets}
     goal="最後一步：你已經走了多遠？"
     fields={
       <>
@@ -1539,6 +1667,7 @@ const Hands06: Page = () => (
     mins="10 分鐘"
     tool="看見複利的力量"
     url="toolfinance.netlify.app"
+    qr={qrFinance}
     goal="用名目 6% 看複利長相（這是未來的錢，不必跟 E1 比）"
     fields={
       <>
@@ -1721,25 +1850,29 @@ export const notes = [
   // Ground
   '【13′–15′】三個約定，特別是第一條：小組只談方法不談金額，讓大家安心。',
   // SecI
-  '【15′】進入 Part I。',
+  '【15′】進入 Part I。先用 3 分鐘看全貌，再算自己的數字。',
+  // Timeline
+  '【15′–18′】五個時間點。請老師在心裡定位：我是哪一年初任？84 年前年資是恩給制，84/7/1 後是退撫基金制，112/7/1 後初任是個人專戶制。最後一點強調：替代率已停在 112 年水準，但釋憲仍在審理。',
   // ThreeLayers
-  '【15′–20′】三層架構：公保年金是樓地板、退撫是主體、第三層自己補。今天重點在第三層，但要先看清前兩層。',
+  '【18′–21′】三層架構：公保年金是樓地板、退撫是主體、第三層自己補。今天重點在第三層，但要先看清前兩層。',
   // OldNew
-  '【20′–25′】請舉手：112/7/1 以後初任的有幾位？新制老師後面有專屬頁。舊制老師重點在替代率表。',
+  '【21′–24′】請舉手：112/7/1 以後初任的有幾位？新制老師後面有專屬頁。舊制老師重點在替代率表。',
+  // EarlyLeave
+  '【24′–27′】年輕老師最常問「如果我不教了，錢拿得回來嗎？」新制前 10 年離開，政府提撥部分會打折，要算清楚。細節（申請期限、是否可暫不領取）請洽人事室。',
   // Formula
-  '【25′–28′】強調分母是本俸×2，不是實領；本俸×2 通常比實領高。很多老師聽到 60% 就恐慌，會在實作 02 後用 B3 回收。',
+  '【27′–29′】強調分母是本俸×2，不是實領；本俸×2 通常比實領高。',
   // RateTable
-  '【28′–32′】請大家在表上找到自己：預計退休年度 × 年資。學習單第 2 頁有完整空格可填。',
+  '【29′–32′】114 年 12 月修法：113 年起不再調降，不論何時退休都用 112 年度上限（35 年為 69%）。行政院、考試院已聲請釋憲，提醒老師關注後續判決。',
   // Drop
-  '【32′–34′】停 3 秒。這 15% 就是今天要處理的缺口起點。',
+  '【32′–34′】原訂砍到 60%，修法後停在 69%。重點不是百分比，而是：替代率是天花板，生活費要看自己的支出。',
   // Example
-  '【34′–36′】虛構案例示範計算。本俸數字以工具內最新俸額表為準。',
+  '【34′–36′】虛構案例示範計算：106,150 × 69% ＝ 73,244。本俸數字以工具內最新俸額表為準。',
   // Hands01
-  '【36′–46′】實作 01。巡場協助找薪點。不知道薪點的老師可用學歷起敘＋年資估。',
+  '【36′–46′】實作 01。請大家先掃 QR Code 並加入書籤。巡場協助找薪點，不知道薪點的老師可用學歷起敘＋年資估。',
   // Hands02
-  '【46′–60′】實作 02。提醒三種退休年度都要試。新制老師沒有月退，B1 ＝ 公保年金＋專戶金額 × 4% ÷ 12（學習單第 2 頁右下有換算格）。最後 3 分鐘小組討論「影響最大的變數」。',
+  '【46′–60′】實作 02（約 15 分鐘）。提醒三種退休年度都要試。新制老師沒有月退，B1 ＝ 公保年金＋專戶金額 × 4% ÷ 12（學習單第 2 頁右下有換算格）。最後 3 分鐘小組討論「影響最大的變數」。',
   // RealRate
-  '【60′–63′】回收 B3：多數舊制老師的真實替代率會高於法定替代率。接著轉折——替代率高不代表夠用，要看退休後支出，帶入 Part II。請 2–3 位老師分享 B3 區間（不說金額）。',
+  '【60′–63′】回收 B3：多數舊制老師的真實替代率會高於法定替代率（範例約 94%）。接著轉折：替代率高不代表夠用，要看退休後支出，帶入 Part II。請 2–3 位老師分享 B3 區間（不說金額）。',
   // NewSystem
   '【63′–65′】新制老師重點：自願增提與專戶投資選擇。舊制老師可轉告年輕同事。',
   // Break1
@@ -1807,8 +1940,10 @@ export default [
   ToolChain,
   Ground,
   SecI,
+  Timeline,
   ThreeLayers,
   OldNew,
+  EarlyLeave,
   Formula,
   RateTable,
   Drop,
