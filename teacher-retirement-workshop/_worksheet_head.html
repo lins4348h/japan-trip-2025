@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>我的退休帳本｜學習單</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;900&display=swap">
+<style>
+  :root{--paper:#FBF8F2;--ink:#1E2420;--green:#0F3B30;--gold:#B0833A;--goldSoft:#D8C197;--red:#B4432E;--muted:#6B685C;--rule:#CDBFA6;--tint:#F2ECE1}
+  @page{size:A4;margin:0}
+  *{box-sizing:border-box}
+  body{margin:0;background:#ddd;font-family:"Noto Sans TC",sans-serif;color:var(--ink);font-size:10.5pt;line-height:1.55}
+  .page{width:210mm;height:297mm;margin:0 auto 8mm;background:var(--paper);padding:14mm 15mm 12mm;position:relative;overflow:hidden;page-break-after:always}
+  @media print{body{background:none}.page{margin:0}}
+  .top{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--rule);padding-bottom:2.5mm;margin-bottom:6mm}
+  .mono{font-family:"IBM Plex Mono",monospace;letter-spacing:.16em;font-size:7.5pt;color:var(--gold)}
+  .sec{font-size:8.5pt;color:var(--muted);letter-spacing:.1em}
+  h1,h2,h3{font-family:"Noto Serif TC",serif;font-weight:900;margin:0;letter-spacing:.02em}
+  h2{font-size:19pt;line-height:1.3}
+  h3{font-size:12.5pt;margin:5mm 0 2mm}
+  .lead{color:var(--muted);margin:1.5mm 0 0}
+  .num{font-family:"DM Serif Display",serif}
+  .foot{position:absolute;left:15mm;right:15mm;bottom:8mm;display:flex;justify-content:space-between;font-size:7.5pt;color:var(--muted)}
+  .tag{display:inline-block;background:var(--gold);color:var(--ink);font-family:"IBM Plex Mono",monospace;font-size:7.5pt;letter-spacing:.15em;padding:1mm 2.5mm}
+  .url{font-family:"IBM Plex Mono",monospace;font-size:8pt;color:var(--green);margin-left:2mm}
+  table{width:100%;border-collapse:collapse}
+  td,th{border-bottom:1px solid var(--rule);padding:2.2mm 1.5mm;text-align:left;vertical-align:middle}
+  th{font-weight:500;color:var(--gold);font-size:8.5pt;border-bottom:1.5px double var(--ink)}
+  .code{font-family:"DM Serif Display",serif;color:var(--red);font-size:15pt;width:13mm}
+  .blank{border-bottom:1px solid var(--ink);display:inline-block;min-width:32mm;height:6mm}
+  .field td{height:12mm}
+  .field .hint{font-size:8pt;color:var(--muted)}
+  .field .fill{width:48mm;text-align:right;color:var(--muted);font-size:9pt}
+  .box{border:1px solid var(--rule);background:#fff;padding:4mm 5mm}
+  .dark{background:var(--green);color:var(--tint);padding:5mm 6mm}
+  .dark .mono{color:var(--goldSoft)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:5mm}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:4mm}
+  .step{display:flex;gap:2.5mm;align-items:baseline;border-bottom:1px dashed var(--rule);padding:1.6mm 0}
+  .step b{font-family:"DM Serif Display",serif;color:var(--gold);font-weight:400;font-size:12pt;width:4mm}
+  .prompt{background:#1B2420;color:#E9E3D6;font-family:"IBM Plex Mono","Noto Sans TC",monospace;font-size:8.3pt;line-height:1.65;padding:4mm 5mm}
+  .prompt .k{color:var(--goldSoft)}
+  .lines{background:repeating-linear-gradient(transparent 0 7.4mm,var(--rule) 7.4mm 7.5mm);height:30mm}
+  .eq{font-family:"Noto Serif TC",serif;font-weight:900;font-size:13pt;text-align:center;padding:3mm;border-top:1.5px double var(--ink);border-bottom:1.5px double var(--ink);margin:3mm 0}
+  .eq .num{color:var(--red);font-weight:400;font-size:16pt}
+  .small{font-size:8pt;color:var(--muted)}
+  .red{color:var(--red);font-weight:700}
+  .progress{height:9mm;border:1.5px solid var(--ink);background:repeating-linear-gradient(90deg,transparent 0 calc(10% - 1px),var(--rule) calc(10% - 1px) 10%);position:relative}
+  .tight td{padding:1.5mm 1.5mm}
+  .tight.field td{height:10mm}
+  .progress span{position:absolute;top:10mm;font-size:7pt;color:var(--muted)}
+  .key{display:flex;align-items:stretch;border:1.6px solid var(--red);background:#fff;border-radius:1.2mm;min-height:11.5mm;margin:1.8mm 0;overflow:hidden}
+  .key .b{background:var(--red);color:#fff;font-family:"DM Serif Display",serif;font-size:14pt;width:12mm;display:flex;align-items:center;justify-content:center;flex:none}
+  .key .l{padding:1.2mm 3mm;flex:1;font-size:10pt;font-weight:500;line-height:1.4;align-self:center}
+  .key .l small{display:block;font-weight:400;font-size:7.5pt;color:var(--muted);margin-top:.3mm}
+  .key .v{width:42mm;flex:none;border-left:1px dashed var(--rule);display:flex;align-items:flex-end;justify-content:flex-end;padding:0 2.5mm 1.2mm;font-size:8.5pt;color:var(--muted);background:#FFFDF8}
+  .key .v.s{width:30mm}
+  .key.big{min-height:15mm}.key.big .b{width:15mm;font-size:19pt}.key.big .v{width:52mm}
+  .keys2{display:grid;grid-template-columns:1fr 1fr;gap:0 4mm}
+  .ref{font-style:normal;display:inline-block;border:1.1px solid var(--red);color:var(--red);font-family:"DM Serif Display",serif;font-size:9pt;line-height:1;padding:.5mm 1.1mm;border-radius:.8mm;margin:0 .3mm}
+  .mini{font-style:normal;display:inline-block;background:var(--red);color:#fff;font-family:"DM Serif Display",serif;font-size:8.5pt;line-height:1;padding:.7mm 1.3mm;border-radius:.8mm;margin-left:1mm}
+  .need{font-size:8pt;color:var(--muted);letter-spacing:.05em}
+  .draft td{color:var(--muted)}
+  .draft th{color:var(--muted);border-bottom:1px solid var(--muted)}
+  .qrs{position:absolute;top:21mm;right:15mm;display:flex;gap:3mm}
+  .qrs figure{margin:0;text-align:center;font-size:6.8pt;color:var(--muted);line-height:1.2}
+  .qrs img{width:19mm;height:19mm;display:block;border:1px solid var(--rule);background:#fff}
+  .page.hasqr h2,.page.hasqr .lead.first{max-width:130mm}
+  .cqr{width:13mm;height:13mm;display:block;background:#fff;padding:.6mm}
+</style>
+</head>
