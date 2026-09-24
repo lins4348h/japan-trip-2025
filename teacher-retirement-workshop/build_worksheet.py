@@ -69,6 +69,8 @@ EXTRA_CSS = """
   .flow > div{flex:1;border:1px solid var(--rule);background:#fff;padding:2mm 3mm;font-size:8.5pt}
   .flow > div b{display:block;font-family:"Noto Serif TC",serif;font-size:10pt;margin-bottom:.5mm}
   .flow .arrow{flex:none;border:none;background:none;align-self:center;padding:0;color:var(--gold);font-size:12pt}
+  .yr{display:inline-block;font-size:7pt;color:#8A6A1F;background:#F6ECD2;border:1px solid #E3CF9E;border-radius:1mm;padding:0 1.2mm;margin-left:1mm;vertical-align:1px}
+  .grp td{background:var(--tint);font-weight:700;color:var(--ink)!important;font-size:8.5pt}
   .sumrow td{font-weight:700;color:var(--ink)!important;border-top:1.5px solid var(--ink)}
 """
 
@@ -133,7 +135,7 @@ p1 = f"""
   {key('A3', '年薪成長空間', f'＝ {ref("A2")} − {ref("A1")}', '元', '成長空間')}
 
   {hands('02', 'pension-calculation.netlify.app', '退休金試算')}
-  <div class="note">① <b>58 歲</b>才能領月退（提前退休 1 年少 4%，最多提早 5 年、少 20%）</div>
+  <div class="note">① 月退起支年齡逐年提高，<b>121 年過渡期後為 58 歲</b>（提前退休 1 年少 4%，最多提早 5 年、少 20%）</div>
   <div class="note">② 依照試算器上的數字填入；<b>舊制、新制擇一填寫</b></div>
 
   <div class="variant">舊制（112/6/30 以前任職）</div>
@@ -150,11 +152,38 @@ p1 = f"""
 """
 
 # ═══════════ 第二關 現在花多少 ═══════════
-exp_rows = [
-    ['房貸／房租', ''], ['伙食（含外食）', ''], ['水電瓦斯、電信網路', ''], ['交通（油錢、保養、停車）', ''],
-    ['子女教育／孝親費', ''], ['日常用品、服飾、娛樂', ''], ['保險費（年繳 ÷ 12）', ''], ['年度支出 ÷ 12（旅遊、稅、紅包）', ''],
-    ['其他：＿＿＿＿＿＿', ''],
-]
+YR = '<span class="yr">整年</span>'
+
+
+def rows_html(rows):
+    out = ''
+    for r in rows:
+        if r[0] == 'grp':
+            out += f'<tr class="grp"><td colspan="2">{r[1]}</td></tr>'
+        elif r[0] == 'sum':
+            out += f'<tr class="sumrow"><td>{r[1]}</td><td></td></tr>'
+        else:
+            out += f'<tr><td>{r[0]}</td><td></td></tr>'
+    return out
+
+
+income = rows_html([
+    ('grp', 'ⓐ 每月固定收入　<span style="font-weight:400;color:var(--muted)">本俸、月薪，每月穩定入帳</span>'),
+    ('薪資實領（看薪資單）',), ('sum', 'ⓐ 合計 ＿＿＿＿ 元／月'),
+    ('grp', 'ⓑ 穩定的額外收入　<span style="font-weight:400;color:var(--muted)">兼職、接案、鐘點，抓月平均</span>'),
+    ('兼職、接案、鐘點費',), ('sum', 'ⓑ 合計 ＿＿＿＿ 元／月'),
+    ('grp', f'ⓒ 獎金與配息 {YR}　<span style="font-weight:400;color:var(--muted)">填一整年總額</span>'),
+    ('年終、考績獎金',), ('股息、配息',), ('sum', 'ⓒ 合計 ＿＿＿＿ 元／年'),
+])
+expense = rows_html([
+    ('grp', 'ⓓ 固定月支出　<span style="font-weight:400;color:var(--muted)">每月幾乎一樣</span>'),
+    ('房租房貸、車貸',), ('孝親費',), ('訂閱、電信、月繳保費',), ('sum', 'ⓓ 合計 ＿＿＿＿ 元／月'),
+    ('grp', 'ⓔ 半固定月支出　<span style="font-weight:400;color:var(--muted)">每月都有但會浮動</span>'),
+    ('吃飯、交通',), ('日用品、小確幸',), ('sum', 'ⓔ 合計 ＿＿＿＿ 元／月'),
+    ('grp', f'ⓕ 一次性支出 {YR}　<span style="font-weight:400;color:var(--muted)">偶爾才花，填整年</span>'),
+    ('所得稅、年繳保費',), ('旅遊、紅包、大額採購',), ('sum', 'ⓕ 合計 ＿＿＿＿ 元／年'),
+])
+
 p2 = f"""
 <section class="page hasqr">
   {qrs(('budget', '03 收支體檢'))}
@@ -163,30 +192,20 @@ p2 = f"""
   <p class="lead first">不猜退休後，先把「現在」算清楚。<br>跟著三步走：紙上算 → 輸入工具 → 抄回紅框。</p>
 
   {hands('03', 'grand-clafoutis-b1948b.netlify.app', '每月收支體檢')}
-  <div class="small">① 紙上草稿（沒記帳？看薪資單、信用卡帳單、網銀明細；估不準就取整數）</div>
+  <div class="small">① 紙上草稿：順序和工具一模一樣。沒記帳？看薪資單、信用卡帳單、網銀明細，估不準就取整數。標 {YR} 的填一整年總額，工具會自動分攤到每月。</div>
   <div class="grid2" style="margin-top:1mm;align-items:start">
     <div>
-      {draft(['收入', '金額'], [
-          ['每月固定收入：薪資實領', ''], ['每月固定收入：兼職、租金、其他', ''],
-          ['<b>ⓐ 每月固定收入 合計</b>', ''],
-          ['年度：年終＋考績獎金', ''], ['年度：股利配息、其他', ''],
-          ['<b>ⓑ 年度獎金與配息 合計</b>', ''],
-      ])}
+      <div class="mono" style="margin:0 0 .5mm">1 · 你的收入</div>
+      <table class="tight draft"><tr><th>項目</th><th style="width:26mm">金額</th></tr>{income}</table>
     </div>
     <div>
-      {draft(['每月支出', '金額'], exp_rows + [['<b>ⓒ 每月支出 合計</b>', '']])}
+      <div class="mono" style="margin:0 0 .5mm">2 · 你的支出，分三層</div>
+      <table class="tight draft"><tr><th>項目</th><th style="width:26mm">金額</th></tr>{expense}</table>
     </div>
   </div>
 
-  <div class="small" style="margin-top:2mm">② 把 ⓐ ⓑ ⓒ 三個數字輸入「每月收支體檢」</div>
-  <div class="flow">
-    <div><b>ⓐ 每月固定收入</b>＿＿＿＿＿ 元</div><div class="arrow">＋</div>
-    <div><b>ⓑ 年度獎金與配息</b>＿＿＿＿＿ 元／年</div><div class="arrow">＋</div>
-    <div><b>ⓒ 每月支出</b>＿＿＿＿＿ 元</div><div class="arrow">→</div>
-    <div style="background:var(--tint)"><b>工具計算</b>月均收入、月均支出、儲蓄率</div>
-  </div>
-
-  <div class="small" style="margin-top:2mm">③ 把工具算出的結果抄進紅框</div>
+  <div class="small" style="margin-top:2mm">② 把 ⓐ～ⓕ 六個合計依序輸入工具，看第 3 區「你的收支體檢」</div>
+  <div class="small" style="margin-top:1mm">③ 把工具算出的結果抄進紅框</div>
   <div class="grid3" style="gap:0 3mm">
     {key('C1', '月均支出', '', '元', '', '', 'xs')}
     {key('C2', '月均收入', '', '元', '', '', 'xs')}
@@ -194,11 +213,11 @@ p2 = f"""
   </div>
 
   <div class="box" style="margin-top:2mm;padding:2.5mm 4mm;font-size:8.8pt">
-    <b>退休後要花多少？用所得替代法粗估就好：</b>房貸、車貸、子女教育可能沒了，但醫療、旅遊會增加，一來一往，<b>先用現在的 {ref('C1')} 當作退休後的月支出</b>。
-    （參考：所得替代法常用退休前月收入 × 70–80%，也就是 {ref('C2')} × 0.7 ≈ ＿＿＿＿ 元）
+    <b>退休後要花多少？用現在的 {ref('C1')} 粗估：</b>房貸、車貸、子女教育可能沒了，但醫療、旅遊會增加，一來一往。
+    （參考：所得替代法 ＝ 月收入 × 70–80%，{ref('C2')} × 0.7 ≈ ＿＿＿＿ 元）
   </div>
 
-  <div class="dark" style="margin-top:3mm">
+  <div class="dark" style="margin-top:2.5mm">
     <div class="mono">④ 今天最重要的一個數字</div>
     <div class="key big" style="margin-top:2mm;border-color:var(--goldSoft)"><span class="b">D</span><span class="l" style="color:var(--ink)">退休後每月餘裕 ＝ {ref('B1')} − {ref('C1')}<small>大於 0：月退就夠生活，有餘裕　｜　小於 0：差額要靠自己準備</small></span><span class="v">元</span></div>
   </div>
@@ -207,6 +226,17 @@ p2 = f"""
 """
 
 # ═══════════ 第三關 資產盤點 ═══════════
+assets_rows = rows_html([
+    ('grp', '1 · 你的資產　<span style="font-weight:400;color:var(--muted)">能換成錢的東西</span>'),
+    ('現金與存款（活存、定存）　✓',), ('股票・ETF・基金（投資市值）　✓',),
+    ('其他投資（黃金、債券、儲蓄險解約金）　✓',), ('房屋現值（現在市價，查實價登錄）',),
+    ('sum', '資產合計 ＿＿＿＿＿ 元'),
+])
+debt_rows = rows_html([
+    ('grp', '2 · 你的負債　<span style="font-weight:400;color:var(--muted)">還沒還完的錢</span>'),
+    ('房貸餘額（未還本金，不是月付）',), ('一般貸款（信貸、車貸、學貸）',), ('信用卡卡債／高利借款',),
+    ('sum', '負債合計 ＿＿＿＿＿ 元'),
+])
 p3 = f"""
 <section class="page hasqr">
   {qrs(('assets', '04 資產總覽'))}
@@ -215,39 +245,29 @@ p3 = f"""
   <p class="lead first">理財之前，先知道自己站在哪裡。<br>跟著三步走：紙上列 → 輸入工具 → 抄回紅框。</p>
 
   {hands('04', 'celadon-starship-b44b3c.netlify.app', '資產總覽')}
-  <div class="small">① 紙上草稿（寫「現在的市值／餘額」，不確定就取整數）</div>
+  <div class="small">① 紙上草稿：順序和工具一模一樣。寫「現在的市值／餘額」，不確定就取整數。</div>
   <div class="grid2" style="margin-top:1mm;align-items:start">
-    <div>
-      {draft(['資產', '金額', '可投入理財？'], [
-          ['活存、定存、外幣', '', '✓'],
-          ['股票、ETF、基金', '', '✓'],
-          ['儲蓄險、投資型保單（解約金）', '', '✓'],
-          ['退撫個人專戶（新制）', '', '—'],
-          ['自住房地產', '', '—'],
-          ['其他：＿＿＿＿', '', ''],
-          ['<b>資產合計</b>', '', ''],
-      ])}
-    </div>
-    <div>
-      {draft(['負債', '餘額'], [
-          ['房貸', ''], ['車貸', ''], ['信貸、學貸', ''], ['卡費分期、其他', ''],
-          ['<b>負債合計</b>', ''],
-      ])}
-      <div class="box" style="margin-top:2mm;padding:2.5mm 4mm;font-size:8.5pt">
-        <b>緊急預備金</b>：先從存款留下 6 個月生活費（{ref('C1')} × 6 ＝ ＿＿＿＿＿ 元），剩下的才算可投入的本金。
-      </div>
-    </div>
+    <table class="tight draft"><tr><th>資產</th><th style="width:26mm">金額</th></tr>{assets_rows}</table>
+    <table class="tight draft"><tr><th>負債</th><th style="width:26mm">金額</th></tr>{debt_rows}</table>
   </div>
 
-  <div class="small" style="margin-top:3mm">② 把各項輸入「資產總覽」，看工具算出的淨資產與資產配置</div>
-  <div class="small" style="margin-top:2mm">③ 把結果抄進紅框</div>
-  {key('E1', '淨資產', '＝ 資產合計 − 負債合計（工具結果）', '元')}
-  {key('E2', '目前可投入理財的本金', f'＝ 打 ✓ 的資產合計 − 緊急預備金（這是第四關的起點）', '元', '', 'tall')}
+  <div class="small" style="margin-top:2.5mm">② 把 7 個數字依序輸入工具，看第 3 區「你的資產總覽」：淨值與資產結構</div>
+  <div class="small" style="margin-top:1mm">③ 把結果抄進紅框</div>
+  {key('E1', '淨值', '＝ 資產合計 − 負債合計（工具結果）', '元')}
 
-  <div class="box" style="margin-top:3mm;padding:3mm 5mm">
-    <div class="mono">看一眼資產配置</div>
-    <div style="font-size:9.5pt;margin-top:1.5mm">現金 ＿＿ %　　股票／ETF ＿＿ %　　保險 ＿＿ %　　房地產 ＿＿ %　　其他 ＿＿ %</div>
-    <div style="font-size:9pt;margin-top:2mm">我的觀察：□ 現金放太多　□ 太集中在單一標的　□ 負債比例偏高　□ 其他＿＿＿＿＿＿＿</div>
+  <div class="box" style="margin-top:2mm;padding:3mm 5mm;font-size:9pt">
+    <b>淨值 ≠ 可以拿去理財的錢。</b>房子不會生出現金流；存款要先留 6 個月生活費當<b>緊急預備金</b>；卡債、高利借款要先還清。
+    <table class="tight" style="margin-top:1.5mm;font-size:9pt">
+      <tr><td>打 ✓ 的三項資產合計（現金＋股票 ETF 基金＋其他投資）</td><td style="width:34mm;text-align:right">＿＿＿＿＿ 元</td></tr>
+      <tr><td>− 緊急預備金 ＝ {ref('C1')} × 6</td><td style="text-align:right">＿＿＿＿＿ 元</td></tr>
+      <tr><td>− 信用卡卡債／高利借款</td><td style="text-align:right">＿＿＿＿＿ 元</td></tr>
+    </table>
+  </div>
+  {key('E2', '目前可投入理財的本金', '＝ 上面三行計算結果（這是第四關的起點）', '元', '', 'tall')}
+
+  <div class="box" style="margin-top:2.5mm;padding:3mm 5mm">
+    <div class="mono">看一眼工具的資產結構</div>
+    <div style="font-size:9pt;margin-top:1.5mm">我的觀察：□ 現金放太多　□ 太集中在房子　□ 負債比例偏高　□ 投資比例太低　□ 其他＿＿＿＿＿＿</div>
   </div>
   <div class="foot"><span>我的退休帳本 · 第三關</span><span class="num">04</span></div>
 </section>

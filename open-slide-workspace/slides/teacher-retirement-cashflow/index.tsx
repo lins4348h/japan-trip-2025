@@ -985,7 +985,7 @@ const Hands02: Page = () => (
       </>
     }
   >
-    <StepRow n="1">輸入預計退休年齡（58 歲起領月退，提前 1 年少 4%）</StepRow>
+    <StepRow n="1">輸入預計退休年齡（121 年後 58 歲起領，提前 1 年少 4%）</StepRow>
     <StepRow n="2">舊制：記下每月月退與公保一次給付</StepRow>
     <StepRow n="3">新制：記下專戶每月可領＋公保年金</StepRow>
     <StepRow n="4">小組只討論：「哪個變數影響最大？」</StepRow>
@@ -1150,19 +1150,19 @@ const Hands03: Page = () => (
     tool="每月收支體檢"
     url="grand-clafoutis-b1948b.netlify.app"
     qr={qrBudget}
-    goal="紙上算三個數字 → 輸入工具 → 抄回紅框"
+    goal="紙上算六個合計 → 輸入工具 → 抄回紅框"
     fields={
       <>
         <Field code="C1" label="月均支出" hint="工具計算結果" />
-        <Field code="C2" label="月均收入" hint="含年度獎金與配息攤提" />
+        <Field code="C2" label="月均收入" hint="獎金與配息已自動分攤" />
         <Field code="C3" label="儲蓄率" hint="（收入 − 支出）÷ 收入" />
       </>
     }
   >
-    <StepRow n="1">紙上算 ⓐ 每月固定收入（薪資實領＋其他）</StepRow>
-    <StepRow n="2">紙上算 ⓑ 年度獎金與配息（年終、考績、股利）</StepRow>
-    <StepRow n="3">紙上算 ⓒ 每月支出（年繳項目 ÷ 12）</StepRow>
-    <StepRow n="4">輸入工具，抄回月均支出、月均收入、儲蓄率</StepRow>
+    <StepRow n="1">收入：每月固定、穩定額外、獎金與配息（整年）</StepRow>
+    <StepRow n="2">支出三層：固定、半固定、一次性（整年）</StepRow>
+    <StepRow n="3">六個合計依序輸入工具，順序和學習單一樣</StepRow>
+    <StepRow n="4">抄回月均支出、月均收入、儲蓄率</StepRow>
   </Workshop>
 );
 
@@ -1314,7 +1314,7 @@ const SecIII: Page = () => (
         先<span style={{ color: goldSoft }}>盤點</span>你有的
       </>
     }
-    sub="資產、負債、淨資產，找出你的起點本金"
+    sub="資產、負債、淨值，找出你的起點本金"
   />
 );
 
@@ -1374,7 +1374,7 @@ const NetWorth: Page = () => (
   <Sheet section="III · 盤點 · 起點本金">
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 820px', gap: 90, height: '100%' }}>
       <div>
-        <Eyebrow>淨資產 ≠ 可以拿去理財的錢</Eyebrow>
+        <Eyebrow>淨值 ≠ 可以拿去理財的錢</Eyebrow>
         <H size={60}>
           房子不能拿來
           <br />
@@ -1392,7 +1392,7 @@ const NetWorth: Page = () => (
         <LedgerRow label="存款＋股票 ETF＋保單解約金" value="170 萬" />
         <LedgerRow label="自住房（市值）" value="800 萬" />
         <LedgerRow label="− 房貸、車貸" value="500 萬" />
-        <LedgerRow label="淨資產 E1" value="470 萬" />
+        <LedgerRow label="淨值 E1" value="470 萬" />
         <LedgerRow label="− 緊急預備金" note="4 萬 × 6 個月" value="24 萬" />
         <LedgerRow label="可投入本金 E2" value="146 萬" strong />
       </div>
@@ -1410,15 +1410,15 @@ const Hands04: Page = () => (
     goal="紙上列資產負債 → 輸入工具 → 抄回紅框"
     fields={
       <>
-        <Field code="E1" label="淨資產 ＝ 資產 − 負債" hint="工具計算結果" />
-        <Field code="E2" label="可投入理財的本金" hint="可動用資產 − 緊急預備金（C1 × 6）" />
+        <Field code="E1" label="淨值 ＝ 資產 − 負債" hint="工具計算結果" />
+        <Field code="E2" label="可投入理財的本金" hint="現金＋投資 − 預備金 − 卡債" />
       </>
     }
   >
-    <StepRow n="1">列出資產：存款、股票 ETF、保單解約金、房地產</StepRow>
-    <StepRow n="2">列出負債：房貸、車貸、信貸、卡費分期</StepRow>
-    <StepRow n="3">輸入工具，看淨資產與資產配置比例</StepRow>
-    <StepRow n="4">扣掉緊急預備金，算出第四關的起點 E2</StepRow>
+    <StepRow n="1">資產：現金存款、股票 ETF 基金、其他投資、房屋現值</StepRow>
+    <StepRow n="2">負債：房貸餘額、一般貸款、卡債／高利借款</StepRow>
+    <StepRow n="3">輸入工具，看淨值與資產結構</StepRow>
+    <StepRow n="4">扣掉緊急預備金與卡債，算出起點 E2</StepRow>
   </Workshop>
 );
 
@@ -1900,7 +1900,7 @@ export const notes = [
   // Hands01
   '【36′–46′】實作 01。請大家先掃 QR Code 並加入書籤。新制老師自願提繳先設 0%。A1 目前年薪、A2 到頂年薪，A3 ＝ A2 − A1。不知道薪級的老師可看薪資單。',
   // Hands02
-  '【46′–60′】實作 02（約 15 分鐘）。提醒：58 歲起領月退，提前 1 年少 4%、最多提早 5 年少 20%。舊制填月退＋公保一次給付；新制填專戶（預設領 30 年，自提 0%、實質報酬 3%）＋公保年金。最後 3 分鐘小組討論「影響最大的變數」。',
+  '【46′–60′】實作 02（約 15 分鐘）。提醒：月退起支年齡逐年提高，121 年過渡期後為 58 歲，提前 1 年少 4%、最多提早 5 年少 20%。舊制填月退＋公保一次給付；新制填專戶（預設領 30 年，自提 0%、實質報酬 3%）＋公保年金。最後 3 分鐘小組討論「影響最大的變數」。',
   // RealRate
   '【60′–63′】回收 B3：多數舊制老師的真實替代率會高於法定替代率（範例約 94%）。接著轉折：替代率高不代表夠用，要看退休後支出，帶入 Part II。請 2–3 位老師分享 B3 區間（不說金額）。',
   // NewSystem
@@ -1912,7 +1912,7 @@ export const notes = [
   // TwoWays
   '【75′–78′】兩把尺：所得替代法（月收入 × 70–80%）當參考；今天主要用現況支出法，直接拿現在的月均支出 C1 當退休後月支出。',
   // Hands03
-  '【78′–98′】實作 03（20 分鐘）。紙上先算 ⓐ 每月固定收入、ⓑ 年度獎金與配息、ⓒ 每月支出，再輸入收支體檢，抄回 C1 月均支出、C2 月均收入、C3 儲蓄率。沒記帳的老師：每月實際入帳 − 每月存下來的 ≈ 每月支出。',
+  '【78′–98′】實作 03（20 分鐘）。學習單草稿順序與工具一致：收入 ⓐ 每月固定收入、ⓑ 穩定的額外收入、ⓒ 獎金與配息（整年）；支出三層 ⓓ 固定、ⓔ 半固定、ⓕ 一次性（整年）。六個合計輸入工具，抄回 C1 月均支出、C2 月均收入、C3 儲蓄率。',
   // Adjust
   '【98′–104′】解釋為什麼可以直接用 C1：房貸、車貸、子女教育可能消失，但醫療、旅遊、長照會增加，一來一往。',
   // Inflation
@@ -1922,9 +1922,9 @@ export const notes = [
   // SecIII
   '【120′】進入 Part III：理財之前先盤點。',
   // NetWorth
-  '【120′–124′】區分淨資產 E1 與可投入本金 E2：自住房不產生現金流，存款要先留 6 個月緊急預備金。',
+  '【120′–124′】區分淨值 E1 與可投入本金 E2：自住房不產生現金流，存款要先留 6 個月緊急預備金。',
   // Hands04
-  '【124′–138′】實作 04（約 12 分鐘）。紙上列資產負債 → 輸入資產總覽 → 抄回 E1、E2。提醒看一眼資產配置：現金是否太多、是否太集中。',
+  '【124′–138′】實作 04（約 12 分鐘）。資產 4 項、負債 3 項，順序與工具一致 → 抄回 E1 淨值；再扣緊急預備金（C1 × 6）與卡債得到 E2。提醒看一眼資產結構。',
   // Break2
   '【140′–145′】休息 5 分鐘。',
   // SecIV
