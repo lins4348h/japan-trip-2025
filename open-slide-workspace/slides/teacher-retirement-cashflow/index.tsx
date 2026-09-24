@@ -1445,22 +1445,22 @@ const Hands05: Page = () => (
   <Workshop
     no="05"
     mins="10 分鐘"
-    tool="理財試算器"
+    tool="理財規劃"
     url="toolfinance.netlify.app"
     qr={qrFinance}
-    goal="假設沒有退休金：目標多少、每月存多少"
+    goal="假設沒有退休金：自己存出目標本金"
     fields={
       <>
         <Field code="F1" label="目標本金 ＝ C1 × 12 × 25" />
-        <Field code="F2" label="還差多少 ＝ F1 − E2" />
-        <Field code="F3" label="我決定的每月投入" hint="主算 4%，不超過每月能存下的錢" />
+        <Field code="F2" label="我決定的每月投入" hint="不超過每月能存下的錢（C2 − C1）" />
+        <Field code="F3" label="退休時累積" hint="本金總投入 ＋ 複利貢獻" />
       </>
     }
   >
-    <StepRow n="1">用第二關的 C1 算出目標本金 F1</StepRow>
-    <StepRow n="2">扣掉第三關已有的本金 E2，得到 F2</StepRow>
-    <StepRow n="3">試算器輸入目標、年數、報酬率 4%（或用速查表）</StepRow>
-    <StepRow n="4">再試 6%、延後退休 3 年，圈出付得起的版本</StepRow>
+    <StepRow n="1">輸入目前年齡、預計退休年齡</StepRow>
+    <StepRow n="2">初始本金填第三關的 E2</StepRow>
+    <StepRow n="3">每月投入先試 5,000，實質報酬 4～6%</StepRow>
+    <StepRow n="4">調整每月投入，讓退休時累積接近 F1</StepRow>
   </Workshop>
 );
 
@@ -1481,7 +1481,7 @@ const Equation: Page = () => (
     >
       <EqItem code="E2" t="已有的本金" />
       <span style={{ color: gold }}>＋</span>
-      <EqItem code="F3" t="每月投入 × 時間 × 複利" />
+      <EqItem code="F2" t="每月投入 × 時間 × 複利" />
       <span style={{ color: gold }}>→</span>
       <EqItem code="F1" t="目標本金（C1 × 12 × 25）" hot />
     </div>
@@ -1629,6 +1629,57 @@ const IndexWhy: Page = () => (
   </Sheet>
 );
 
+
+const EtfRow = ({ t, idx, since, ann, worst, hot }: { t: string; idx: string; since: string; ann: string; worst: string; hot?: boolean }) => (
+  <div
+    style={{
+      display: 'grid',
+      gridTemplateColumns: '180px 1fr 140px 260px 1fr',
+      alignItems: 'baseline',
+      padding: '24px 0',
+      borderBottom: `1px solid ${rule}`,
+    }}
+  >
+    <span style={{ fontFamily: NUM, fontSize: 52, color: hot ? red : 'var(--osd-accent)' }}>{t}</span>
+    <span style={{ fontSize: 30 }}>{idx}</span>
+    <span style={{ fontSize: 28, color: muted }}>{since}</span>
+    <span style={{ fontFamily: NUM, fontSize: 56, color: red }}>{ann}</span>
+    <span style={{ fontSize: 26, color: muted }}>{worst}</span>
+  </div>
+);
+
+const EtfCompare: Page = () => (
+  <Sheet section="IV · 理財 · 大盤 ETF">
+    <H size={60}>台股、美股大盤，長期怎麼走？</H>
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: '180px 1fr 140px 260px 1fr',
+        marginTop: 44,
+        paddingBottom: 14,
+        borderBottom: `3px double #1E2420`,
+        fontSize: 24,
+        color: gold,
+      }}
+    >
+      <span>ETF</span>
+      <span>追蹤</span>
+      <span>成立</span>
+      <span>成立以來年化</span>
+      <span>最慘的一段</span>
+    </div>
+    <EtfRow t="0050" idx="台灣市值前 50 大" since="2003" ann="≈12.6%" worst="2008 金融海嘯約 −43%" />
+    <EtfRow t="VOO" idx="美國 S&P 500" since="2010" ann="≈15%" worst="2022 約 −18%" hot />
+    <EtfRow t="QQQ" idx="美國那斯達克 100" since="1999" ann="≈10.9%" worst="2000–02 網路泡沫約 −83%" />
+    <div style={{ marginTop: 32, fontSize: 30 }}>
+      過去平均 12～15%，試算卻只用 <Mark>4～6%</Mark>：扣掉通膨、留給波動，寧可保守。
+    </div>
+    <div style={{ marginTop: 18, fontSize: 22, color: muted }}>
+      含息、原幣計；0050 依元大投信公布成立以來累積報酬（至 2025/12/31）換算，VOO、QQQ 為公開資料整理。過去績效不代表未來，非投資建議。
+    </div>
+  </Sheet>
+);
+
 const DcaRow = ({ m, price, units, hot }: { m: string; price: string; units: string; hot?: boolean }) => (
   <div
     style={{
@@ -1694,23 +1745,22 @@ const DCA: Page = () => (
 const Hands06: Page = () => (
   <Workshop
     no="06"
-    mins="10 分鐘"
+    mins="7 分鐘"
     tool="看見複利的力量"
     url="toolfinance.netlify.app"
     qr={qrFinance}
-    goal="用名目 6% 看複利長相（這是未來的錢，不必跟 F1 比）"
+    goal="同一頁往下捲：本金總投入、複利貢獻、早開始 vs 晚 10 年"
     fields={
       <>
-        <Field code="G1" label="我的每月定期定額" hint="先用 F3；已有本金 E2 可當起始金額" />
-        <Field code="G2" label="30 年後，終值是本金的幾倍？" />
-        <Field code="G3" label="晚 5 年開始，少了多少？" hint="30 年終值 − 25 年終值" />
+        <Field code="G1" label="複利貢獻" hint="時間幫你賺的錢" />
+        <Field code="G2" label="晚 10 年開始少了" hint="「早開始 vs 晚 10 年」結果" />
       </>
     }
   >
-    <StepRow n="1">選「定期定額」試算，輸入 G1、報酬率 6%</StepRow>
-    <StepRow n="2">年數分別填 10、20、30，抄下終值</StepRow>
-    <StepRow n="3">再算一次 25 年（＝晚 5 年開始）</StepRow>
-    <StepRow n="4">算出 G2、G3，感受時間的價格</StepRow>
+    <StepRow n="1">比一比：本金總投入和複利貢獻，哪個大？</StepRow>
+    <StepRow n="2">在圖上滑動，看每個年齡累積多少</StepRow>
+    <StepRow n="3">讀出「晚 10 年開始，退休時少了多少」</StepRow>
+    <StepRow n="4">寫進 G1、G2，和隔壁分享感受</StepRow>
   </Workshop>
 );
 
@@ -1934,15 +1984,17 @@ export const notes = [
   // Compound
   '【148′–150′】扣掉已有本金後還差 1,000 萬：30 年每月約 1.4 萬，10 年要 6.8 萬。重點是時間。',
   // Hands05
-  '【150′–158′】實作 05。F1 → F2 ＝ F1 − E2 → 試算每月投入。F3 不要超過每月能存下的錢（C2 − C1）。試算器沒有反推功能就用學習單速查表。',
+  '【150′–158′】實作 05，理財試算器「理財規劃」分頁：目前年齡、預計退休年齡、初始本金 E2、每月投入、實質報酬 4～6%。用草稿表試三組，讓退休時累積接近 F1；每月投入不超過 C2 − C1。',
   // CompoundPower
   '【158′–160′】先讓大家猜 30 年後有多少，再揭曉 502 萬。本金 180 萬，其餘是複利。帶 72 法則。',
   // IndexWhy
   '【160′–161′】大盤＝市值型指數 ETF。可口頭舉台灣 50、S&P 500、全世界股市等指數類型，不推薦特定商品。',
+  // EtfCompare
+  '【161′–162′】三檔大盤 ETF 長期年化約 11～15%，但都有大跌過（QQQ 網路泡沫 −83%）。說明為什麼試算只用 4～6%。上課前請更新最新數據。',
   // DCA
   '【161′–163′】請老師先心算：價格跌到 60 又回 100，到底賺還賠？再揭曉 +23%。',
   // Hands06
-  '【163′–170′】實作 06。用 F3 當每月定期定額、名目 6%，算 10／20／25／30 年終值，寫出 G2、G3。已有本金 E2 可當起始金額。',
+  '【164′–170′】實作 06，同一頁往下捲：比較本金總投入與複利貢獻（G1），再看「早開始 vs 晚 10 年」少了多少（G2）。請一兩位分享感受。',
   // HowStart
   '【170′–171′】四步驟，強調先有預備金。一檔大盤就夠。',
   // Myths
@@ -1950,7 +2002,7 @@ export const notes = [
   // Risks
   '【172′–173′】四個風險快速帶過，時間不夠可略過。',
   // Equation
-  '【173′–174′】回到封面收據：E2 ＋ F3 × 時間 × 複利 → F1。月退是備案。對照開場的憑感覺數字與 C1。',
+  '【173′–174′】回到封面收據：E2 ＋ F2 × 時間 × 複利 → F1。月退是備案。對照開場的憑感覺數字與 C1。',
   // Summary
   '【174′–175′】三句話收束。',
   // Actions
@@ -2001,6 +2053,7 @@ export default [
   Hands05,
   CompoundPower,
   IndexWhy,
+  EtfCompare,
   DCA,
   Hands06,
   HowStart,
