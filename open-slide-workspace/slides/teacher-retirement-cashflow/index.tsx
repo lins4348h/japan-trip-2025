@@ -1370,6 +1370,97 @@ const Compound: Page = () => (
 );
 
 
+// ─── 財富階梯 ───────────────────────────────────────────────
+
+const Rung = ({
+  n,
+  usd,
+  twd,
+  name,
+  task,
+  h,
+  bg,
+  fg,
+}: {
+  n: string;
+  usd: string;
+  twd: string;
+  name: string;
+  task: string;
+  h: number;
+  bg: string;
+  fg: string;
+}) => (
+  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+    <div style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 36 }}>{name}</div>
+    <div style={{ fontSize: 26, color: red, fontWeight: 700, marginTop: 6 }}>{twd}</div>
+    <div style={{ fontSize: 24, color: muted, lineHeight: 1.5, marginTop: 8, marginBottom: 18, minHeight: 72 }}>{task}</div>
+    <div
+      style={{
+        height: h,
+        background: bg,
+        color: fg,
+        padding: '22px 24px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+      }}
+    >
+      <span style={{ fontFamily: NUM, fontSize: 64, lineHeight: 1 }}>{n}</span>
+      <span style={{ fontFamily: MONO, fontSize: 20, opacity: 0.85 }}>{usd}</span>
+    </div>
+  </div>
+);
+
+const WealthLadder: Page = () => (
+  <Sheet section="III · 盤點 · 財富階梯">
+    <Eyebrow>《財富階梯》尼克．馬朱利（《持續買進》作者）</Eyebrow>
+    <H size={56}>淨資產決定你站在哪一階，每階的功課不同</H>
+    <div style={{ display: 'flex', gap: 16, alignItems: 'flex-end', height: 610, marginTop: 20 }}>
+      <Rung n="1" usd="< 1 萬美元" twd="約 30 萬以下" name="月光求生" task="存緊急預備金，避開惡性負債" h={130} bg={paper2} fg="#1E2420" />
+      <Rung n="2" usd="1–10 萬美元" twd="約 30–300 萬" name="初步緩衝" task="投資自己，學核心技能、提升主動收入" h={200} bg={goldSoft} fg="#1E2420" />
+      <Rung n="3" usd="10–100 萬美元" twd="約 300–3,000 萬" name="有感累積" task="用錢滾錢，靠長期投資放大資產" h={270} bg="var(--osd-accent)" fg={cream} />
+      <Rung n="4" usd="100–1,000 萬美元" twd="約 3,000 萬–3 億" name="事業加速" task="靠薪資難躍升，要拓展事業或創業" h={340} bg={green2} fg={cream} />
+      <Rung n="5–6" usd="1,000 萬美元以上" twd="約 3 億以上" name="擴張與守成" task="大型事業、家族企業維持階級" h={410} bg="#1E2420" fg={goldSoft} />
+    </div>
+  </Sheet>
+);
+
+const PrincipleCard = ({ k, t, d, ex }: { k: string; t: string; d: string; ex: ReactNode }) => (
+  <div style={{ background: '#FBF8F2', border: `1px solid ${rule}`, padding: '40px 40px', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ fontFamily: MONO, fontSize: 22, letterSpacing: '0.16em', color: gold }}>{k}</div>
+    <div style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 46, marginTop: 16 }}>{t}</div>
+    <div style={{ fontSize: 28, lineHeight: 1.6, color: muted, marginTop: 16 }}>{d}</div>
+    <div style={{ marginTop: 'auto', paddingTop: 24, borderTop: `1px dashed ${rule}`, fontSize: 28, lineHeight: 1.5 }}>{ex}</div>
+  </div>
+);
+
+const LadderRules: Page = () => (
+  <Sheet section="III · 盤點 · 財富階梯">
+    <H size={60}>三個原則，看懂自己的這一階</H>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32, marginTop: 56, height: 560 }}>
+      <PrincipleCard
+        k="衡量標準"
+        t="看淨資產，不看收入"
+        d="資產減負債才是你真正擁有的。月薪高但負債多，不一定站得比較高。"
+        ex={<>第三關的 <Mark>E1 總淨值</Mark>，就是你在階梯上的位置。</>}
+      />
+      <PrincipleCard
+        k="萬分之一法則"
+        t="小錢不必糾結"
+        d="消費低於淨資產的 0.01%，就是不需要反覆計較的「小錢」。"
+        ex={<>淨資產 470 萬 × 0.01% ＝ <Mark>470 元</Mark>，這以下的咖啡不用算。</>}
+      />
+      <PrincipleCard
+        k="量力而行"
+        t="解決這一階的煩惱"
+        d="專注眼前這一階的功課，不提前過超出自己階層的生活。"
+        ex={<>第 3 階的功課：<Mark>用錢滾錢</Mark>，也就是今天的第四關。</>}
+      />
+    </div>
+  </Sheet>
+);
+
 const NetWorth: Page = () => (
   <Sheet section="III · 盤點 · 起點本金">
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 820px', gap: 90, height: '100%' }}>
@@ -1381,20 +1472,21 @@ const NetWorth: Page = () => (
           定期定額
         </H>
         <Lead>
-          自住房算資產，但不會生出現金流；
+          工具會幫你拆成兩塊：房屋淨值、不含房子的淨資產。
           <br />
-          存款也要先留 6 個月生活費當緊急預備金。
+          後者再留 6 個月生活費當緊急預備金，
           <br />
           剩下的，才是第四關的<Mark>起點本金 E2</Mark>。
         </Lead>
       </div>
       <div style={{ alignSelf: 'center', borderTop: `3px double #1E2420` }}>
-        <LedgerRow label="存款＋股票 ETF＋保單解約金" value="170 萬" />
-        <LedgerRow label="自住房（市值）" value="800 萬" />
-        <LedgerRow label="− 房貸、車貸" value="500 萬" />
-        <LedgerRow label="淨值 E1" value="470 萬" />
+        <LedgerRow label="總資產" note="含房屋現值 800 萬" value="970 萬" />
+        <LedgerRow label="− 總負債" note="含房貸 480 萬" value="500 萬" />
+        <LedgerRow label="總淨值 E1" value="470 萬" />
+        <LedgerRow label="房屋淨值" note="現值 − 房貸" value="320 萬" />
+        <LedgerRow label="不含房子的淨資產" value="150 萬" />
         <LedgerRow label="− 緊急預備金" note="4 萬 × 6 個月" value="24 萬" />
-        <LedgerRow label="可投入本金 E2" value="146 萬" strong />
+        <LedgerRow label="可投入本金 E2" value="126 萬" strong />
       </div>
     </div>
   </Sheet>
@@ -1403,22 +1495,22 @@ const NetWorth: Page = () => (
 const Hands04: Page = () => (
   <Workshop
     no="04"
-    mins="12 分鐘"
+    mins="11 分鐘"
     tool="資產總覽"
     url="celadon-starship-b44b3c.netlify.app"
     qr={qrAssets}
     goal="紙上列資產負債 → 輸入工具 → 抄回紅框"
     fields={
       <>
-        <Field code="E1" label="淨值 ＝ 資產 − 負債" hint="工具計算結果" />
-        <Field code="E2" label="可投入理財的本金" hint="現金＋投資 − 預備金 − 卡債" />
+        <Field code="E1" label="總淨值 ＝ 資產 − 負債" hint="工具計算結果" />
+        <Field code="E2" label="可投入理財的本金" hint="不含房子的淨資產 − 緊急預備金" />
       </>
     }
   >
     <StepRow n="1">資產：現金存款、股票 ETF 基金、其他投資、房屋現值</StepRow>
     <StepRow n="2">負債：房貸餘額、一般貸款、卡債／高利借款</StepRow>
-    <StepRow n="3">輸入工具，看淨值與資產結構</StepRow>
-    <StepRow n="4">扣掉緊急預備金與卡債，算出起點 E2</StepRow>
+    <StepRow n="3">看結果：總淨值、不含房子的淨資產、房屋淨值</StepRow>
+    <StepRow n="4">扣掉緊急預備金（C1 × 6），得到起點 E2</StepRow>
   </Workshop>
 );
 
@@ -1971,10 +2063,14 @@ export const notes = [
   '【110′–120′】D ＝ B1 − C1。大於 0 代表月退就夠生活；小於 0 代表要自己補。強調：不論正負，Part IV 都把月退當備案。',
   // SecIII
   '【120′】進入 Part III：理財之前先盤點。',
+  // WealthLadder
+  '【120′–123′】《財富階梯》（尼克．馬朱利）：用淨資產分六階（第 5、6 階合併呈現），每階功課不同。請老師先猜自己在第幾階，填完實作 04 再對照。台幣以約 30 元換算。',
+  // LadderRules
+  '【123′–125′】三原則：用淨資產衡量、萬分之一法則、量力而行。學習單第三關有萬分之一的計算格。',
   // NetWorth
-  '【120′–124′】區分淨值 E1 與可投入本金 E2：自住房不產生現金流，存款要先留 6 個月緊急預備金。',
+  '【125′–127′】對照工具結果：總淨值 E1、房屋淨值、不含房子的淨資產；後者扣緊急預備金得到 E2。',
   // Hands04
-  '【124′–138′】實作 04（約 12 分鐘）。資產 4 項、負債 3 項，順序與工具一致 → 抄回 E1 淨值；再扣緊急預備金（C1 × 6）與卡債得到 E2。提醒看一眼資產結構。',
+  '【127′–138′】實作 04（約 11 分鐘）。資產 4 項、負債 3 項分開填，順序與工具一致 → 抄回 E1 總淨值；不含房子的淨資產扣緊急預備金（C1 × 6）得到 E2。最後對照財富階梯：我在第幾階？',
   // Break2
   '【140′–145′】休息 5 分鐘。',
   // SecIV
@@ -2044,6 +2140,8 @@ export default [
   Inflation,
   Gap,
   SecIII,
+  WealthLadder,
+  LadderRules,
   NetWorth,
   Hands04,
   Break2,

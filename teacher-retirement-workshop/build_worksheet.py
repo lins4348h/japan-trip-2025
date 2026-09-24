@@ -96,6 +96,44 @@ EXTRA_CSS = """
   .inrow div em{position:absolute;right:2mm;bottom:1mm;font-style:normal}
   .etf th,.etf td{font-size:8.6pt;padding:1.8mm 1.5mm}
   .etf td.n{font-family:"DM Serif Display",serif;font-size:11pt;color:var(--ink)}
+
+  @media screen and (max-width: 860px){
+    body{background:var(--paper);font-size:15px}
+    .page{width:auto;height:auto;margin:0;padding:22px 16px 26px;overflow:visible;border-bottom:10px solid #E5DCCB}
+    .page[style*="--green"]{border-bottom-color:#0A2A22}
+    .qrs{position:static;margin:0 0 10px;justify-content:flex-start;flex-wrap:wrap}
+    .page.hasqr{display:flex;flex-direction:column}
+    .page.hasqr > *{order:3}
+    .page.hasqr > .top,.page.hasqr > h2,.page.hasqr > .lead.first{order:1}
+    .page.hasqr > .qrs{order:2;margin:10px 0 0}
+    .page[style*="--green"] table td:nth-child(4){display:none}
+    .qrs img{width:84px;height:84px}
+    .page.hasqr h2,.page.hasqr .lead.first{max-width:none}
+    h1{font-size:34px!important} h2{font-size:22px} h3{font-size:16px;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}
+    .url{margin-left:0;word-break:break-all}
+    .foot{position:static;margin-top:18px;gap:8px;flex-wrap:wrap}
+    .top{flex-wrap:wrap;gap:6px}
+    .grid2,.grid3,.keys2,.tiles{grid-template-columns:1fr!important;gap:8px!important}
+    .inrow{grid-template-columns:1fr 1fr}
+    .inrow div{height:auto;min-height:52px}
+    .fc{grid-template-columns:1fr 38%;gap:6px 10px}
+    .fc .parts{grid-column:1 / -1;order:3}
+    .fc .tot{height:40px}
+    .key{min-height:52px}
+    .key .l{font-size:15px}
+    .key .l small{font-size:12px}
+    .key .l .sub{font-size:13px;line-height:1.8}
+    .key .v,.key .v.s,.key .v.xs,.key.big .v{width:30%}
+    .small,.note,.need{font-size:12.5px}
+    .mono{font-size:11px}
+    .tile{height:auto;min-height:60px}
+    table.draft,table.etf{font-size:12px}
+    table.draft th,table.etf th{font-size:11px}
+    .dark .grid3{font-size:14px!important}
+    .eq{font-size:15px}
+    .cqr{width:48px;height:48px}
+    .panel svg{max-width:100%}
+  }
   .sumrow td{font-weight:700;color:var(--ink)!important;border-top:1.5px solid var(--ink)}
 """
 
@@ -151,7 +189,7 @@ p1 = f"""
   {qrs(('salary', '01 薪資試算'), ('pension', '02 退休金試算'))}
   <div class="top"><span class="mono">PART I · 制度</span><span class="need">{mini('A1', 'A2', 'A3', 'B1')}</span></div>
   <h2>第一關｜制度會給我多少？</h2>
-  <p class="lead first">舊制月退上限 ＝ 本俸 × 2 × 所得替代率<br>手機掃右上 QR Code 開啟工具</p>
+  <p class="lead first">舊制月退上限 ＝ 本俸 × 2 × 所得替代率<br>手機掃描 QR Code 開啟工具</p>
 
   {hands('01', 'teacher-salary-calculator.netlify.app', '薪資試算')}
   <div class="note">新制教師：自願提繳一律先設 <b>0%</b></div>
@@ -264,6 +302,7 @@ p3 = f"""
   </div>
   {key('E2', '可投入理財的本金', f'＝ 不含房子的淨資產 − 緊急預備金（{ref("C1")} × 6 ＝ ＿＿＿＿＿ 元）　→ 第四關的「初始本金」', '元', '', 'tall')}
   <div class="small" style="margin-top:1.5mm">看一眼工具的資產結構：□ 現金放太多　□ 太集中在房子　□ 負債比偏高　□ 投資比例太低</div>
+  <div class="small" style="margin-top:1mm">對照《財富階梯》：我的淨值 {ref('E1')} 在第 ＿＿ 階；萬分之一法則 ＝ E1 × 0.0001 ＝ ＿＿＿ 元以下的消費，不必糾結。</div>
   <div class="foot"><span>我的退休帳本 · 第三關</span><span class="num">04</span></div>
 </section>
 """
