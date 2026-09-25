@@ -19,7 +19,7 @@ TOOLS = [
     ('salary', '01', '薪資試算', 'teacher-salary-calculator.netlify.app', '→ A 年薪'),
     ('pension', '02', '退休金試算', 'pension-calculation.netlify.app', '→ B 月退'),
     ('budget', '03', '每月收支體檢', 'grand-clafoutis-b1948b.netlify.app', '→ C 收支・儲蓄率'),
-    ('assets', '04', '資產總覽', 'celadon-starship-b44b3c.netlify.app', '→ E 目前本金'),
+    ('assets', '04', '資產總覽', 'celadon-starship-b44b3c.netlify.app', '→ E 淨值・負債比'),
     ('finance', '05', '理財試算器', 'toolfinance.netlify.app', '→ F 目標・G 複利'),
 ]
 
@@ -135,6 +135,50 @@ EXTRA_CSS = """
     .panel svg{max-width:100%}
   }
   .sumrow td{font-weight:700;color:var(--ink)!important;border-top:1.5px solid var(--ink)}
+  .tile .c,.sum .c{display:inline-block;background:var(--red);color:#fff;font-family:"DM Serif Display",serif;font-weight:400;font-size:10pt;line-height:1.35;padding:0 1.4mm;border-radius:.8mm;margin-right:1.5mm}
+  .tile.k{border:1.6px solid var(--red)}
+  .tiles3{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5mm;margin-top:2mm}
+  .chk{font-size:8.5pt;line-height:1.9}
+  .quote{border-left:3px solid var(--gold);background:#FBF6EC;padding:1.8mm 3mm;font-size:8.3pt;line-height:1.6;margin-top:1.5mm}
+  .badge{display:inline-block;background:#F6ECD2;color:#8A6A1F;border:1px solid #E3CF9E;border-radius:4mm;padding:0 2mm;font-size:7.5pt;font-weight:700;margin:0 1mm}
+  .key .b.w{width:19mm;font-size:10.5pt;line-height:1.1;text-align:center}
+  .res{border:1.2px solid var(--ink);background:#fff;border-radius:1.5mm;padding:2.5mm 4mm;margin-top:2mm}
+  .ex td{font-style:italic;color:#9A968A!important;font-size:8pt}
+  .sum td{padding:0 1.5mm;height:9.3mm;font-size:8.8pt}
+  .sum th{font-size:8pt}
+  .sum td.g{background:var(--tint);width:24mm;vertical-align:top;padding-top:2mm;border-bottom:1.5px solid var(--ink)}
+  .sum td.g b{display:block;font-family:"Noto Serif TC",serif;font-weight:900;font-size:10.5pt;line-height:1.25}
+  .sum td.g small{display:block;font-size:7pt;color:var(--muted);margin-top:.8mm}
+  .sum td.g i{font-style:normal;font-family:"DM Serif Display",serif;color:#C0703F;font-size:14pt;display:block;line-height:1}
+  .sum tr.end td{border-bottom:1.5px solid var(--ink)}
+  .sum td.cd{width:15mm;text-align:center}
+  .sum td.cd span{color:var(--muted)}
+  .sum td.cd span.c{color:#fff;margin:0}
+  .sum td.it{width:44mm;font-weight:700}
+  .sum td.it small{display:block;font-weight:400;font-size:7pt;color:var(--muted)}
+  .sum td.val{width:36mm;border-left:1px dashed var(--rule);border-right:1px dashed var(--rule);background:#FFFDF8;text-align:right;vertical-align:bottom;padding-bottom:1mm;font-size:7.5pt;color:var(--muted)}
+  .sum td.hw{font-size:8pt;color:var(--muted)}
+  .why{border-top:2px solid var(--gold);background:#fff;padding:2.2mm 3mm;font-size:8.3pt;line-height:1.55}
+  .why b{display:block;font-family:"Noto Serif TC",serif;font-size:10.5pt;color:var(--ink);margin-bottom:.8mm}
+  .why .n{font-family:"DM Serif Display",serif;color:var(--gold);font-size:14pt;float:right;line-height:1}
+  .r72{background:var(--green);color:var(--tint);padding:3mm 4mm;font-size:8.5pt;line-height:1.6}
+  .r72 .f{font-family:"Noto Serif TC",serif;font-weight:900;font-size:12.5pt;color:var(--goldSoft);margin:1mm 0}
+  @media screen and (max-width: 860px){
+    .tiles3{grid-template-columns:1fr!important}
+    .res{padding:10px 12px}
+    .sum,.sum tbody,.sum tr,.sum td{display:block;width:auto!important;height:auto}
+    .sum tr:first-child{display:none}
+    .sum tr{display:grid;grid-template-columns:48px 1fr 38%;border-bottom:1px solid var(--rule);padding:6px 0}
+    .sum td{border:none!important;padding:2px 4px;font-size:14px}
+    .sum td.g{grid-column:1 / -1;background:var(--tint);padding:8px 10px;margin:10px 0 2px}
+    .sum td.g b,.sum td.g small,.sum td.g i{display:inline;margin-right:6px}
+    .sum td.val{border:1px solid var(--rule)!important;min-height:40px}
+    .sum td.hw{grid-column:2 / -1;font-size:12.5px}
+    .sum tr.gr{border-bottom:none;padding:0}
+    .why .n{float:left;margin-right:8px;font-size:20px}
+    .sum td.g br{display:none}
+    .etf tr > *:nth-child(2),.etf tr > *:nth-child(4){display:none}
+  }
 """
 
 head = (HERE / '_worksheet_head.html').read_text(encoding='utf-8').replace('</style>', EXTRA_CSS + '</style>')
@@ -169,7 +213,7 @@ cover = f"""
       <div class="key" style="margin:0;width:62mm;min-height:9mm"><span class="b" style="width:10mm;font-size:12pt">A1</span><span class="l" style="font-size:8.5pt">紅框 ＝ 要寫數字的地方</span></div>
       <div>{ref('A1')} 空心小框 ＝ 引用前面寫過的數字</div>
     </div>
-    <div class="small" style="margin-top:1.5mm">灰色草稿表隨手記即可，只有紅框要工整。全份共 15 個紅框，每頁右上角標出本頁要填哪幾格。</div>
+    <div class="small" style="margin-top:1.5mm">灰色草稿表隨手記即可，只有紅框要工整。每頁右上角標出本頁要填哪幾格，最後一頁有總複習表。</div>
   </div>
 
   <h3 style="color:var(--goldSoft);margin-top:6mm">五個工具 · 手機掃描並加入書籤（依使用順序）</h3>
@@ -267,8 +311,8 @@ p2 = f"""
 p3 = f"""
 <section class="page hasqr">
   {qrs(('assets', '04 資產總覽'))}
-  <div class="top"><span class="mono">PART III · 盤點</span><span class="need">{mini('E1', 'E2')}</span></div>
-  <h2>第三關｜我已經有多少本金？</h2>
+  <div class="top"><span class="mono">PART III · 盤點</span><span class="need">{mini('E1')}</span></div>
+  <h2>第三關｜我現在有多少家底？</h2>
   <p class="lead first">欄位和工具一模一樣：一格一個數字，照順序輸入。<br>寫「現在的市值／餘額」，不確定就取整數。</p>
 
   {hands('04', 'celadon-starship-b44b3c.netlify.app', '資產總覽')}
@@ -288,21 +332,33 @@ p3 = f"""
     </div>
   </div>
 
-  {sechd('3', '你的資產總覽', '工具算出的結果')}
+  {sechd('3', '你的資產總覽', '工具算出的結果，照抄')}
   {key('E1', '你的總淨值（資產 − 負債）', '', '元', '', 'big')}
   <div class="tiles">
     <div class="tile"><b>總資產</b><em>元</em></div>
     <div class="tile"><b>總負債</b><em>元</em></div>
-    <div class="tile" style="border-color:var(--gold)"><b>不含房子的淨資產</b><small>第四關要用這個</small><em>元</em></div>
+    <div class="tile"><b>不含房子的淨資產</b><small>存款＋投資，真正動得了的錢</small><em>元</em></div>
     <div class="tile"><b>房屋淨值</b><small>現值 − 房貸</small><em>元</em></div>
   </div>
 
-  <div class="box" style="margin-top:2.5mm;padding:2.5mm 4mm;font-size:9pt">
-    <b>淨值 ≠ 可以拿去理財的錢。</b>房子不會生出現金流；存款也要先留 6 個月生活費當緊急預備金。
+  {sechd('4', '負債比', '總負債 ÷ 總資產，工具會標出負債類型')}
+  <div class="grid2" style="gap:4mm;align-items:start">
+    <div>
+      <div class="tile" style="height:13mm"><b>我的負債比</b><small>總負債 ÷ 總資產</small><em>%</em></div>
+      <div class="chk" style="margin-top:1mm">工具標示：□ 房貸為主　□ 信貸／車貸為主<br>　　　　　□ 卡債為主　□ 沒有負債</div>
+    </div>
+    <div>
+      <div class="small">工具畫面範例：負債比 <b style="color:var(--ink)">78%</b><span class="badge">房貸為主</span></div>
+      <div class="quote">負債比偏高，但若主要來自房貸——這是有擔保的低利負債，剛買房的前幾年本來就會這樣，屬正常。確認每月現金流撐得住還款即可，不必焦慮。</div>
+      <div class="small" style="margin-top:1mm">若主要是信貸、卡債：利率高，<b style="color:var(--red)">先還清，再談投資</b>。</div>
+    </div>
   </div>
-  {key('E2', '可投入理財的本金', f'＝ 不含房子的淨資產 − 緊急預備金（{ref("C1")} × 6 ＝ ＿＿＿＿＿ 元）　→ 第四關的「初始本金」', '元', '', 'tall')}
-  <div class="small" style="margin-top:1.5mm">看一眼工具的資產結構：□ 現金放太多　□ 太集中在房子　□ 負債比偏高　□ 投資比例太低</div>
-  <div class="small" style="margin-top:1mm">對照《財富階梯》：我的淨值 {ref('E1')} 在第 ＿＿ 階；萬分之一法則 ＝ E1 × 0.0001 ＝ ＿＿＿ 元以下的消費，不必糾結。</div>
+
+  <div class="box" style="margin-top:2.5mm;padding:2.5mm 4mm;font-size:9pt">
+    <b>淨值 ≠ 可以拿去理財的錢。</b>房子不會生出現金流；身上要先留 <b>6 個月生活費</b>當緊急預備金。<br>
+    緊急預備金 ＝ {ref('C1')} × 6 ＝ ＿＿＿＿＿＿ 元　→　我的「現金與存款」夠嗎？□ 夠　□ 還差 ＿＿＿＿＿ 元
+  </div>
+  <div class="small" style="margin-top:1.5mm">對照《財富階梯》：我的淨值 {ref('E1')} 在第 ＿＿ 階；萬分之一法則 ＝ E1 × 0.0001 ＝ ＿＿＿ 元以下的消費，不必糾結。</div>
   <div class="foot"><span>我的退休帳本 · 第三關</span><span class="num">04</span></div>
 </section>
 """
@@ -311,48 +367,120 @@ p3 = f"""
 p4 = f"""
 <section class="page hasqr">
   {qrs(('finance', '05 理財試算器'))}
-  <div class="top"><span class="mono">PART IV · 理財規劃</span><span class="need">{mini('F1', 'F2', 'F3', 'G1', 'G2')}</span></div>
+  <div class="top"><span class="mono">PART IV · 理財規劃</span><span class="need">{mini('F1', 'C2−C1', 'F2', 'F3', 'G1', 'G2')}</span></div>
   <h2>第四關｜時間，是老師最強的本錢</h2>
   <p class="lead first">假設沒有退休金，把月退當備案，自己存出一份本金。<br>打開理財試算器「理財規劃」分頁。</p>
 
   {hands('05', 'toolfinance.netlify.app', '理財試算器 · 理財規劃')}
   {key('F1', f'目標本金 ＝ {ref("C1")} × 12 × 25', '4% 法則：每年提領本金的 4%，約可支應 30 年；保守者用 × 30', '元')}
+  <div class="key"><span class="b w">C2<br>− C1</span><span class="l">每月能存下的錢 ＝ {ref('C2')} ＿＿＿＿＿ − {ref('C1')} ＿＿＿＿＿<small>再抄一次第二關的數字：這就是「每月投入」的上限</small></span><span class="v">元／月</span></div>
 
   <div class="panel" style="margin-top:2mm">
     <div class="mono">① 照順序輸入工具（和工具欄位一模一樣）</div>
     <div class="inrow">
-      <div><b>目前年齡</b>抄 A1<em>歲</em></div>
-      <div><b>預計退休年齡</b>抄 B1<em>歲</em></div>
-      <div><b>初始本金</b>抄 {ref('E2')}<em>元</em></div>
+      <div><b>目前年齡</b>A1 的「今年」<em>歲</em></div>
+      <div><b>預計退休年齡</b>B1 的「預計」<em>歲</em></div>
+      <div><b>初始本金</b>可留空<em>元</em></div>
       <div><b>每月投入金額</b>先試 5,000<em>元</em></div>
-      <div><b>年報酬率（實質）</b>建議 4～6<em>%</em></div>
+      <div><b>年報酬率（實質）</b>預設 <b style="display:inline;color:var(--red)">5</b><em>%</em></div>
     </div>
   </div>
 
-  <div class="small" style="margin:2mm 0 1mm">② 草稿表：改每月投入，直到「退休時累積」接近 {ref('F1')}（每月投入不要超過每月能存下的錢 {ref('C2')} − {ref('C1')}）</div>
-  {draft(['試算', '每月投入', '報酬率', '投入年數', '本金總投入', '複利貢獻', '退休時累積', '達標？'], [
-      ['1', '', '', '', '', '', '', '□'], ['2', '', '', '', '', '', '', '□'], ['3', '', '', '', '', '', '', '□'],
-  ])}
+  <div class="small" style="margin:1mm 0 0">初始本金：手邊現在就想投入的錢，沒有就留空；記得先留好緊急預備金，不要把救命錢拿去投資。</div>
+  <div class="small" style="margin:2mm 0 1mm">② 草稿表：只改「每月投入」，直到退休時累積接近 {ref('F1')}，但不超過 {ref('C2')} − {ref('C1')}</div>
+  {draft(['試算', '每月投入', '投入年數', '本金總投入', '複利貢獻', '退休時預估累積', '達標？'], [
+      ['範例', '20,000', '28 年', '672 萬', '788.8 萬', '1,460.8 萬', '—'],
+      ['1', '', '', '', '', '', '□'], ['2', '', '', '', '', '', '□'], ['3', '', '', '', '', '', '□'],
+  ]).replace('<tr><td>範例', '<tr class="ex"><td>範例')}
 
-  <div class="small" style="margin-top:2mm">③ 圈一組付得起的版本，抄進紅框</div>
-  <div class="keys2">
-    {key('F2', '我決定的每月投入', '', '元', '', '', 's')}
-    {key('F3', '退休時累積', '本金總投入 ＋ 複利貢獻', '元', '', '', 's')}
-  </div>
-  <div class="keys2">
-    {key('G1', '複利貢獻', '工具結果：時間幫你賺的', '元', '', '', 's')}
-    {key('G2', '晚 10 年開始少了', '工具「早開始 vs 晚 10 年」', '元', '', '', 's')}
+  <div class="res">
+    <div class="mono">③ 圈一組付得起的版本，照工具結果畫面抄下來</div>
+    <div class="keys2" style="margin-top:1mm">
+      {key('F2', '我決定的每月投入', '', '元', '', '', 's')}
+      {key('F3', '退休時預估累積資產', '', '元', '', '', 's')}
+    </div>
+    <div class="tiles3" style="margin-top:1mm">
+      <div class="tile"><b>投入年數</b><small>退休年齡 − 目前年齡</small><em>年</em></div>
+      <div class="tile"><b>本金總投入</b><small>你自己放進去的錢</small><em>元</em></div>
+      <div class="tile k"><b><span class="c">G1</span>複利貢獻</b><small>時間幫你賺的錢</small><em>元</em></div>
+    </div>
+    <div class="small" style="text-align:center;margin:1.2mm 0 0">{ref('F3')} 退休時預估累積 ＝ 本金總投入 ＋ {ref('G1')} 複利貢獻</div>
+    {key('G2', '早開始 vs 晚 10 年：晚 10 年開始，少了', '範例：每月 2 萬、5%，晚 10 年開始（投入 18 年）約少 762 萬', '元', '', '', 's')}
   </div>
 
-  <div class="box" style="margin-top:2mm;padding:2.5mm 4mm;font-size:8.8pt">
-    <b>沒達標也沒關係：</b>三個槓桿任選，① 每月多投入一點　② 晚幾年退休　③ 讓月退 {ref('B1')} 補上（看第二關的 {ref('D')}）。
-    <br><b>看圖說話：</b>本金總投入 vs 複利貢獻，哪個比較大？＿＿＿＿＿＿　晚 10 年開始，心裡的感覺是？＿＿＿＿＿＿
+  <div class="box" style="margin-top:2mm;padding:2.2mm 4mm;font-size:8.8pt">
+    <b>看圖說話：</b>本金總投入 vs 複利貢獻，哪個比較大？＿＿＿＿＿＿　晚 10 年開始，心裡的感覺是？＿＿＿＿＿＿
   </div>
   <div class="foot"><span>我的退休帳本 · 第四關　｜　本頁內容為觀念與工具練習，非投資建議</span><span class="num">05</span></div>
 </section>
 """
 
-# ═══════════ 第四關（延伸）大盤 ETF 比較 ═══════════
+# ═══════════ 總複習 A～G ═══════════
+def srow(code, item, hint, unit, how, end=False, group=''):
+    cd = f'<span class="c">{code}</span>' if code and code != '—' else '<span>—</span>'
+    sm = f'<small>{hint}</small>' if hint else ''
+    return (f'<tr class="{"end" if end else ""}">{group}<td class="cd">{cd}</td><td class="it">{item}{sm}</td>'
+            f'<td class="val">{unit}</td><td class="hw">{how}</td></tr>')
+
+
+def sgroup(n, title, sub, rows):
+    g = f'<td class="g" rowspan="{len(rows)}"><i>{n}</i><b>{title}</b><small>{sub}</small></td>'
+    out = ''
+    for i, r in enumerate(rows):
+        out += srow(*r, end=(i == len(rows) - 1), group=g if i == 0 else '')
+    return out
+
+
+sum_rows = (
+    sgroup('1', '薪水', '我賺多少<br>第一關', [
+        ('A1', '目前年薪', '', '元', '今年的起點'),
+        ('A2', '年功薪到頂的年薪', '', '元', '薪水的天花板，＿＿ 歲到頂'),
+        ('A3', '年薪成長空間', 'A2 − A1', '元', '加薪空間有限，別預支未來的薪水'),
+    ]) +
+    sgroup('2', '月退', '制度給多少<br>第一關', [
+        ('B1', '預估月退', '□ 舊制　□ 新制', '元／月', '＿＿ 歲退休；這是備案，不是全部'),
+    ]) +
+    sgroup('3', '每月收支', '我花多少<br>第二關', [
+        ('C2', '月均收入', '', '元', ''),
+        ('C1', '月均支出', '', '元', '也是退休後生活費的粗估'),
+        ('C3', '儲蓄率', '', '%', '□ 20% 以上　□ 10～20%　□ 10% 以下'),
+        ('—', '每月能存下的錢', 'C2 − C1', '元', '每月投入的上限'),
+        ('D', '退休後每月餘裕', 'B1 − C1', '元', '□ 大於 0：月退夠用　□ 小於 0：要自己補'),
+    ]) +
+    sgroup('4', '資產總覽', '我有多少<br>第三關', [
+        ('E1', '總淨值', '資產 − 負債', '元', '財富階梯第 ＿＿ 階'),
+        ('—', '負債比', '總負債 ÷ 總資產', '%', '□ 房貸為主　□ 信貸車貸　□ 卡債　□ 無'),
+        ('—', '緊急預備金', 'C1 × 6', '元', '現金與存款夠嗎？□ 夠　□ 差 ＿＿＿＿'),
+    ]) +
+    sgroup('5', '理財規劃', '要多少、怎麼到<br>第四關', [
+        ('F1', '目標本金', 'C1 × 12 × 25', '元', '假設沒有月退，自己要準備的錢'),
+        ('F2', '每月投入', '', '元', '有沒有超過每月能存下的錢？□ 沒有'),
+        ('F3', '退休時預估累積資產', '本金總投入 ＋ G1', '元', '□ 達標（F3 ≥ F1）　□ 還差 ＿＿＿＿'),
+        ('G1', '複利貢獻', '', '元', '時間幫我賺了 F3 的 ＿＿ %'),
+        ('G2', '晚 10 年開始少了', '', '元', '等待的代價'),
+    ])
+)
+
+p_sum = f"""
+<section class="page">
+  <div class="top"><span class="mono">REVIEW · A → G 總複習</span><span class="need">把前面的紅框抄過來</span></div>
+  <h2>總複習｜一張表，看懂我的退休帳本</h2>
+  <p class="lead">由上往下讀：賺多少 → 制度給多少 → 花多少 → 有多少 → 要多少、怎麼到。</p>
+  <table class="sum" style="margin-top:3mm">
+    <tr><th>主題</th><th style="text-align:center">代號</th><th>項目</th><th style="text-align:right">我的數字</th><th>怎麼看（自我檢核）</th></tr>
+    {sum_rows}
+  </table>
+
+  <div class="dark" style="margin-top:3.5mm;font-size:9.5pt;line-height:2">
+    <div class="mono">用一段話說給自己聽</div>
+    我每月能存 ＿＿＿＿＿ 元，現在淨值 ＿＿＿＿＿ 元。每月投入 {ref('F2').replace('ref"', 'ref" style="border-color:var(--goldSoft);color:var(--goldSoft)"')} ＿＿＿＿＿ 元，到 ＿＿ 歲約可累積 ＿＿＿＿＿ 元，目標是 ＿＿＿＿＿ 元。<br>
+    還差的部分，我選擇：□ 每月多投入一點　□ 晚幾年退休　□ 讓月退 B1 補上（看 D）
+  </div>
+  <div class="foot"><span>我的退休帳本 · 總複習　｜　本頁內容為觀念與工具練習，非投資建議</span><span class="num">06</span></div>
+</section>
+"""
+
+# ═══════════ 延伸：買大盤 ETF ═══════════
 import math
 
 def curve(rate, years=20, x0=14, y0=150, w=246, h=128, ymax=180):
@@ -362,7 +490,7 @@ def curve(rate, years=20, x0=14, y0=150, w=246, h=128, ymax=180):
         pts.append(f'{x0 + w * y / years:.1f},{y0 - h * v / ymax:.1f}')
     return ' '.join(pts)
 
-series = [('VOO', 0.151, '#B4432E'), ('0050', 0.126, '#0F3B30'), ('QQQ', 0.109, '#B0833A'), ('試算用 5%', 0.05, '#9A968A')]
+series = [('VOO', 0.151, '#B4432E'), ('0050', 0.126, '#0F3B30'), ('0056', 0.082, '#B0833A'), ('試算用 5%', 0.05, '#9A968A')]
 lines = ''
 for name, r, col in series:
     end = 10 * (1 + r) ** 20
@@ -378,40 +506,47 @@ for yr in (0, 5, 10, 15, 20):
     grid += f'<text x="{x:.1f}" y="160" font-size="6.5" fill="#6B685C" text-anchor="middle">{yr} 年</text>'
 chart = f'<svg viewBox="0 0 320 165" style="width:100%;height:auto;display:block" role="img" aria-label="10 萬元依長期年化報酬推算 20 年">{grid}{lines}<text x="14" y="10" font-size="7" fill="#6B685C">萬元</text></svg>'
 
-p5 = f"""
+p_etf = f"""
 <section class="page">
-  <div class="top"><span class="mono">PART IV · 買大盤</span><span class="need">延伸閱讀 · 不需填紅框</span></div>
-  <h2>第四關｜台股、美股大盤 ETF 長期怎麼走？</h2>
-  <p class="lead">不選股，買下整個市場。以下是三檔常見大盤 ETF 的長期表現（含息、原幣計），講者分享觀念，非投資建議。</p>
+  <div class="top"><span class="mono">EXTRA · 買大盤</span><span class="need">延伸閱讀 · 不需填紅框</span></div>
+  <h2>延伸｜為什麼買大盤？台股、美股 ETF 長期怎麼走</h2>
+  <p class="lead">不選股，買下整個市場。以下為講者整理的觀念與公開資料，非投資建議。</p>
+
+  <div class="grid3" style="margin-top:3mm;gap:3mm">
+    <div class="why"><span class="n">1</span><b>個股會消失，大盤會換血</b>曾經的股王宏達電，股價從 1,300 元跌到不到 100 元。指數會定期把變弱的公司換掉，買大盤不怕押錯一家。</div>
+    <div class="why"><span class="n">2</span><b>專家也很難贏大盤</b>美國 15 年的統計，約 9 成主動型大型股基金，績效輸給 S&amp;P 500 指數（SPIVA，至 2024 年底）。</div>
+    <div class="why"><span class="n">3</span><b>老師沒空盯盤</b>定期定額買大盤，不用研究財報、不用猜高低點，省下的時間留給學生和家人，剩下的交給複利。</div>
+  </div>
 
   <table class="etf" style="margin-top:3mm">
-    <tr><th>ETF</th><th>追蹤</th><th>成立</th><th>成立以來年化（含息）</th><th>最慘的一段</th><th>72 法則：約幾年翻倍</th></tr>
-    <tr><td><b>0050</b></td><td>台灣市值前 50 大</td><td>2003</td><td class="n">約 12.6%</td><td>2008 金融海嘯約 −43%</td><td>72 ÷ 12.6 ≈ ＿＿ 年</td></tr>
-    <tr><td><b>VOO</b></td><td>美國 S&amp;P 500</td><td>2010</td><td class="n">約 15%</td><td>2022 約 −18%（2008 標普 −37%）</td><td>72 ÷ 15 ≈ ＿＿ 年</td></tr>
-    <tr><td><b>QQQ</b></td><td>美國那斯達克 100</td><td>1999</td><td class="n">約 10.9%</td><td>2000–2002 網路泡沫約 −83%</td><td>72 ÷ 10.9 ≈ ＿＿ 年</td></tr>
+    <tr><th>ETF</th><th>類型</th><th>追蹤</th><th>成立</th><th>成立以來年化（含息）</th><th>2008 海嘯最深跌幅</th><th>72 法則：幾年翻倍</th></tr>
+    <tr><td><b>0050</b></td><td>市值型</td><td>台灣市值前 50 大</td><td>2003</td><td class="n">約 12.6%</td><td>約 −56%</td><td>72 ÷ 12.6 ≈ ＿＿ 年</td></tr>
+    <tr><td><b>VOO</b></td><td>市值型</td><td>美國 S&amp;P 500</td><td>2010</td><td class="n">約 15%</td><td>約 −57%<small style="display:block;font-size:6.8pt;color:var(--muted)">S&amp;P 500 指數（VOO 當時未成立）</small></td><td>72 ÷ 15 ≈ ＿＿ 年</td></tr>
+    <tr><td><b>0056</b></td><td>高股息</td><td>台灣高股息 50 檔</td><td>2007</td><td class="n">約 8.2%</td><td>約 −58%</td><td>72 ÷ 8.2 ≈ ＿＿ 年</td></tr>
   </table>
-  <div class="small" style="margin-top:1mm">資料：0050 為元大投信公布成立以來含息累積報酬 1,349%（至 2025/12/31）換算；VOO、QQQ 為公開資料整理（美元計，未含匯率）。上課前請以最新公告更新。</div>
+  <div class="small" style="margin-top:1mm">資料：0050 依元大投信公布成立以來含息累積報酬 1,349%（至 2025/12/31）換算；0056 成立以來含息總報酬約 327%、年化約 8.2%（至 2026/3/31）；跌幅為 2008 金融海嘯波段高點到低點；VOO 為美元計、未含匯率。上課前請以最新公告更新。</div>
 
   <div class="grid2" style="margin-top:3mm;gap:5mm;align-items:start">
     <div class="panel">
       <div class="mono">10 萬元，按各自長期年化報酬推算 20 年</div>
       {chart}
-      <div class="small">這是用平均報酬畫出的平滑線，真實走勢會大起大落。</div>
+      <div class="small">用平均報酬畫出的平滑線，真實走勢會大起大落。</div>
     </div>
     <div>
-      <div class="panel">
-        <div class="mono">想一想</div>
-        <div class="note" style="margin-top:1.5mm">① 過去平均 12～15%，為什麼試算只用 <b>4～6%</b>？</div>
-        <div style="border-bottom:1px solid var(--rule);height:7mm"></div>
-        <div class="note" style="margin-top:2mm">② QQQ 若在 2000 年高點買進，要等十多年才回本。這告訴我們什麼？</div>
-        <div style="border-bottom:1px solid var(--rule);height:7mm"></div>
-        <div class="note" style="margin-top:2mm">③ 我比較適合：□ 台股大盤　□ 美股大盤　□ 兩者搭配</div>
+      <div class="r72">
+        <div class="mono">72 法則｜錢多久會翻一倍？</div>
+        <div class="f">72 ÷ 年報酬率（%）≈ 翻倍年數</div>
+        例：試算用的 5% → 72 ÷ 5 ≈ <b style="color:var(--goldSoft)">14 年</b>翻一倍<br>
+        30 歲放 10 萬 → 44 歲約 20 萬 → 58 歲約 40 萬<br>
+        報酬率差一點，翻倍速度差很多：8% 要 9 年，12% 只要 6 年。
       </div>
-      <div class="panel" style="margin-top:2.5mm;font-size:8.8pt">
-        <div class="mono">買大盤三個理由</div>
-        <div class="step"><b>1</b>不用選股：指數自動汰弱留強</div>
-        <div class="step"><b>2</b>費用率低：省下的都是自己的</div>
-        <div class="step"><b>3</b>夠分散：一次買下一籃子大公司</div>
+      <div class="panel" style="margin-top:2.5mm">
+        <div class="mono">想一想</div>
+        <div class="note" style="margin-top:1mm">① 過去平均 8～15%，為什麼試算只用 <b>5%</b>？</div>
+        <div style="border-bottom:1px solid var(--rule);height:6mm"></div>
+        <div class="note" style="margin-top:1.5mm">② 0056 配息比較多，長期總報酬為什麼反而比 0050 低？<span class="small">（提示：配息是從淨值裡拿出來的；股災時一樣跌）</span></div>
+        <div style="border-bottom:1px solid var(--rule);height:6mm"></div>
+        <div class="note" style="margin-top:1.5mm">③ 我比較適合：□ 台股大盤　□ 美股大盤　□ 兩者搭配</div>
       </div>
     </div>
   </div>
@@ -425,10 +560,10 @@ p5 = f"""
     </div>
     <div style="margin-top:2.5mm;font-size:9pt;color:var(--goldSoft)">簽名 ＿＿＿＿＿＿　日期 ＿＿＿＿＿＿　→ 很早開始、很久不停。明年今天，再打開一次。</div>
   </div>
-  <div class="foot"><span>我的退休帳本 · 第四關（延伸）　｜　過去績效不代表未來，本頁非投資建議</span><span class="num">06</span></div>
+  <div class="foot"><span>我的退休帳本 · 延伸　｜　過去績效不代表未來，本頁非投資建議</span><span class="num">07</span></div>
 </section>
 """
 
-html = head + '<body>\n' + cover + p1 + p2 + p3 + p4 + p5 + '\n</body>\n</html>\n'
+html = head + '<body>\n' + cover + p1 + p2 + p3 + p4 + p_sum + p_etf + '\n</body>\n</html>\n'
 (HERE / 'worksheet.html').write_text(html, encoding='utf-8')
 print('worksheet.html written')
