@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>龍岡米干節</title>
+<style>
+  html, body { margin: 0; padding: 0; background: #000; overflow: hidden; }
+  #stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: #f3ecdc; }
+  #svg { position: absolute; left: 0; top: 0; }
+  #grain { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; mix-blend-mode: soft-light; opacity: .9; pointer-events: none; }
+  #vign { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: multiply;
+          background: radial-gradient(ellipse at center, rgba(255,255,255,0) 58%, rgba(120,95,60,.28) 100%); }
+  #sub { position: absolute; left: 50%; bottom: 46px; transform: translateX(-50%); text-align: center;
+         padding: 14px 40px 16px; border-radius: 16px; background: rgba(32, 25, 20, .46);
+         box-shadow: 0 0 30px rgba(32,25,20,.25); color: #fbf5e6; white-space: nowrap; opacity: 0; }
+  #sub .zh { font-family: 'Noto Sans CJK TC'; font-weight: 500; font-size: 44px; letter-spacing: 2px; line-height: 1.25; }
+  #sub .en { font-family: 'Bitstream Charter', 'Liberation Serif', serif; font-style: italic; font-size: 29px; line-height: 1.3; margin-top: 4px; color: #efe4c9; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <svg id="svg" width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="hG"><stop offset="0" stop-color="#ffd98a" stop-opacity=".85"/><stop offset=".35" stop-color="#f6c15e" stop-opacity=".35"/><stop offset="1" stop-color="#f6c15e" stop-opacity="0"/></radialGradient>
+      <radialGradient id="hR"><stop offset="0" stop-color="#ff9a6a" stop-opacity=".8"/><stop offset=".4" stop-color="#e3664f" stop-opacity=".3"/><stop offset="1" stop-color="#e3664f" stop-opacity="0"/></radialGradient>
+      <radialGradient id="hP"><stop offset="0" stop-color="#ffd0cc" stop-opacity=".8"/><stop offset=".4" stop-color="#eaa2a0" stop-opacity=".3"/><stop offset="1" stop-color="#eaa2a0" stop-opacity="0"/></radialGradient>
+      <radialGradient id="hW"><stop offset="0" stop-color="#fff6dc" stop-opacity=".9"/><stop offset=".3" stop-color="#fff0c8" stop-opacity=".35"/><stop offset="1" stop-color="#fff0c8" stop-opacity="0"/></radialGradient>
+    </defs>
+    <g id="root"></g>
+  </svg>
+  <img id="grain" src="grain.png">
+  <div id="vign"></div>
+  <div id="sub"><div class="zh"></div><div class="en"></div></div>
+</div>
+<script src="vendor/rough.js"></script>
+<script src="lib.js"></script>
+<script src="scenes.js"></script>
+<script src="main.js"></script>
+</body>
+</html>

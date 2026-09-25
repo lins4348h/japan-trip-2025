@@ -1,0 +1,56 @@
+{
+  "title_zh": "龍岡米干節",
+  "subtitle_zh": "一碗米干裡的異域鄉愁",
+  "title_en": "The Longgang Rice Noodle Festival",
+  "scenes": [
+    {"id":"open","lines":[
+      {"zh":"桃園中壢的龍岡，有一片飄著雲南味道的眷村。","en":"In Longgang, Taoyuan, lies a village that smells of Yunnan.","tts":"桃园中坜的龙冈，有一片飘着云南味道的眷村。"}
+    ]},
+    {"id":"title","lines":[]},
+    {"id":"jungle","lines":[
+      {"zh":"1949年，一支雲南國軍撤入緬甸邊境。","en":"In 1949, a Nationalist army from Yunnan retreated into Burma.","tts":"一九四九年，一支云南国军撤入缅甸边境。"},
+      {"zh":"他們在滇緬泰金三角的叢林裡，苦撐多年。","en":"For years, they held on in the jungles of the Golden Triangle.","tts":"他们在滇缅泰金三角的丛林里，苦撑多年。"}
+    ]},
+    {"id":"plane","lines":[
+      {"zh":"1953到1954年，第一批孤軍與眷屬搭機來臺。","en":"In 1953–54, the first soldiers and families were flown to Taiwan.","tts":"一九五三到一九五四年，第一批孤军与眷属搭机来台。"},
+      {"zh":"近七千人輾轉落腳在桃園龍岡。","en":"Nearly seven thousand of them settled in Longgang, Taoyuan.","tts":"近七千人辗转落脚在桃园龙冈。"}
+    ]},
+    {"id":"village","lines":[
+      {"zh":"1954年秋天，忠貞新村在這裡建成。","en":"In the autumn of 1954, Zhongzhen New Village was built here.","tts":"一九五四年秋天，忠贞新村在这里建成。"},
+      {"zh":"漂泊的異鄉人，終於有了新的家。","en":"The wanderers finally had a new home.","tts":"漂泊的异乡人，终于有了新的家。"}
+    ]},
+    {"id":"market","lines":[
+      {"zh":"他們開墾荒地，種菜，也種家鄉的香料。","en":"They cleared wasteland to grow vegetables and hometown spices.","tts":"他们开垦荒地，种菜，也种家乡的香料。"},
+      {"zh":"吃不完的拿出來賣，慢慢形成了忠貞市場。","en":"They sold the surplus, and Zhongzhen Market slowly took shape.","tts":"吃不完的拿出来卖，慢慢形成了忠贞市场。"}
+    ]},
+    {"id":"migan","lines":[
+      {"zh":"米干，是把在來米磨成米漿做成的。","en":"Mi gan is made from ground indica rice batter.","tts":"米干，是把在来米磨成米浆做成的。"},
+      {"zh":"米漿淋上圓盤，一盤一盤蒸成薄片，再切成寬條。","en":"Batter is steamed tray by tray into sheets, then cut into wide strips.","tts":"米浆淋上圆盘，一盘一盘蒸成薄片，再切成宽条。"},
+      {"zh":"澆上熬了一夜的高湯與肉醬，就是家鄉味。","en":"Topped with overnight broth and meat sauce, it tastes of home.","tts":"浇上熬了一夜的高汤与肉酱，就是家乡味。"}
+    ]},
+    {"id":"festival","lines":[
+      {"zh":"2011年起，桃園每年舉辦龍岡米干節。","en":"Since 2011, Taoyuan has held the Longgang Rice Noodle Festival.","tts":"二零一一年起，桃园每年举办龙冈米干节。"},
+      {"zh":"用一碗米干，說出金三角的多元族群文化。","en":"A bowl of noodles tells of the Golden Triangle's many cultures.","tts":"用一碗米干，说出金三角的多元族群文化。"}
+    ]},
+    {"id":"water","lines":[
+      {"zh":"潑水節灑出清涼水花，把祝福送給彼此。","en":"At the Water-Splashing Festival, cool water carries blessings.","tts":"泼水节洒出清凉水花，把祝福送给彼此。"}
+    ]},
+    {"id":"banquet","lines":[
+      {"zh":"長街宴擺開長桌，大家一起分享滇緬美食。","en":"At the Long Street Banquet, everyone shares Yunnan-Burmese food.","tts":"长街宴摆开长桌，大家一起分享滇缅美食。"}
+    ]},
+    {"id":"torch","lines":[
+      {"zh":"入夜後點起火把，火舞照亮整條街。","en":"At night, torches are lit and fire dancers light up the street.","tts":"入夜后点起火把，火舞照亮整条街。"},
+      {"zh":"米干節也獲選為臺灣國際級的特色觀光活動。","en":"The festival is now one of Taiwan's international-class events.","tts":"米干节也获选为台湾国际级的特色观光活动。"}
+    ]},
+    {"id":"museum","lines":[
+      {"zh":"如今，忠貞新村文化園區與異域故事館，","en":"Today, the Zhongzhen Village Cultural Park and Lost Army Museum","tts":"如今，忠贞新村文化园区与异域故事馆，"},
+      {"zh":"靜靜保存著孤軍一路走來的記憶。","en":"quietly keep the memories of the soldiers' long journey.","tts":"静静保存着孤军一路走来的记忆。"}
+    ]},
+    {"id":"ending","lines":[
+      {"zh":"一碗米干，裝著漂泊半世紀的鄉愁，","en":"A bowl of mi gan holds half a century of homesickness,","tts":"一碗米干，装着漂泊半世纪的乡愁，"},
+      {"zh":"也裝著在這片土地扎根的勇氣。","en":"and the courage to take root in this land.","tts":"也装着在这片土地扎根的勇气。"},
+      {"zh":"下次來龍岡，慢慢吃一碗，聽聽他們的故事。","en":"Next time in Longgang, savor a bowl, and listen to their story.","tts":"下次来龙冈，慢慢吃一碗，听听他们的故事。"}
+    ]},
+    {"id":"credits","lines":[]}
+  ]
+}
