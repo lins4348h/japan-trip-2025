@@ -24,7 +24,8 @@ while True:
         if d > 12 and not near_boundary(t): issues.append((n, f"畫面突變 {d:.1f}"))
     # 字幕框：底部中央區域變暗
     box = g[H - 70:H - 30, W // 2 - 150:W // 2 + 150].mean(); ref = g[H - 70:H - 30, 20:120].mean()
-    dark = box < ref - 25
+    region = g[H - 90:H - 20, W // 2 - 200:W // 2 + 200]
+    dark = box < ref - 25 or ((region > 215).mean() > .01 and ref < 90)  # 夜景：以字幕亮字判斷
     if sub_on(t): subs_ok[0] += dark; subs_ok[1] += 1
     if sub_off(t): nosub_ok[0] += (not dark); nosub_ok[1] += 1
     prev = g; n += 1

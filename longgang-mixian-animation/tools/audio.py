@@ -289,8 +289,9 @@ fo = int(1.5 * SR); mix[-fo:] *= np.linspace(1, 0, fo)[:, None]
 
 # ---------------- 響度與限幅 ----------------
 meter = pyln.Meter(SR)
-def limiter(x, ceil=10 ** (-1.5 / 20)):
-    pk = np.abs(x).max(1); w = int(.005 * SR)
+def limiter(x, ceil=10 ** (-2.5 / 20)):
+    up = resample_poly(x, 4, 1, axis=0)  # 4 倍超取樣估計真峰值
+    pk = np.abs(up).reshape(-1, 4, 2).max((1, 2))[: len(x)]; pk = np.pad(pk, (0, len(x) - len(pk)), mode='edge'); w = int(.005 * SR)
     from scipy.ndimage import maximum_filter1d
     need = np.minimum(1, ceil / np.maximum(maximum_filter1d(pk, w * 2 + 1), 1e-9))
     g = lfilter([1 - .9995], [1, -.9995], need, zi=[1.0])[0]; g = np.minimum(g, need)
