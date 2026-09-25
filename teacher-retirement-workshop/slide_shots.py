@@ -17,9 +17,9 @@ MAP_W = 260    # 縮圖寬（簡報上顯示 130px）
 for rid, r in json.loads((SRC / 'regions.json').read_text()).items():
     page = Image.open(SRC / f'page{r["page"]}.png').convert('RGB')
     w, h = page.size
-    padx, pady = (10, 2) if r['mode'].startswith('rows') else (10, 10)
-    box = (max(0, int((r['x0'] - padx) * SCALE)), max(0, int((r['y0'] - pady) * SCALE)),
-           min(w, int((r['x1'] + padx) * SCALE)), min(h, int((r['y1'] + pady) * SCALE)))
+    padx = 10
+    box = (max(0, int((r['x0'] - padx) * SCALE)), max(0, int((r['y0'] - r['padTop']) * SCALE)),
+           min(w, int((r['x1'] + padx) * SCALE)), min(h, int((r['y1'] + r['padBottom']) * SCALE)))
     crop = page.crop(box).quantize(colors=256, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
     crop.save(OUT / f'ws-{rid}.png', optimize=True)
 

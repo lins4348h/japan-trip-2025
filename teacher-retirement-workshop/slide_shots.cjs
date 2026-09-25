@@ -39,12 +39,18 @@ const REGIONS = [
       const sec = secs[pi];
       const sr = sec.getBoundingClientRect();
       let els;
+      let padTop = 10, padBottom = 10;  // 留白不超過和上下鄰居距離的一半，避免切到隔壁一行
       if (mode === 'kids') {
         const kids = [...sec.children];
         const a = kids.findIndex((k) => k.textContent.includes(s));
         const z = kids.findIndex((k, j) => j >= a && k.textContent.includes(e));
         els = kids.slice(a, z + 1);
+        const prev = kids.slice(0, a).filter((k) => getComputedStyle(k).position !== 'absolute').pop();
+        const next = kids.slice(z + 1).find((k) => getComputedStyle(k).position !== 'absolute');
+        if (prev) padTop = Math.max(2, Math.min(10, (els[0].getBoundingClientRect().top - prev.getBoundingClientRect().bottom) / 2));
+        if (next) padBottom = Math.max(2, Math.min(10, (next.getBoundingClientRect().top - els[els.length - 1].getBoundingClientRect().bottom) / 2));
       } else {
+        padTop = 2; padBottom = 2;
         const rows = [...sec.querySelectorAll('table.sum tr')];
         const a = rows.findIndex((r) => r.textContent.includes(s));
         const z = rows.findIndex((r, j) => j >= a && r.textContent.includes(e));
@@ -57,7 +63,7 @@ const REGIONS = [
         const r = el.getBoundingClientRect();
         x0 = Math.min(x0, r.left); y0 = Math.min(y0, r.top); x1 = Math.max(x1, r.right); y1 = Math.max(y1, r.bottom);
       }
-      res[id] = { page: pi, mode, x0: x0 - sr.left, y0: y0 - sr.top, x1: x1 - sr.left, y1: y1 - sr.top };
+      res[id] = { page: pi, mode, padTop, padBottom, x0: x0 - sr.left, y0: y0 - sr.top, x1: x1 - sr.left, y1: y1 - sr.top };
     }
     return res;
   }, REGIONS);

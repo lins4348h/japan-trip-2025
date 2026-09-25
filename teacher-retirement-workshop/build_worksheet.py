@@ -15,7 +15,7 @@ EXAMPLE = '--example' in sys.argv
 # 支出、資產、理財數字與簡報範例一致（月支出 4 萬、淨值 470 萬、每月投入 2 萬）。
 EXV = {
     'A1': '842,740', 'A2': '1,394,070', 'A3': '551,330', 'B1': '74,741',
-    'C1': '40,000', 'C2': '67,590', 'C3': '40.8', 'D': '34,741',
+    'C1': '67,590', 'C2': '40,000', 'C3': '27,590', 'D': '34,741',
     'E1': '4,700,000', 'F1': '12,000,000', 'F2': '20,000', 'F3': '14,608,000',
     'G1': '7,888,000', 'G2': '7,624,000',
 }
@@ -192,6 +192,9 @@ EXTRA_CSS = """
   }
   .tile .c,.sum .c{display:inline-block;background:var(--red);color:#fff;font-family:"DM Serif Display",serif;font-weight:400;font-size:10pt;line-height:1.35;padding:0 1.4mm;border-radius:.8mm;margin-right:1.5mm}
   .tile.k{border:1.6px solid var(--red)}
+  .srate{margin-top:1.2mm;font-size:9pt;display:flex;align-items:baseline;gap:1.2mm;flex-wrap:wrap}
+  .srate .blank{min-width:18mm;height:5mm;text-align:center}
+  .srate small{font-size:7.5pt;color:var(--muted);margin-left:2mm}
   .tiles3{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5mm;margin-top:2mm}
   .chk{font-size:8.5pt;line-height:1.9}
   .quote{border-left:3px solid var(--gold);background:#FBF6EC;padding:1.8mm 3mm;font-size:8.3pt;line-height:1.6;margin-top:1.5mm}
@@ -261,7 +264,7 @@ cover = f"""
     <div class="mono">QUESTION 00 · 開場先寫，結束再看</div>
     <div class="grid2" style="margin-top:3mm">
       <div><div class="small">憑感覺：退休後每月需要</div><div style="font-size:15pt;margin-top:2mm"><span class="blank" style="min-width:45mm;text-align:center">{hv('50,000')}</span> 元</div></div>
-      <div><div class="small">有根據：第二關算出的 {ref('C1')} 月均支出</div><div style="font-size:15pt;margin-top:2mm"><span class="blank" style="min-width:45mm;text-align:center">{hv('40,000')}</span> 元</div></div>
+      <div><div class="small">有根據：第二關算出的 {ref('C2')} 月均支出</div><div style="font-size:15pt;margin-top:2mm"><span class="blank" style="min-width:45mm;text-align:center">{hv('40,000')}</span> 元</div></div>
     </div>
   </div>
 
@@ -278,7 +281,7 @@ cover = f"""
   <table style="color:var(--tint)">{cover_rows}</table>
 
   <div class="eq" style="color:var(--tint);border-color:var(--goldSoft);margin-top:6mm">
-    目標本金 <span class="num" style="color:var(--goldSoft)">F1</span> ＝ 現在月支出 <span class="num" style="color:var(--goldSoft)">C1</span> × 12 × 25　｜　月退 <span class="num" style="color:var(--goldSoft)">B1</span> 是備案
+    目標本金 <span class="num" style="color:var(--goldSoft)">F1</span> ＝ 現在月支出 <span class="num" style="color:var(--goldSoft)">C2</span> × 12 × 25　｜　月退 <span class="num" style="color:var(--goldSoft)">B1</span> 是備案
   </div>
   <div class="small" style="color:rgba(242,236,225,.6);margin-top:3mm">三個約定：① 數字只寫在自己的學習單　② 估算比精算重要，不確定就填保守值　③ 本課程為觀念與工具分享，非投資建議</div>
   <div class="foot" style="color:rgba(242,236,225,.55)"><span>姓名／代號 {w('示範老師（虛構）', '＿＿＿＿＿＿')}　日期 {w('上課當天', '＿＿＿＿＿＿')}</span><span class="num">01</span></div>
@@ -362,15 +365,16 @@ p2 = f"""
 
   {sechd('3', '你的收支體檢', 'ⓐ～ⓕ 輸入工具後，抄回紅框')}
   <div class="grid3" style="gap:0 3mm">
-    {key('C1', '月均支出', '', '元', '', '', 'xs')}
-    {key('C2', '月均收入', '', '元', '', '', 'xs')}
-    {key('C3', '儲蓄率', '', '%', '', '', 'xs')}
+    {key('C1', '月均收入', '', '元', '', '', 'xs')}
+    {key('C2', '月均支出', '', '元', '', '', 'xs')}
+    {key('C3', '月儲蓄', '＝ C1 − C2', '元', '', '', 'xs')}
   </div>
-  <div class="small" style="margin-top:1mm">沒記帳？看薪資單、信用卡帳單、網銀明細，估不準就取整數。退休後月支出直接用 {ref('C1')} 粗估（房貸車貸可能沒了，醫療旅遊會增加，一來一往）；參考：所得替代法 {ref('C2')} × 0.7 ≈ {w('47,313')} 元。</div>
+  <div class="srate">儲蓄率 ＝ {ref('C3')} ÷ {ref('C1')} ＝ <span class="blank">{hv('40.8')}</span> %<small>和工具算出的儲蓄率對一下</small></div>
+  <div class="small" style="margin-top:1mm">沒記帳？看薪資單、信用卡帳單、網銀明細，估不準就取整數。退休後月支出直接用 {ref('C2')} 粗估（房貸車貸可能沒了，醫療旅遊會增加，一來一往）；參考：所得替代法 {ref('C1')} × 0.7 ≈ {w('47,313')} 元。</div>
 
   <div class="dark" style="margin-top:2.5mm">
     <div class="mono">今天最重要的一個數字</div>
-    <div class="key big" style="margin-top:2mm;border-color:var(--goldSoft)"><span class="b">D</span><span class="l" style="color:var(--ink)">退休後每月餘裕 ＝ {ref('B1')} − {ref('C1')}<small>大於 0：月退就夠生活，有餘裕　｜　小於 0：差額要靠自己準備</small></span><span class="v">{hv(EXV['D'])}元</span></div>
+    <div class="key big" style="margin-top:2mm;border-color:var(--goldSoft)"><span class="b">D</span><span class="l" style="color:var(--ink)">退休後每月餘裕 ＝ {ref('B1')} {w('74,741', '＿＿＿＿＿')} − {ref('C2')} {w('40,000', '＿＿＿＿＿')}<small>大於 0：月退就夠生活，有餘裕　｜　小於 0：差額要靠自己準備</small></span><span class="v">{hv(EXV['D'])}元</span></div>
   </div>
   <div class="foot"><span>我的退休帳本 · 第二關</span><span class="num">03</span></div>
 </section>
@@ -425,7 +429,7 @@ p3 = f"""
 
   <div class="box" style="margin-top:2.5mm;padding:2.5mm 4mm;font-size:9pt">
     <b>淨值 ≠ 可以拿去理財的錢。</b>房子不會生出現金流；身上要先留 <b>6 個月生活費</b>當緊急預備金。<br>
-    緊急預備金 ＝ {ref('C1')} × 6 ＝ {w('240,000', '＿＿＿＿＿＿')} 元　→　我的「現金與存款」夠嗎？{ck(True)} 夠　□ 還差 ＿＿＿＿＿ 元
+    緊急預備金 ＝ {ref('C2')} × 6 ＝ {w('240,000', '＿＿＿＿＿＿')} 元　→　我的「現金與存款」夠嗎？{ck(True)} 夠　□ 還差 ＿＿＿＿＿ 元
   </div>
   <div class="small" style="margin-top:1.5mm">對照《財富階梯》：我的淨值 {ref('E1')} 在第 {w('3', '＿＿')} 階；萬分之一法則 ＝ E1 × 0.0001 ＝ {w('470', '＿＿＿')} 元以下的消費，不必糾結。</div>
   <div class="foot"><span>我的退休帳本 · 第三關</span><span class="num">04</span></div>
@@ -448,13 +452,12 @@ else:
 p4 = f"""
 <section class="page hasqr">
   {qrs(('finance', '05 理財試算器'))}
-  <div class="top"><span class="mono">PART IV · 理財規劃</span><span class="need">{mini('F1', 'C2−C1', 'F2', 'F3', 'G1', 'G2')}</span></div>
+  <div class="top"><span class="mono">PART IV · 理財規劃</span><span class="need">{mini('F1', 'C3', 'F2', 'F3', 'G1', 'G2')}</span></div>
   <h2>第四關｜時間，是老師最強的本錢</h2>
   <p class="lead first">假設沒有退休金，把月退當備案，自己存出一份本金。<br>打開理財試算器「理財規劃」分頁。</p>
 
   {hands('05', 'toolfinance.netlify.app', '理財試算器 · 理財規劃')}
-  {key('F1', f'目標本金 ＝ {ref("C1")} × 12 × 25', '4% 法則：每年提領本金的 4%，約可支應 30 年；保守者用 × 30', '元')}
-  <div class="key"><span class="b w">C2<br>− C1</span><span class="l">每月能存下的錢 ＝ {ref('C2')} {w('67,590', '＿＿＿＿＿')} − {ref('C1')} {w('40,000', '＿＿＿＿＿')}<small>再抄一次第二關的數字：這就是「每月投入」的上限</small></span><span class="v">{hv('27,590')}元／月</span></div>
+  {key('F1', f'目標本金 ＝ {ref("C2")} × 12 × 25', '4% 法則：每年提領本金的 4%，約可支應 30 年；保守者用 × 30', '元')}
 
   <div class="panel" style="margin-top:2mm">
     <div class="mono">① 照順序輸入工具（和工具欄位一模一樣）</div>
@@ -468,12 +471,13 @@ p4 = f"""
   </div>
 
   <div class="small" style="margin:1mm 0 0">初始本金：手邊現在就想投入的錢，沒有就留空；記得先留好緊急預備金，不要把救命錢拿去投資。</div>
-  <div class="small" style="margin:2mm 0 1mm">② 草稿表：只改「每月投入」，直到退休時累積接近 {ref('F1')}，但不超過 {ref('C2')} − {ref('C1')}</div>
+  <div class="small" style="margin:2mm 0 1mm">② 草稿表：只改「每月投入」，直到退休時累積接近 {ref('F1')}，但不超過 {ref('C3')}</div>
   {draft(['試算', '每月投入', '投入年數', '本金總投入', '複利貢獻', '退休時預估累積', '達標？'], DRAFT4).replace('<tr><td>範例', '<tr class="ex"><td>範例')}
 
   <div class="res">
     <div class="mono">③ 圈一組付得起的版本，照工具結果畫面抄下來</div>
-    <div class="keys2" style="margin-top:1mm">
+    {key('C3', '每月能存下的錢（月儲蓄）', '再抄一次第二關的數字：這就是 F2「每月投入」的上限', '元／月')}
+    <div class="keys2">
       {key('F2', '我決定的每月投入', '', '元', '', '', 's')}
       {key('F3', '退休時預估累積資產', '', '元', '', '', 's')}
     </div>
@@ -521,20 +525,20 @@ sum_rows = (
         ('B1', '預估月退', f'{ck(True)} 舊制　□ 新制', '元／月', f"{w('60', '＿＿')} 歲退休；這是備案，不是全部"),
     ]) +
     sgroup('3', '每月收支', '我花多少<br>第二關', [
-        ('C2', '月均收入', '', '元', ''),
-        ('C1', '月均支出', '', '元', '也是退休後生活費的粗估'),
-        ('C3', '儲蓄率', '', '%', f'{ck(True)} 20% 以上　□ 10～20%　□ 10% 以下'),
-        ('—', '每月能存下的錢', 'C2 − C1', '元', '每月投入的上限', '27,590'),
-        ('D', '退休後每月餘裕', 'B1 − C1', '元', f'{ck(True)} 大於 0：月退夠用　□ 小於 0：要自己補'),
+        ('C1', '月均收入', '', '元', ''),
+        ('C2', '月均支出', '', '元', '也是退休後生活費的粗估'),
+        ('C3', '月儲蓄', 'C1 − C2', '元', '每月投入的上限'),
+        ('—', '儲蓄率', 'C3 ÷ C1', '%', f'{ck(True)} 20% 以上　□ 10～20%　□ 10% 以下', '40.8'),
+        ('D', '退休後每月餘裕', 'B1 − C2', '元', f'{ck(True)} 大於 0：月退夠用　□ 小於 0：要自己補'),
     ]) +
     sgroup('4', '資產總覽', '我有多少<br>第三關', [
         ('E1', '總淨值', '資產 − 負債', '元', f"財富階梯第 {w('3', '＿＿')} 階"),
         ('—', '負債比', '總負債 ÷ 總資產', '%', f'{ck(True)} 房貸為主　□ 信貸車貸　□ 卡債　□ 無', '51.5'),
-        ('—', '緊急預備金', 'C1 × 6', '元', f'現金與存款夠嗎？{ck(True)} 夠　□ 差 ＿＿＿＿', '240,000'),
+        ('—', '緊急預備金', 'C2 × 6', '元', f'現金與存款夠嗎？{ck(True)} 夠　□ 差 ＿＿＿＿', '240,000'),
     ]) +
     sgroup('5', '理財規劃', '要多少、怎麼到<br>第四關', [
-        ('F1', '目標本金', 'C1 × 12 × 25', '元', '假設沒有月退，自己要準備的錢'),
-        ('F2', '每月投入', '', '元', f'有沒有超過每月能存下的錢？{ck(True)} 沒有'),
+        ('F1', '目標本金', 'C2 × 12 × 25', '元', '假設沒有月退，自己要準備的錢'),
+        ('F2', '每月投入', '', '元', f'有沒有超過月儲蓄 C3？{ck(True)} 沒有'),
         ('F3', '退休時預估累積資產', '本金總投入 ＋ G1', '元', f'{ck(True)} 達標（F3 ≥ F1）　□ 還差 ＿＿＿＿'),
         ('G1', '複利貢獻', '', '元', f"時間幫我賺了 F3 的 {w('54', '＿＿')} %"),
         ('G2', '晚 10 年開始少了', '', '元', '等待的代價'),

@@ -6,6 +6,8 @@ import qrPension from './assets/qr-pension.svg';
 import qrBudget from './assets/qr-budget.svg';
 import qrFinance from './assets/qr-finance.svg';
 import qrAssets from './assets/qr-assets.svg';
+import qrIg from './assets/qr-ig.svg';
+import qrSite from './assets/qr-site.svg';
 // 學習單截圖（範例版，藍字＝示範填法）與「在第幾頁哪個位置」縮圖
 import wsCover from './assets/ws-cover.png';
 import wsCoverMap from './assets/ws-cover-map.png';
@@ -202,6 +204,20 @@ const LedgerRow = ({
 
 // ─── 01 封面 ─────────────────────────────────────────────────
 
+const SocialQR = ({ src, t, d }: { src: string; t: string; d: string }) => (
+  <div style={{ display: 'flex', alignItems: 'center', gap: 28, marginTop: 40 }}>
+    <img
+      src={src}
+      alt={t}
+      style={{ width: 190, height: 190, display: 'block', background: '#fff', padding: 8, border: `1px solid ${rule}` }}
+    />
+    <div>
+      <div style={{ fontSize: 34, fontWeight: 700 }}>{t}</div>
+      <div style={{ fontFamily: MONO, fontSize: 18, color: muted, marginTop: 8, lineHeight: 1.5, wordBreak: 'break-all' }}>{d}</div>
+    </div>
+  </div>
+);
+
 const Cover: Page = () => (
   <div
     style={{
@@ -214,7 +230,7 @@ const Cover: Page = () => (
       display: 'flex',
     }}
   >
-    {/* 左：主標 */}
+    {/* 左：主標＋講者 */}
     <div style={{ flex: 1, padding: '140px 0 120px 140px', display: 'flex', flexDirection: 'column' }}>
       <div style={{ fontFamily: MONO, fontSize: 24, letterSpacing: '0.24em', color: goldSoft }}>
         TEACHER'S RETIREMENT LEDGER · 3H WORKSHOP
@@ -235,43 +251,34 @@ const Cover: Page = () => (
         <br />
         是一條<span style={{ color: goldSoft }}>現金流</span>
       </h1>
+      <div style={{ marginTop: 56, display: 'flex', alignItems: 'baseline', gap: 24 }}>
+        <span style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 52, color: goldSoft, letterSpacing: '0.04em' }}>
+          講者｜引路人
+        </span>
+        <span style={{ fontSize: 34, color: 'rgba(242,236,225,0.85)' }}>高中資源班教師</span>
+      </div>
       <div style={{ marginTop: 'auto', fontSize: 32, lineHeight: 1.6, color: 'rgba(242,236,225,0.8)' }}>
         教師退休制度 × 退休金試算 × 現況盤點 × 理財
       </div>
     </div>
-    {/* 右：帳本收據 */}
+    {/* 右：引路人 IG 與官網 */}
     <div
       style={{
-        width: 560,
+        width: 520,
         margin: '120px 140px 120px 0',
         background: cream,
         color: '#1E2420',
-        padding: '56px 52px',
+        padding: '52px 52px',
         display: 'flex',
         flexDirection: 'column',
+        justifyContent: 'center',
         boxShadow: '0 30px 60px rgba(0,0,0,0.25)',
       }}
     >
-      <div style={{ fontFamily: MONO, fontSize: 20, letterSpacing: '0.2em', color: gold }}>MY RETIREMENT EQUATION</div>
-      <div style={{ borderBottom: `1px solid ${rule}`, padding: '28px 0 18px', fontSize: 30 }}>
-        現在月支出 <span style={{ float: 'right', fontFamily: NUM, fontSize: 36 }}>C1</span>
-      </div>
-      <div style={{ borderBottom: `1px solid ${rule}`, padding: '28px 0 18px', fontSize: 30 }}>
-        × 12 × 25 <span style={{ float: 'right', fontFamily: NUM, fontSize: 36, color: muted }}>4% 法則</span>
-      </div>
-      <div style={{ borderBottom: `3px double #1E2420`, padding: '28px 0 18px', fontSize: 30 }}>
-        ＝ 目標本金 <span style={{ float: 'right', fontFamily: NUM, fontSize: 36, color: red }}>F1</span>
-      </div>
-      <div style={{ marginTop: 36, fontSize: 26, lineHeight: 1.6, color: muted }}>
-        月退 B1 是備案，不是主力。
-        <br />
-        今天三小時，把這張收據
-        <br />
-        換成<span style={{ color: red, fontWeight: 700 }}>你自己的數字</span>。
-      </div>
-      <div style={{ marginTop: 'auto', fontFamily: MONO, fontSize: 18, color: muted, letterSpacing: '0.1em' }}>
-        講者｜引路人 · 高中資源班教師
-      </div>
+      <div style={{ fontFamily: MONO, fontSize: 20, letterSpacing: '0.2em', color: gold }}>FOLLOW · 引路人</div>
+      <div style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 40, marginTop: 14 }}>追蹤引路人</div>
+      <SocialQR src={qrIg} t="Instagram" d="@education_writing" />
+      <SocialQR src={qrSite} t="引路人官網" d="education-writing-ai.netlify.app" />
     </div>
   </div>
 );
@@ -1220,10 +1227,10 @@ const H03Result: Page = () => (
     shot={wsP3Result}
     map={wsP3ResultMap}
   >
-    <WsStep n="1">抄 C1、C2、C3</WsStep>
-    <WsStep n="2">參考：所得替代法 C2 × 0.7</WsStep>
-    <WsStep n="3">翻回第 2 頁抄 B1，算 D</WsStep>
-    <WsStep n="4">封面「有根據」填上 C1</WsStep>
+    <WsStep n="1">抄 C1 收入、C2 支出</WsStep>
+    <WsStep n="2">C3 ＝ C1 − C2，再算儲蓄率</WsStep>
+    <WsStep n="3">D：抄 B1、C2 再相減</WsStep>
+    <WsStep n="4">封面「有根據」填上 C2</WsStep>
   </WsHands>
 );
 
@@ -1634,7 +1641,7 @@ const H04Result: Page = () => (
   >
     <WsStep n="1">抄 E1 總淨值與四個小格</WsStep>
     <WsStep n="2">負債比＋工具標示的類型</WsStep>
-    <WsStep n="3">預備金 C1 × 6，現金夠嗎？</WsStep>
+    <WsStep n="3">預備金 C2 × 6，現金夠嗎？</WsStep>
     <WsStep n="4">對照財富階梯：第幾階？</WsStep>
   </WsHands>
 );
@@ -1670,10 +1677,10 @@ const H05Setup: Page = () => (
     url="toolfinance.netlify.app"
     qr={qrFinance}
   >
-    <WsStep n="1">F1 ＝ C1 × 12 × 25</WsStep>
-    <WsStep n="2">再抄一次 C2 − C1：投入上限</WsStep>
-    <WsStep n="3">照順序填工具的五格</WsStep>
-    <WsStep n="4">初始本金可留空，報酬率 5%</WsStep>
+    <WsStep n="1">F1 ＝ C2 × 12 × 25</WsStep>
+    <WsStep n="2">照順序填工具的五格</WsStep>
+    <WsStep n="3">初始本金可留空</WsStep>
+    <WsStep n="4">年報酬率（實質）填 5%</WsStep>
   </WsHands>
 );
 
@@ -1690,7 +1697,7 @@ const H05Draft: Page = () => (
     <WsStep n="1">每月投入先試 5,000</WsStep>
     <WsStep n="2">每試一次，寫一列結果</WsStep>
     <WsStep n="3">累積 ≥ F1 就打勾</WsStep>
-    <WsStep n="4">投入不超過 C2 − C1</WsStep>
+    <WsStep n="4">投入不超過 C3 月儲蓄</WsStep>
   </WsHands>
 );
 
@@ -1718,7 +1725,7 @@ const HReview1: Page = () => (
   >
     <WsStep n="1">薪水：A1、A2、A3</WsStep>
     <WsStep n="2">月退：B1，勾舊制或新制</WsStep>
-    <WsStep n="3">收支：C2、C1、C3、D</WsStep>
+    <WsStep n="3">收支：C1、C2、C3、D</WsStep>
     <WsStep n="4">右欄打勾，自我檢核</WsStep>
   </WsHands>
 );
@@ -2073,9 +2080,9 @@ const H05Result: Page = () => (
     shot={wsP5Result}
     map={wsP5ResultMap}
   >
-    <WsStep n="1">F2 每月投入、F3 累積資產</WsStep>
-    <WsStep n="2">投入年數、本金總投入</WsStep>
-    <WsStep n="3">G1 複利貢獻</WsStep>
+    <WsStep n="1">先抄 C3：每月投入的上限</WsStep>
+    <WsStep n="2">F2 每月投入、F3 累積資產</WsStep>
+    <WsStep n="3">投入年數、本金、G1 複利</WsStep>
     <WsStep n="4">往下捲：晚 10 年少了 → G2</WsStep>
   </WsHands>
 );
@@ -2233,9 +2240,9 @@ const Closing: Page = () => (
 
 export const notes = [
   // Cover
-  '【0′–1′】自我介紹 1 分鐘。強調：今天不賣商品、不報明牌，是陪大家把自己的數字算出來。發學習單、確認手機可上網。',
+  '【0′–1′】自我介紹 1 分鐘。強調：今天不賣商品、不報明牌，是陪大家把自己的數字算出來。右邊是引路人 IG 與官網的 QR Code，歡迎課後追蹤。發學習單、確認手機可上網。',
   // Opening
-  '【1′–4′】翻開學習單封面，在「憑感覺」寫下直覺數字，不討論、不分享；「有根據」先空著，第二關算完 C1 再回來填。順便說明：紅框是要寫數字的地方，空心小框是引用前面寫過的數字。',
+  '【1′–4′】翻開學習單封面，在「憑感覺」寫下直覺數字，不討論、不分享；「有根據」先空著，第二關算完 C2 再回來填。順便說明：紅框是要寫數字的地方，空心小框是引用前面寫過的數字。',
   // BigAnxiety
   '【4′–6′】工具使用次數來自自己開發的試算工具後台統計。帶出：焦慮很普遍，缺的是陪算的人。',
   // Agenda
@@ -2281,7 +2288,7 @@ export const notes = [
   // H03Input
   '【79′–91′】實作 03 ①②（學習單第 3 頁上半，約 12 分鐘）。收入 ⓐⓑⓒ、支出三層 ⓓⓔⓕ：左邊小格打草稿，右邊合計照順序輸入工具。黃色標「整年」的填一整年總額，工具會自動分攤到每月。沒記帳就看薪資單、信用卡帳單估整數。',
   // H03Result
-  '【91′–99′】實作 03 ③（第 3 頁下半）。抄回 C1 月均支出、C2 月均收入、C3 儲蓄率；參考所得替代法 C2 × 0.7。翻回第 2 頁抄 B1，算 D ＝ B1 − C1。最後翻回封面，把 C1 填進「有根據」，和開場的憑感覺比一比。',
+  '【91′–99′】實作 03 ③（第 3 頁下半）。抄回 C1 月均收入、C2 月均支出；C3 月儲蓄 ＝ C1 − C2，儲蓄率 ＝ C3 ÷ C1（和工具的儲蓄率對一下）；參考所得替代法 C1 × 0.7。D 那一格先把 B1（翻回第 2 頁）和 C2 的數字再寫一次，再相減。最後翻回封面，把 C2 填進「有根據」，和開場的憑感覺比一比。',
   // Gap
   '【99′–103′】解讀餘裕 D：大於 0 代表月退就夠生活；小於 0 代表差額要自己補。強調：不論正負，第四關都把月退當備案。可請 1–2 位分享 D 是正是負（不說金額）。',
   // SecIII
@@ -2297,7 +2304,7 @@ export const notes = [
   // H04Input
   '【113′–121′】實作 04 ①②（學習單第 4 頁上半）。資產 4 格寫現在市值、負債 3 格寫還沒還的本金（房貸寫餘額，不是月付），順序和工具一模一樣。',
   // H04Result
-  '【121′–128′】實作 04 ③④（第 4 頁下半）。抄回 E1 總淨值與四個小格，記下負債比與工具標示的類型；用 C1 × 6 檢查緊急預備金夠不夠；最後對照財富階梯：我在第幾階？',
+  '【121′–128′】實作 04 ③④（第 4 頁下半）。抄回 E1 總淨值與四個小格，記下負債比與工具標示的類型；用 C2 × 6 檢查緊急預備金夠不夠；最後對照財富階梯：我在第幾階？',
   // Break2
   '【130′–135′】休息 5 分鐘。',
   // SecIV
@@ -2309,13 +2316,13 @@ export const notes = [
   // CompoundPower
   '【139′–141′】先讓大家猜每月 5,000、30 年後有多少，再揭曉 416 萬：本金 180 萬，其餘 236 萬是複利。帶 72 法則：5% 約 14 年翻一倍。',
   // H05Setup
-  '【141′–146′】實作 05 ①（學習單第 5 頁上半）。先算 F1 ＝ C1 × 12 × 25，再抄一次 C2 − C1（每月投入的上限）。打開理財試算器「理財規劃」分頁，照順序填五格：目前年齡、預計退休年齡、初始本金（可留空）、每月投入、報酬率 5%。',
+  '【141′–146′】實作 05 ①（學習單第 5 頁上半）。先算 F1 ＝ C2 × 12 × 25。打開理財試算器「理財規劃」分頁，照順序填五格：目前年齡、預計退休年齡、初始本金（可留空）、每月投入、報酬率 5%。',
   // H05Draft
-  '【146′–151′】實作 05 ②（第 5 頁中間的草稿表）。每月投入先試 5,000，其他不動、只改每月投入，每試一次寫一列。累積達到 F1 就打勾，但每月投入不要超過 C2 − C1。',
+  '【146′–151′】實作 05 ②（第 5 頁中間的草稿表）。每月投入先試 5,000，其他不動、只改每月投入，每試一次寫一列。累積達到 F1 就打勾，但每月投入不要超過 C3 月儲蓄。',
   // ToolResult
   '【151′–153′】用工具範例讀結果：每月 2 萬、28 年、5% → 1,460.8 萬＝本金 672 萬＋複利 788.8 萬；晚 10 年開始只剩約 698 萬，少了約 762 萬。',
   // H05Result
-  '【153′–158′】實作 05 ③（第 5 頁下半）。圈一組付得起的版本，照結果畫面抄 F2、F3、投入年數、本金總投入、G1，再往下捲讀 G2。請一兩位分享「晚 10 年」的感受。',
+  '【153′–158′】實作 05 ③（第 5 頁下半）。先在 F2 上方再抄一次 C3 月儲蓄，這是每月投入的上限；再圈一組付得起的版本，照結果畫面抄 F2、F3、投入年數、本金總投入、G1，往下捲讀 G2。請一兩位分享「晚 10 年」的感受。',
   // HReview1
   '【158′–162′】總複習 ①（學習單第 6 頁上半）。照代號把前面的紅框抄過來：薪水 A、月退 B、每月收支 C 與 D，右欄打勾自我檢核。',
   // HReview2
