@@ -10,10 +10,12 @@ import sys
 
 EXAMPLE = '--example' in sys.argv
 
-# 範例版的紅框數字：32 歲舊制老師，數字與簡報範例一致（月支出 4 萬、淨值 470 萬、每月投入 2 萬）
+# 範例版的紅框數字：學士、25 歲初任（108/8 舊制）、現年 32 歲薪點 275、單身科任。
+# 俸額依 114/1/1 起現行待遇表；計算過程印在第一關的「範例怎麼算」。
+# 支出、資產、理財數字與簡報範例一致（月支出 4 萬、淨值 470 萬、每月投入 2 萬）。
 EXV = {
-    'A1': '930,000', 'A2': '1,300,000', 'A3': '370,000', 'B1': '73,244',
-    'C1': '40,000', 'C2': '74,000', 'C3': '45.9', 'D': '33,244',
+    'A1': '842,740', 'A2': '1,394,070', 'A3': '551,330', 'B1': '74,741',
+    'C1': '40,000', 'C2': '67,590', 'C3': '40.8', 'D': '34,741',
     'E1': '4,700,000', 'F1': '12,000,000', 'F2': '20,000', 'F3': '14,608,000',
     'G1': '7,888,000', 'G2': '7,624,000',
 }
@@ -174,8 +176,20 @@ EXTRA_CSS = """
   .dark .key .ink{color:#1F4E9A}
   .note .ink{color:#1F4E9A}
   .panel div[style*="border-bottom"] .ink{font-size:10pt;line-height:6mm}
+  .basis{border:1px dashed #1F4E9A;background:#F3F6FB;padding:2mm 3.5mm;margin-top:3mm;font-size:7.4pt;line-height:1.55;color:#33415C}
+  .basis b{color:#1F4E9A;font-size:8pt}
+  .basis div{margin-top:.6mm}
+  .sum td.g small .l2{display:block}
   .exbadge{position:absolute;top:5mm;left:15mm;background:#1F4E9A;color:#fff;font-size:7.5pt;letter-spacing:.08em;padding:.6mm 2.5mm;border-radius:1mm}
-  @media screen and (max-width: 860px){ .exbadge{position:static;display:inline-block;margin-bottom:8px} }
+  @media screen and (max-width: 860px){
+    .exbadge{position:static;display:inline-block;margin-bottom:8px;align-self:flex-start}
+    .page.hasqr > .exbadge{order:0}
+    .draft td .ink{white-space:nowrap;font-size:12px}
+    .sum td.g small .l2{display:inline}
+    .sum td.g small .l2::before{content:"・"}
+    .basis{font-size:12px;padding:8px 10px}
+    .basis b{font-size:13px}
+  }
   .tile .c,.sum .c{display:inline-block;background:var(--red);color:#fff;font-family:"DM Serif Display",serif;font-weight:400;font-size:10pt;line-height:1.35;padding:0 1.4mm;border-radius:.8mm;margin-right:1.5mm}
   .tile.k{border:1.6px solid var(--red)}
   .tiles3{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5mm;margin-top:2mm}
@@ -217,7 +231,6 @@ EXTRA_CSS = """
     .sum td.hw{grid-column:2 / -1;font-size:12.5px}
     .sum tr.gr{border-bottom:none;padding:0}
     .why .n{float:left;margin-right:8px;font-size:20px}
-    .sum td.g br{display:none}
     .etf tr > *:nth-child(2),.etf tr > *:nth-child(4){display:none}
   }
 """
@@ -273,6 +286,15 @@ cover = f"""
 """
 
 # ═══════════ 第一關 制度 ═══════════
+BASIS = '''
+  <div class="basis">
+    <b>範例怎麼算（官方數字，全部用今天的俸額）</b>
+    <div>人物：學士、25 歲初任（108 年 8 月，舊制）、每年考核甲等晉一級、科任無導師費、單身。俸額依 114/1/1 起現行待遇表（115/7 起學術研究加給 +2,000 元，待追加預算通過，未計入）。</div>
+    <div>A1 薪點 275：本薪 31,560 ＋ 學術研究費 26,560 ＝ 月薪 58,120；實領 ＝ 58,120 − 退撫自繳 3,314（本薪 × 2 × 15% × 35%）− 公保 798（本薪 × 7.22% × 35%）− 健保 943（投保 60,800 × 5.17% × 30%）＝ 53,065。年薪 ＝ 月薪 × 14.5 個月（年終 1.5 ＋ 考核 1）＝ 842,740。</div>
+    <div>A2 薪點 625（學士年功薪最高，48 歲到頂）：本薪 54,160 ＋ 學術研究費 35,780 ＝ 89,940；實領 81,456；到頂後考核甲等給 2 個月 → 年薪 × 15.5 ＝ 1,394,070。</div>
+    <div>B1 60 歲退休、年資 35 年：均俸 53,547 × 2 × 70% ＝ 74,966，超過上限 本薪 54,160 × 2 × 69% ＝ 74,741 → 以上限計。公保一次養老給付 ＝ 54,160 × 42 個月（1.2 × 35）＝ 2,274,720。</div>
+  </div>''' if EXAMPLE else ''
+
 p1 = f"""
 <section class="page hasqr">
   {qrs(('salary', '01 薪資試算'), ('pension', '02 退休金試算'))}
@@ -282,8 +304,8 @@ p1 = f"""
 
   {hands('01', 'teacher-salary-calculator.netlify.app', '薪資試算')}
   <div class="note">新制教師：自願提繳一律先設 <b>0%</b></div>
-  {key('A1', '現在的我', f'<span class="sub">薪級 {w("330")}　每月實領 {w("60,000", "＿＿＿＿＿＿")} 元　今年 {w("32", "＿＿")} 歲</span>', '元', '目前年薪', 'tall', '')}
-  {key('A2', '年功薪到頂的我', f'<span class="sub">薪級 {w("650")}　每月實領 {w("85,000", "＿＿＿＿＿＿")} 元　那時 {w("46", "＿＿")} 歲</span><small>年功薪上限：學士 625／碩士 650（以工具最新俸額為準）</small>', '元', '到頂時年薪', 'tall')}
+  {key('A1', '現在的我', f'<span class="sub">薪級 {w("275")}　每月實領 {w("53,065", "＿＿＿＿＿＿")} 元　今年 {w("32", "＿＿")} 歲</span>', '元', '目前年薪', 'tall', '')}
+  {key('A2', '年功薪到頂的我', f'<span class="sub">薪級 {w("625")}　每月實領 {w("81,456", "＿＿＿＿＿＿")} 元　那時 {w("48", "＿＿")} 歲</span><small>年功薪上限：學士 625／碩士 650（以工具最新俸額為準）</small>', '元', '到頂時年薪', 'tall')}
   {key('A3', '年薪成長空間', f'＝ {ref("A2")} − {ref("A1")}', '元', '成長空間')}
 
   {hands('02', 'pension-calculation.netlify.app', '退休金試算')}
@@ -291,11 +313,12 @@ p1 = f"""
   <div class="note">② 依照試算器上的數字填入；<b>舊制、新制擇一填寫</b></div>
 
   <div class="variant">舊制（112/6/30 以前任職）</div>
-  {key('B1', '預估月退（退撫＋公保）', f'<span class="sub">我預計 {w("60", "＿＿")} 歲退休　　公保一次給付（退休時一次領）{w("1,910,700", "＿＿＿＿＿＿")} 元</span><small>退撫月退上限 ＝ 本俸 × 2 × 所得替代率（現行 35 年為 69%）</small>', '元／月', '每月可領', 'tall')}
+  {key('B1', '預估月退（退撫＋公保）', f'<span class="sub">我預計 {w("60", "＿＿")} 歲退休　　公保一次給付（退休時一次領）{w("2,274,720", "＿＿＿＿＿＿")} 元</span><small>退撫月退上限 ＝ 本俸 × 2 × 所得替代率（現行 35 年為 69%）</small>', '元／月', '每月可領', 'tall')}
   <div class="or">— 或 —</div>
   <div class="variant" style="margin-top:0">新制（112/7/1 以後初任）</div>
   {key('B1', '預估月退（專戶＋公保年金）', '<span class="sub">我預計 ＿＿ 歲退休　　個人專戶（預設領 30 年）＿＿＿＿ 元／月 ＋ 公保年金 ＿＿＿＿ 元／月</span><small>自願提繳預設 0%，實質年報酬率預設 3%</small>', '元／月', '每月可領', 'tall', val='')}
 
+  {BASIS}
   <div class="box" style="margin-top:4mm;padding:3mm 5mm;font-size:9pt">
     <b>想一想：</b>B1 是「制度保證給你的」，但它是備案，不是全部。第四關我們會假設<b>沒有退休金</b>，自己準備一份目標本金。
   </div>
@@ -328,9 +351,9 @@ p2 = f"""
 
   {hands('03', 'grand-clafoutis-b1948b.netlify.app', '每月收支體檢')}
   {sechd('1', '你的收入', '平均每個月進帳多少')}
-  {fc('每月固定收入', '本俸、月薪', ['薪資實領'], '元／月', 'ⓐ', vals=['60,000'], total='60,000')}
+  {fc('每月固定收入', '本俸、月薪', ['薪資實領'], '元／月', 'ⓐ', vals=['53,065'], total='53,065')}
   {fc('穩定的額外收入', '兼職、接案、鐘點', ['兼職', '接案', '鐘點'], '元／月', 'ⓑ', vals=['0', '0', '2,000'], total='2,000')}
-  {fc('獎金與配息', '填一整年總額', ['年終', '考績', '股息配息'], '元／年', 'ⓒ', True, ['95,000', '44,000', '5,000'], '144,000')}
+  {fc('獎金與配息', '填一整年總額', ['年終', '考績', '股息配息'], '元／年', 'ⓒ', True, ['87,180', '58,120', '5,000'], '150,300')}
 
   {sechd('2', '你的支出，分三層', '把「一次性」獨立出來')}
   {fc('固定月支出', '每月幾乎一樣，貸款也算這裡', ['房租房貸', '車貸', '孝親', '訂閱電信'], '元／月', 'ⓓ', vals=['18,000', '4,000', '2,000', '1,000'], total='25,000')}
@@ -343,7 +366,7 @@ p2 = f"""
     {key('C2', '月均收入', '', '元', '', '', 'xs')}
     {key('C3', '儲蓄率', '', '%', '', '', 'xs')}
   </div>
-  <div class="small" style="margin-top:1mm">沒記帳？看薪資單、信用卡帳單、網銀明細，估不準就取整數。退休後月支出直接用 {ref('C1')} 粗估（房貸車貸可能沒了，醫療旅遊會增加，一來一往）；參考：所得替代法 {ref('C2')} × 0.7 ≈ {w('51,800')} 元。</div>
+  <div class="small" style="margin-top:1mm">沒記帳？看薪資單、信用卡帳單、網銀明細，估不準就取整數。退休後月支出直接用 {ref('C1')} 粗估（房貸車貸可能沒了，醫療旅遊會增加，一來一往）；參考：所得替代法 {ref('C2')} × 0.7 ≈ {w('47,313')} 元。</div>
 
   <div class="dark" style="margin-top:2.5mm">
     <div class="mono">今天最重要的一個數字</div>
@@ -431,7 +454,7 @@ p4 = f"""
 
   {hands('05', 'toolfinance.netlify.app', '理財試算器 · 理財規劃')}
   {key('F1', f'目標本金 ＝ {ref("C1")} × 12 × 25', '4% 法則：每年提領本金的 4%，約可支應 30 年；保守者用 × 30', '元')}
-  <div class="key"><span class="b w">C2<br>− C1</span><span class="l">每月能存下的錢 ＝ {ref('C2')} {w('74,000', '＿＿＿＿＿')} − {ref('C1')} {w('40,000', '＿＿＿＿＿')}<small>再抄一次第二關的數字：這就是「每月投入」的上限</small></span><span class="v">{hv('34,000')}元／月</span></div>
+  <div class="key"><span class="b w">C2<br>− C1</span><span class="l">每月能存下的錢 ＝ {ref('C2')} {w('67,590', '＿＿＿＿＿')} − {ref('C1')} {w('40,000', '＿＿＿＿＿')}<small>再抄一次第二關的數字：這就是「每月投入」的上限</small></span><span class="v">{hv('27,590')}元／月</span></div>
 
   <div class="panel" style="margin-top:2mm">
     <div class="mono">① 照順序輸入工具（和工具欄位一模一樣）</div>
@@ -480,6 +503,7 @@ def srow(code, item, hint, unit, how, val='', end=False, group=''):
 
 
 def sgroup(n, title, sub, rows):
+    sub = sub.replace('<br>', '<span class="l2">') + '</span>' if '<br>' in sub else sub
     g = f'<td class="g" rowspan="{len(rows)}"><i>{n}</i><b>{title}</b><small>{sub}</small></td>'
     out = ''
     for i, r in enumerate(rows):
@@ -490,7 +514,7 @@ def sgroup(n, title, sub, rows):
 sum_rows = (
     sgroup('1', '薪水', '我賺多少<br>第一關', [
         ('A1', '目前年薪', '', '元', '今年的起點'),
-        ('A2', '年功薪到頂的年薪', '', '元', f"薪水的天花板，{w('46', '＿＿')} 歲到頂"),
+        ('A2', '年功薪到頂的年薪', '', '元', f"薪水的天花板，{w('48', '＿＿')} 歲到頂"),
         ('A3', '年薪成長空間', 'A2 − A1', '元', '加薪空間有限，別預支未來的薪水'),
     ]) +
     sgroup('2', '月退', '制度給多少<br>第一關', [
@@ -500,7 +524,7 @@ sum_rows = (
         ('C2', '月均收入', '', '元', ''),
         ('C1', '月均支出', '', '元', '也是退休後生活費的粗估'),
         ('C3', '儲蓄率', '', '%', f'{ck(True)} 20% 以上　□ 10～20%　□ 10% 以下'),
-        ('—', '每月能存下的錢', 'C2 − C1', '元', '每月投入的上限', '34,000'),
+        ('—', '每月能存下的錢', 'C2 − C1', '元', '每月投入的上限', '27,590'),
         ('D', '退休後每月餘裕', 'B1 − C1', '元', f'{ck(True)} 大於 0：月退夠用　□ 小於 0：要自己補'),
     ]) +
     sgroup('4', '資產總覽', '我有多少<br>第三關', [
@@ -529,7 +553,7 @@ p_sum = f"""
 
   <div class="dark" style="margin-top:3.5mm;font-size:9.5pt;line-height:2">
     <div class="mono">用一段話說給自己聽</div>
-    我每月能存 {w('34,000', '＿＿＿＿＿')} 元，現在淨值 {w('4,700,000', '＿＿＿＿＿')} 元。每月投入 {ref('F2').replace('ref"', 'ref" style="border-color:var(--goldSoft);color:var(--goldSoft)"')} {w('20,000', '＿＿＿＿＿')} 元，到 {w('60', '＿＿')} 歲約可累積 {w('14,608,000', '＿＿＿＿＿')} 元，目標是 {w('12,000,000', '＿＿＿＿＿')} 元。<br>
+    我每月能存 {w('27,590', '＿＿＿＿＿')} 元，現在淨值 {w('4,700,000', '＿＿＿＿＿')} 元。每月投入 {ref('F2').replace('ref"', 'ref" style="border-color:var(--goldSoft);color:var(--goldSoft)"')} {w('20,000', '＿＿＿＿＿')} 元，到 {w('60', '＿＿')} 歲約可累積 {w('14,608,000', '＿＿＿＿＿')} 元，目標是 {w('12,000,000', '＿＿＿＿＿')} 元。<br>
     還差的部分，我選擇：□ 每月多投入一點　□ 晚幾年退休　□ 讓月退 B1 補上（看 D）{w('　→ 已達標，不用選', '')}
   </div>
   <div class="foot"><span>我的退休帳本 · 總複習　｜　本頁內容為觀念與工具練習，非投資建議</span><span class="num">06</span></div>

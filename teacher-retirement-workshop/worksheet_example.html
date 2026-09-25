@@ -159,8 +159,20 @@
   .dark .key .ink{color:#1F4E9A}
   .note .ink{color:#1F4E9A}
   .panel div[style*="border-bottom"] .ink{font-size:10pt;line-height:6mm}
+  .basis{border:1px dashed #1F4E9A;background:#F3F6FB;padding:2mm 3.5mm;margin-top:3mm;font-size:7.4pt;line-height:1.55;color:#33415C}
+  .basis b{color:#1F4E9A;font-size:8pt}
+  .basis div{margin-top:.6mm}
+  .sum td.g small .l2{display:block}
   .exbadge{position:absolute;top:5mm;left:15mm;background:#1F4E9A;color:#fff;font-size:7.5pt;letter-spacing:.08em;padding:.6mm 2.5mm;border-radius:1mm}
-  @media screen and (max-width: 860px){ .exbadge{position:static;display:inline-block;margin-bottom:8px} }
+  @media screen and (max-width: 860px){
+    .exbadge{position:static;display:inline-block;margin-bottom:8px;align-self:flex-start}
+    .page.hasqr > .exbadge{order:0}
+    .draft td .ink{white-space:nowrap;font-size:12px}
+    .sum td.g small .l2{display:inline}
+    .sum td.g small .l2::before{content:"・"}
+    .basis{font-size:12px;padding:8px 10px}
+    .basis b{font-size:13px}
+  }
   .tile .c,.sum .c{display:inline-block;background:var(--red);color:#fff;font-family:"DM Serif Display",serif;font-weight:400;font-size:10pt;line-height:1.35;padding:0 1.4mm;border-radius:.8mm;margin-right:1.5mm}
   .tile.k{border:1.6px solid var(--red)}
   .tiles3{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5mm;margin-top:2mm}
@@ -202,7 +214,6 @@
     .sum td.hw{grid-column:2 / -1;font-size:12.5px}
     .sum tr.gr{border-bottom:none;padding:0}
     .why .n{float:left;margin-right:8px;font-size:20px}
-    .sum td.g br{display:none}
     .etf tr > *:nth-child(2),.etf tr > *:nth-child(4){display:none}
   }
   .inrow div{height:17mm}
@@ -255,20 +266,28 @@
 
   <h3><span class="tag">HANDS-ON 01</span><span class="url">teacher-salary-calculator.netlify.app</span>　薪資試算</h3>
   <div class="note">新制教師：自願提繳一律先設 <b>0%</b></div>
-  <div class="key tall"><span class="b">A1</span><span class="l">現在的我<small><span class="sub">薪級 <b class="ink">330</b>　每月實領 <b class="ink">60,000</b> 元　今年 <b class="ink">32</b> 歲</span></small></span><span class="v "><em>目前年薪</em><b class="ink">930,000</b> 元</span></div>
-  <div class="key tall"><span class="b">A2</span><span class="l">年功薪到頂的我<small><span class="sub">薪級 <b class="ink">650</b>　每月實領 <b class="ink">85,000</b> 元　那時 <b class="ink">46</b> 歲</span><small>年功薪上限：學士 625／碩士 650（以工具最新俸額為準）</small></small></span><span class="v "><em>到頂時年薪</em><b class="ink">1,300,000</b> 元</span></div>
-  <div class="key "><span class="b">A3</span><span class="l">年薪成長空間<small>＝ <i class="ref">A2</i> − <i class="ref">A1</i></small></span><span class="v "><em>成長空間</em><b class="ink">370,000</b> 元</span></div>
+  <div class="key tall"><span class="b">A1</span><span class="l">現在的我<small><span class="sub">薪級 <b class="ink">275</b>　每月實領 <b class="ink">53,065</b> 元　今年 <b class="ink">32</b> 歲</span></small></span><span class="v "><em>目前年薪</em><b class="ink">842,740</b> 元</span></div>
+  <div class="key tall"><span class="b">A2</span><span class="l">年功薪到頂的我<small><span class="sub">薪級 <b class="ink">625</b>　每月實領 <b class="ink">81,456</b> 元　那時 <b class="ink">48</b> 歲</span><small>年功薪上限：學士 625／碩士 650（以工具最新俸額為準）</small></small></span><span class="v "><em>到頂時年薪</em><b class="ink">1,394,070</b> 元</span></div>
+  <div class="key "><span class="b">A3</span><span class="l">年薪成長空間<small>＝ <i class="ref">A2</i> − <i class="ref">A1</i></small></span><span class="v "><em>成長空間</em><b class="ink">551,330</b> 元</span></div>
 
   <h3><span class="tag">HANDS-ON 02</span><span class="url">pension-calculation.netlify.app</span>　退休金試算</h3>
   <div class="note">① 月退起支年齡逐年提高，<b>121 年過渡期後為 58 歲</b>（提前退休 1 年少 4%，最多提早 5 年、少 20%）</div>
   <div class="note">② 依照試算器上的數字填入；<b>舊制、新制擇一填寫</b></div>
 
   <div class="variant">舊制（112/6/30 以前任職）</div>
-  <div class="key tall"><span class="b">B1</span><span class="l">預估月退（退撫＋公保）<small><span class="sub">我預計 <b class="ink">60</b> 歲退休　　公保一次給付（退休時一次領）<b class="ink">1,910,700</b> 元</span><small>退撫月退上限 ＝ 本俸 × 2 × 所得替代率（現行 35 年為 69%）</small></small></span><span class="v "><em>每月可領</em><b class="ink">73,244</b> 元／月</span></div>
+  <div class="key tall"><span class="b">B1</span><span class="l">預估月退（退撫＋公保）<small><span class="sub">我預計 <b class="ink">60</b> 歲退休　　公保一次給付（退休時一次領）<b class="ink">2,274,720</b> 元</span><small>退撫月退上限 ＝ 本俸 × 2 × 所得替代率（現行 35 年為 69%）</small></small></span><span class="v "><em>每月可領</em><b class="ink">74,741</b> 元／月</span></div>
   <div class="or">— 或 —</div>
   <div class="variant" style="margin-top:0">新制（112/7/1 以後初任）</div>
   <div class="key tall"><span class="b">B1</span><span class="l">預估月退（專戶＋公保年金）<small><span class="sub">我預計 ＿＿ 歲退休　　個人專戶（預設領 30 年）＿＿＿＿ 元／月 ＋ 公保年金 ＿＿＿＿ 元／月</span><small>自願提繳預設 0%，實質年報酬率預設 3%</small></small></span><span class="v "><em>每月可領</em>元／月</span></div>
 
+  
+  <div class="basis">
+    <b>範例怎麼算（官方數字，全部用今天的俸額）</b>
+    <div>人物：學士、25 歲初任（108 年 8 月，舊制）、每年考核甲等晉一級、科任無導師費、單身。俸額依 114/1/1 起現行待遇表（115/7 起學術研究加給 +2,000 元，待追加預算通過，未計入）。</div>
+    <div>A1 薪點 275：本薪 31,560 ＋ 學術研究費 26,560 ＝ 月薪 58,120；實領 ＝ 58,120 − 退撫自繳 3,314（本薪 × 2 × 15% × 35%）− 公保 798（本薪 × 7.22% × 35%）− 健保 943（投保 60,800 × 5.17% × 30%）＝ 53,065。年薪 ＝ 月薪 × 14.5 個月（年終 1.5 ＋ 考核 1）＝ 842,740。</div>
+    <div>A2 薪點 625（學士年功薪最高，48 歲到頂）：本薪 54,160 ＋ 學術研究費 35,780 ＝ 89,940；實領 81,456；到頂後考核甲等給 2 個月 → 年薪 × 15.5 ＝ 1,394,070。</div>
+    <div>B1 60 歲退休、年資 35 年：均俸 53,547 × 2 × 70% ＝ 74,966，超過上限 本薪 54,160 × 2 × 69% ＝ 74,741 → 以上限計。公保一次養老給付 ＝ 54,160 × 42 個月（1.2 × 35）＝ 2,274,720。</div>
+  </div>
   <div class="box" style="margin-top:4mm;padding:3mm 5mm;font-size:9pt">
     <b>想一想：</b>B1 是「制度保證給你的」，但它是備案，不是全部。第四關我們會假設<b>沒有退休金</b>，自己準備一份目標本金。
   </div>
@@ -284,9 +303,9 @@
 
   <h3><span class="tag">HANDS-ON 03</span><span class="url">grand-clafoutis-b1948b.netlify.app</span>　每月收支體檢</h3>
   <div class="sechd"><b>1</b><span>你的收入</span><small>平均每個月進帳多少</small></div>
-  <div class="fc"><div class="lab">每月固定收入<small>本俸、月薪</small></div><div class="parts">薪資實領 <u><b class="ink">60,000</b></u></div><div class="tot"><i>ⓐ</i><b class="ink">60,000</b> 元／月</div></div>
+  <div class="fc"><div class="lab">每月固定收入<small>本俸、月薪</small></div><div class="parts">薪資實領 <u><b class="ink">53,065</b></u></div><div class="tot"><i>ⓐ</i><b class="ink">53,065</b> 元／月</div></div>
   <div class="fc"><div class="lab">穩定的額外收入<small>兼職、接案、鐘點</small></div><div class="parts">兼職 <u><b class="ink">0</b></u>　接案 <u><b class="ink">0</b></u>　鐘點 <u><b class="ink">2,000</b></u></div><div class="tot"><i>ⓑ</i><b class="ink">2,000</b> 元／月</div></div>
-  <div class="fc y"><div class="lab">獎金與配息<span class="yr">整年</span><small>填一整年總額</small></div><div class="parts">年終 <u><b class="ink">95,000</b></u>　考績 <u><b class="ink">44,000</b></u>　股息配息 <u><b class="ink">5,000</b></u></div><div class="tot"><i>ⓒ</i><b class="ink">144,000</b> 元／年</div></div>
+  <div class="fc y"><div class="lab">獎金與配息<span class="yr">整年</span><small>填一整年總額</small></div><div class="parts">年終 <u><b class="ink">87,180</b></u>　考績 <u><b class="ink">58,120</b></u>　股息配息 <u><b class="ink">5,000</b></u></div><div class="tot"><i>ⓒ</i><b class="ink">150,300</b> 元／年</div></div>
 
   <div class="sechd"><b>2</b><span>你的支出，分三層</span><small>把「一次性」獨立出來</small></div>
   <div class="fc"><div class="lab">固定月支出<small>每月幾乎一樣，貸款也算這裡</small></div><div class="parts">房租房貸 <u><b class="ink">18,000</b></u>　車貸 <u><b class="ink">4,000</b></u>　孝親 <u><b class="ink">2,000</b></u>　訂閱電信 <u><b class="ink">1,000</b></u></div><div class="tot"><i>ⓓ</i><b class="ink">25,000</b> 元／月</div></div>
@@ -296,14 +315,14 @@
   <div class="sechd"><b>3</b><span>你的收支體檢</span><small>ⓐ～ⓕ 輸入工具後，抄回紅框</small></div>
   <div class="grid3" style="gap:0 3mm">
     <div class="key "><span class="b">C1</span><span class="l">月均支出</span><span class="v xs"><b class="ink">40,000</b> 元</span></div>
-    <div class="key "><span class="b">C2</span><span class="l">月均收入</span><span class="v xs"><b class="ink">74,000</b> 元</span></div>
-    <div class="key "><span class="b">C3</span><span class="l">儲蓄率</span><span class="v xs"><b class="ink">45.9</b> %</span></div>
+    <div class="key "><span class="b">C2</span><span class="l">月均收入</span><span class="v xs"><b class="ink">67,590</b> 元</span></div>
+    <div class="key "><span class="b">C3</span><span class="l">儲蓄率</span><span class="v xs"><b class="ink">40.8</b> %</span></div>
   </div>
-  <div class="small" style="margin-top:1mm">沒記帳？看薪資單、信用卡帳單、網銀明細，估不準就取整數。退休後月支出直接用 <i class="ref">C1</i> 粗估（房貸車貸可能沒了，醫療旅遊會增加，一來一往）；參考：所得替代法 <i class="ref">C2</i> × 0.7 ≈ <b class="ink">51,800</b> 元。</div>
+  <div class="small" style="margin-top:1mm">沒記帳？看薪資單、信用卡帳單、網銀明細，估不準就取整數。退休後月支出直接用 <i class="ref">C1</i> 粗估（房貸車貸可能沒了，醫療旅遊會增加，一來一往）；參考：所得替代法 <i class="ref">C2</i> × 0.7 ≈ <b class="ink">47,313</b> 元。</div>
 
   <div class="dark" style="margin-top:2.5mm">
     <div class="mono">今天最重要的一個數字</div>
-    <div class="key big" style="margin-top:2mm;border-color:var(--goldSoft)"><span class="b">D</span><span class="l" style="color:var(--ink)">退休後每月餘裕 ＝ <i class="ref">B1</i> − <i class="ref">C1</i><small>大於 0：月退就夠生活，有餘裕　｜　小於 0：差額要靠自己準備</small></span><span class="v"><b class="ink">33,244</b> 元</span></div>
+    <div class="key big" style="margin-top:2mm;border-color:var(--goldSoft)"><span class="b">D</span><span class="l" style="color:var(--ink)">退休後每月餘裕 ＝ <i class="ref">B1</i> − <i class="ref">C1</i><small>大於 0：月退就夠生活，有餘裕　｜　小於 0：差額要靠自己準備</small></span><span class="v"><b class="ink">34,741</b> 元</span></div>
   </div>
   <div class="foot"><span>我的退休帳本 · 第二關</span><span class="num">03</span></div>
 </section>
@@ -371,7 +390,7 @@
 
   <h3><span class="tag">HANDS-ON 05</span><span class="url">toolfinance.netlify.app</span>　理財試算器 · 理財規劃</h3>
   <div class="key "><span class="b">F1</span><span class="l">目標本金 ＝ <i class="ref">C1</i> × 12 × 25<small>4% 法則：每年提領本金的 4%，約可支應 30 年；保守者用 × 30</small></span><span class="v "><b class="ink">12,000,000</b> 元</span></div>
-  <div class="key"><span class="b w">C2<br>− C1</span><span class="l">每月能存下的錢 ＝ <i class="ref">C2</i> <b class="ink">74,000</b> − <i class="ref">C1</i> <b class="ink">40,000</b><small>再抄一次第二關的數字：這就是「每月投入」的上限</small></span><span class="v"><b class="ink">34,000</b> 元／月</span></div>
+  <div class="key"><span class="b w">C2<br>− C1</span><span class="l">每月能存下的錢 ＝ <i class="ref">C2</i> <b class="ink">67,590</b> − <i class="ref">C1</i> <b class="ink">40,000</b><small>再抄一次第二關的數字：這就是「每月投入」的上限</small></span><span class="v"><b class="ink">27,590</b> 元／月</span></div>
 
   <div class="panel" style="margin-top:2mm">
     <div class="mono">① 照順序輸入工具（和工具欄位一模一樣）</div>
@@ -416,12 +435,12 @@
   <p class="lead">由上往下讀：賺多少 → 制度給多少 → 花多少 → 有多少 → 要多少、怎麼到。</p>
   <table class="sum" style="margin-top:3mm">
     <tr><th>主題</th><th style="text-align:center">代號</th><th>項目</th><th style="text-align:right">我的數字</th><th>怎麼看（自我檢核）</th></tr>
-    <tr class=""><td class="g" rowspan="3"><i>1</i><b>薪水</b><small>我賺多少<br>第一關</small></td><td class="cd"><span class="c">A1</span></td><td class="it">目前年薪</td><td class="val"><b class="ink">930,000</b> 元</td><td class="hw">今年的起點</td></tr><tr class=""><td class="cd"><span class="c">A2</span></td><td class="it">年功薪到頂的年薪</td><td class="val"><b class="ink">1,300,000</b> 元</td><td class="hw">薪水的天花板，<b class="ink">46</b> 歲到頂</td></tr><tr class="end"><td class="cd"><span class="c">A3</span></td><td class="it">年薪成長空間<small>A2 − A1</small></td><td class="val"><b class="ink">370,000</b> 元</td><td class="hw">加薪空間有限，別預支未來的薪水</td></tr><tr class="end"><td class="g" rowspan="1"><i>2</i><b>月退</b><small>制度給多少<br>第一關</small></td><td class="cd"><span class="c">B1</span></td><td class="it">預估月退<small><b class="ink">☑</b> 舊制　□ 新制</small></td><td class="val"><b class="ink">73,244</b> 元／月</td><td class="hw"><b class="ink">60</b> 歲退休；這是備案，不是全部</td></tr><tr class=""><td class="g" rowspan="5"><i>3</i><b>每月收支</b><small>我花多少<br>第二關</small></td><td class="cd"><span class="c">C2</span></td><td class="it">月均收入</td><td class="val"><b class="ink">74,000</b> 元</td><td class="hw"></td></tr><tr class=""><td class="cd"><span class="c">C1</span></td><td class="it">月均支出</td><td class="val"><b class="ink">40,000</b> 元</td><td class="hw">也是退休後生活費的粗估</td></tr><tr class=""><td class="cd"><span class="c">C3</span></td><td class="it">儲蓄率</td><td class="val"><b class="ink">45.9</b> %</td><td class="hw"><b class="ink">☑</b> 20% 以上　□ 10～20%　□ 10% 以下</td></tr><tr class=""><td class="cd"><span>—</span></td><td class="it">每月能存下的錢<small>C2 − C1</small></td><td class="val"><b class="ink">34,000</b> 元</td><td class="hw">每月投入的上限</td></tr><tr class="end"><td class="cd"><span class="c">D</span></td><td class="it">退休後每月餘裕<small>B1 − C1</small></td><td class="val"><b class="ink">33,244</b> 元</td><td class="hw"><b class="ink">☑</b> 大於 0：月退夠用　□ 小於 0：要自己補</td></tr><tr class=""><td class="g" rowspan="3"><i>4</i><b>資產總覽</b><small>我有多少<br>第三關</small></td><td class="cd"><span class="c">E1</span></td><td class="it">總淨值<small>資產 − 負債</small></td><td class="val"><b class="ink">4,700,000</b> 元</td><td class="hw">財富階梯第 <b class="ink">3</b> 階</td></tr><tr class=""><td class="cd"><span>—</span></td><td class="it">負債比<small>總負債 ÷ 總資產</small></td><td class="val"><b class="ink">51.5</b> %</td><td class="hw"><b class="ink">☑</b> 房貸為主　□ 信貸車貸　□ 卡債　□ 無</td></tr><tr class="end"><td class="cd"><span>—</span></td><td class="it">緊急預備金<small>C1 × 6</small></td><td class="val"><b class="ink">240,000</b> 元</td><td class="hw">現金與存款夠嗎？<b class="ink">☑</b> 夠　□ 差 ＿＿＿＿</td></tr><tr class=""><td class="g" rowspan="5"><i>5</i><b>理財規劃</b><small>要多少、怎麼到<br>第四關</small></td><td class="cd"><span class="c">F1</span></td><td class="it">目標本金<small>C1 × 12 × 25</small></td><td class="val"><b class="ink">12,000,000</b> 元</td><td class="hw">假設沒有月退，自己要準備的錢</td></tr><tr class=""><td class="cd"><span class="c">F2</span></td><td class="it">每月投入</td><td class="val"><b class="ink">20,000</b> 元</td><td class="hw">有沒有超過每月能存下的錢？<b class="ink">☑</b> 沒有</td></tr><tr class=""><td class="cd"><span class="c">F3</span></td><td class="it">退休時預估累積資產<small>本金總投入 ＋ G1</small></td><td class="val"><b class="ink">14,608,000</b> 元</td><td class="hw"><b class="ink">☑</b> 達標（F3 ≥ F1）　□ 還差 ＿＿＿＿</td></tr><tr class=""><td class="cd"><span class="c">G1</span></td><td class="it">複利貢獻</td><td class="val"><b class="ink">7,888,000</b> 元</td><td class="hw">時間幫我賺了 F3 的 <b class="ink">54</b> %</td></tr><tr class="end"><td class="cd"><span class="c">G2</span></td><td class="it">晚 10 年開始少了</td><td class="val"><b class="ink">7,624,000</b> 元</td><td class="hw">等待的代價</td></tr>
+    <tr class=""><td class="g" rowspan="3"><i>1</i><b>薪水</b><small>我賺多少<span class="l2">第一關</span></small></td><td class="cd"><span class="c">A1</span></td><td class="it">目前年薪</td><td class="val"><b class="ink">842,740</b> 元</td><td class="hw">今年的起點</td></tr><tr class=""><td class="cd"><span class="c">A2</span></td><td class="it">年功薪到頂的年薪</td><td class="val"><b class="ink">1,394,070</b> 元</td><td class="hw">薪水的天花板，<b class="ink">48</b> 歲到頂</td></tr><tr class="end"><td class="cd"><span class="c">A3</span></td><td class="it">年薪成長空間<small>A2 − A1</small></td><td class="val"><b class="ink">551,330</b> 元</td><td class="hw">加薪空間有限，別預支未來的薪水</td></tr><tr class="end"><td class="g" rowspan="1"><i>2</i><b>月退</b><small>制度給多少<span class="l2">第一關</span></small></td><td class="cd"><span class="c">B1</span></td><td class="it">預估月退<small><b class="ink">☑</b> 舊制　□ 新制</small></td><td class="val"><b class="ink">74,741</b> 元／月</td><td class="hw"><b class="ink">60</b> 歲退休；這是備案，不是全部</td></tr><tr class=""><td class="g" rowspan="5"><i>3</i><b>每月收支</b><small>我花多少<span class="l2">第二關</span></small></td><td class="cd"><span class="c">C2</span></td><td class="it">月均收入</td><td class="val"><b class="ink">67,590</b> 元</td><td class="hw"></td></tr><tr class=""><td class="cd"><span class="c">C1</span></td><td class="it">月均支出</td><td class="val"><b class="ink">40,000</b> 元</td><td class="hw">也是退休後生活費的粗估</td></tr><tr class=""><td class="cd"><span class="c">C3</span></td><td class="it">儲蓄率</td><td class="val"><b class="ink">40.8</b> %</td><td class="hw"><b class="ink">☑</b> 20% 以上　□ 10～20%　□ 10% 以下</td></tr><tr class=""><td class="cd"><span>—</span></td><td class="it">每月能存下的錢<small>C2 − C1</small></td><td class="val"><b class="ink">27,590</b> 元</td><td class="hw">每月投入的上限</td></tr><tr class="end"><td class="cd"><span class="c">D</span></td><td class="it">退休後每月餘裕<small>B1 − C1</small></td><td class="val"><b class="ink">34,741</b> 元</td><td class="hw"><b class="ink">☑</b> 大於 0：月退夠用　□ 小於 0：要自己補</td></tr><tr class=""><td class="g" rowspan="3"><i>4</i><b>資產總覽</b><small>我有多少<span class="l2">第三關</span></small></td><td class="cd"><span class="c">E1</span></td><td class="it">總淨值<small>資產 − 負債</small></td><td class="val"><b class="ink">4,700,000</b> 元</td><td class="hw">財富階梯第 <b class="ink">3</b> 階</td></tr><tr class=""><td class="cd"><span>—</span></td><td class="it">負債比<small>總負債 ÷ 總資產</small></td><td class="val"><b class="ink">51.5</b> %</td><td class="hw"><b class="ink">☑</b> 房貸為主　□ 信貸車貸　□ 卡債　□ 無</td></tr><tr class="end"><td class="cd"><span>—</span></td><td class="it">緊急預備金<small>C1 × 6</small></td><td class="val"><b class="ink">240,000</b> 元</td><td class="hw">現金與存款夠嗎？<b class="ink">☑</b> 夠　□ 差 ＿＿＿＿</td></tr><tr class=""><td class="g" rowspan="5"><i>5</i><b>理財規劃</b><small>要多少、怎麼到<span class="l2">第四關</span></small></td><td class="cd"><span class="c">F1</span></td><td class="it">目標本金<small>C1 × 12 × 25</small></td><td class="val"><b class="ink">12,000,000</b> 元</td><td class="hw">假設沒有月退，自己要準備的錢</td></tr><tr class=""><td class="cd"><span class="c">F2</span></td><td class="it">每月投入</td><td class="val"><b class="ink">20,000</b> 元</td><td class="hw">有沒有超過每月能存下的錢？<b class="ink">☑</b> 沒有</td></tr><tr class=""><td class="cd"><span class="c">F3</span></td><td class="it">退休時預估累積資產<small>本金總投入 ＋ G1</small></td><td class="val"><b class="ink">14,608,000</b> 元</td><td class="hw"><b class="ink">☑</b> 達標（F3 ≥ F1）　□ 還差 ＿＿＿＿</td></tr><tr class=""><td class="cd"><span class="c">G1</span></td><td class="it">複利貢獻</td><td class="val"><b class="ink">7,888,000</b> 元</td><td class="hw">時間幫我賺了 F3 的 <b class="ink">54</b> %</td></tr><tr class="end"><td class="cd"><span class="c">G2</span></td><td class="it">晚 10 年開始少了</td><td class="val"><b class="ink">7,624,000</b> 元</td><td class="hw">等待的代價</td></tr>
   </table>
 
   <div class="dark" style="margin-top:3.5mm;font-size:9.5pt;line-height:2">
     <div class="mono">用一段話說給自己聽</div>
-    我每月能存 <b class="ink">34,000</b> 元，現在淨值 <b class="ink">4,700,000</b> 元。每月投入 <i class="ref" style="border-color:var(--goldSoft);color:var(--goldSoft)">F2</i> <b class="ink">20,000</b> 元，到 <b class="ink">60</b> 歲約可累積 <b class="ink">14,608,000</b> 元，目標是 <b class="ink">12,000,000</b> 元。<br>
+    我每月能存 <b class="ink">27,590</b> 元，現在淨值 <b class="ink">4,700,000</b> 元。每月投入 <i class="ref" style="border-color:var(--goldSoft);color:var(--goldSoft)">F2</i> <b class="ink">20,000</b> 元，到 <b class="ink">60</b> 歲約可累積 <b class="ink">14,608,000</b> 元，目標是 <b class="ink">12,000,000</b> 元。<br>
     還差的部分，我選擇：□ 每月多投入一點　□ 晚幾年退休　□ 讓月退 B1 補上（看 D）<b class="ink">　→ 已達標，不用選</b>
   </div>
   <div class="foot"><span>我的退休帳本 · 總複習　｜　本頁內容為觀念與工具練習，非投資建議</span><span class="num">06</span></div>
