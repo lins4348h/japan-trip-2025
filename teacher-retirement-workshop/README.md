@@ -2,7 +2,7 @@
 
 | 檔案 | 用途 |
 | --- | --- |
-| `../open-slide-workspace/slides/teacher-retirement-cashflow/index.tsx` | open-slide 簡報原始檔（54 頁，含講者備註與每頁時間；實作頁用學習單範例版截圖） |
+| `../open-slide-workspace/slides/teacher-retirement-cashflow/index.tsx` | open-slide 簡報原始檔（58 頁，含講者備註與每頁時間；實作頁用學習單範例版截圖） |
 | `簡報預覽_教師退休現金流工作坊.pdf` | 簡報靜態預覽 |
 | `build_worksheet.py` | 學習單產生器（`python3 build_worksheet.py` → worksheet.html；加 `--example` → worksheet_example.html 範例版） |
 | `worksheet.html` | 學習單（瀏覽器列印 A4） |
