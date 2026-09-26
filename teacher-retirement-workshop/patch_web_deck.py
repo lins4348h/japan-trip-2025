@@ -24,10 +24,44 @@ PATCH = MARK + """
 </style>
 <button type="button" class="os-nav os-prev" aria-label="上一頁">‹</button>
 <button type="button" class="os-nav os-next" aria-label="下一頁">›</button>
+<style>
+@keyframes os-rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.os-page.os-enter { animation: os-rise 240ms cubic-bezier(0, 0, 0.2, 1); }
+</style>
 <script>
+// 逐步呈現：匯出檔只有換頁，這裡補上 <Step> 的一步一步出現（→ 先揭露下一步，全部出現後才換頁；← 反向收回）
+(function () {
+  var pages = document.querySelectorAll('.os-page');
+  function curIdx() { for (var i = 0; i < pages.length; i++) if (!pages[i].hidden) return i; return 0; }
+  function steps(i) { return pages[i].querySelectorAll('[data-osd-step]'); }
+  function show(el, on) {
+    el.setAttribute('data-osd-step', on ? 'revealed' : 'pending');
+    el.style.opacity = on ? '1' : '0';
+    el.style.visibility = on ? 'visible' : 'hidden';
+  }
+  function enter(i, forward) {
+    steps(i).forEach(function (el) { show(el, !forward); });
+    pages[i].classList.remove('os-enter'); void pages[i].offsetWidth; pages[i].classList.add('os-enter');
+  }
+  window.addEventListener('keydown', function (e) {
+    var fwd = ['ArrowRight','ArrowDown','PageDown',' '].indexOf(e.key) >= 0;
+    var back = ['ArrowLeft','ArrowUp','PageUp'].indexOf(e.key) >= 0;
+    var i = curIdx();
+    if (fwd) {
+      var pend = pages[i].querySelector('[data-osd-step="pending"]');
+      if (pend) { e.preventDefault(); e.stopImmediatePropagation(); show(pend, true); return; }
+    } else if (back) {
+      var shown = pages[i].querySelectorAll('[data-osd-step="revealed"]');
+      if (shown.length) { e.preventDefault(); e.stopImmediatePropagation(); show(shown[shown.length - 1], false); return; }
+    }
+    setTimeout(function () { var j = curIdx(); if (j !== i) enter(j, j > i && !(e.key === 'End')); }, 0);
+  }, true);
+})();
+
 (function () {
   function step(d) {
-    window.dispatchEvent(new KeyboardEvent('keydown', { key: d > 0 ? 'ArrowRight' : 'ArrowLeft', cancelable: true }));
+    // 從 body 送出、往上冒泡，逐步呈現（window 捕獲階段）才會先接到
+    document.body.dispatchEvent(new KeyboardEvent('keydown', { key: d > 0 ? 'ArrowRight' : 'ArrowLeft', cancelable: true, bubbles: true }));
   }
   document.querySelector('.os-prev').addEventListener('click', function (e) { e.stopPropagation(); step(-1); });
   document.querySelector('.os-next').addEventListener('click', function (e) { e.stopPropagation(); step(1); });

@@ -1,6 +1,6 @@
-import type { DesignSystem, Page, SlideMeta } from '@open-slide/core';
+import type { DesignSystem, Page, SlideMeta, SlideTransition } from '@open-slide/core';
 import { Step, Steps, useSlidePageNumber } from '@open-slide/core';
-import type { CSSProperties, ReactNode } from 'react';
+import { Children, type CSSProperties, type ReactNode } from 'react';
 import qrSalary from './assets/qr-salary.svg';
 import qrPension from './assets/qr-pension.svg';
 import qrBudget from './assets/qr-budget.svg';
@@ -37,8 +37,6 @@ import wsP6Top from './assets/ws-p6-top.png';
 import wsP6TopMap from './assets/ws-p6-top-map.png';
 import wsP6Bottom from './assets/ws-p6-bottom.png';
 import wsP6BottomMap from './assets/ws-p6-bottom-map.png';
-import wsP7Think from './assets/ws-p7-think.png';
-import wsP7ThinkMap from './assets/ws-p7-think-map.png';
 import wsP7Action from './assets/ws-p7-action.png';
 import wsP7ActionMap from './assets/ws-p7-action-map.png';
 
@@ -93,13 +91,26 @@ const PageNo = ({ dark }: { dark?: boolean }) => {
   );
 };
 
+// <Step> 會多包一層 div：在橫排／格線裡讓它撐滿，卡片才會等高、等寬
+const STEP_CSS = `
+.sx-row > [data-osd-step] { flex: 1 1 0; min-width: 0; display: flex; }
+.sx-row > [data-osd-step] > * { flex: 0 0 auto; }
+.sx-row > [data-osd-step] > :last-child { flex: 1 1 auto; }
+.sx-grid > [data-osd-step] { display: flex; min-width: 0; }
+.sx-grid > [data-osd-step] > * { flex: 1 1 auto; }
+`;
+
+const desk = '#3A2E26'; // 實作頁底色（書桌），和墨綠的封面／大段落分開
+
 const Sheet = ({
   section,
   dark,
+  bg,
   children,
 }: {
   section?: string;
   dark?: boolean;
+  bg?: string;
   children: ReactNode;
 }) => (
   <div
@@ -107,11 +118,12 @@ const Sheet = ({
       width: '100%',
       height: '100%',
       position: 'relative',
-      background: dark ? 'var(--osd-accent)' : 'var(--osd-bg)',
+      background: bg ?? (dark ? 'var(--osd-accent)' : 'var(--osd-bg)'),
       color: dark ? cream : 'var(--osd-text)',
       fontFamily: 'var(--osd-font-body)',
     }}
   >
+    <style>{STEP_CSS}</style>
     {/* 頁首：帳本抬頭 */}
     <div
       style={{
@@ -177,6 +189,33 @@ const Lead = ({ children, color = muted, style }: { children: ReactNode; color?:
 );
 
 const Mark = ({ children }: { children: ReactNode }) => <span style={{ color: red, fontWeight: 700 }}>{children}</span>;
+
+// 第一關的小節標籤：總覽／① 薪資／② 退休金（· 舊制／新制／公保）
+const Topic = ({ t, sub }: { t: '總覽' | '① 薪資' | '② 退休金'; sub?: string }) => {
+  const bg = t === '① 薪資' ? gold : t === '② 退休金' ? 'var(--osd-accent)' : paper2;
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 22 }}>
+      <span
+        style={{
+          background: bg,
+          color: t === '總覽' ? '#1E2420' : cream,
+          fontFamily: 'var(--osd-font-display)',
+          fontWeight: 900,
+          fontSize: 30,
+          letterSpacing: '0.08em',
+          padding: '6px 22px',
+        }}
+      >
+        {t}
+      </span>
+      {sub && (
+        <span style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 40, color: sub === '舊制' ? gold : red }}>
+          {sub}
+        </span>
+      )}
+    </div>
+  );
+};
 
 // 帳本列：左標籤、右數字
 const LedgerRow = ({
@@ -326,13 +365,15 @@ const BigAnxiety: Page = () => (
         </div>
       </div>
       <div style={{ flex: 1, borderLeft: `1px solid ${rule}`, paddingLeft: 64 }}>
-        <H size={56}>老師們不是不想懂，</H>
-        <H size={56} style={{ color: red }}>是沒人陪著算。</H>
-        <Lead>
+        <Steps>
+          <Step><H size={52}>老師們都很想了解退休金，</H></Step>
+          <Step><H size={52} style={{ color: red }}>但很少有機會有人陪著算。</H></Step>
+          <Step><Lead>
           年改之後，同一張薪水單，
           <br />
           每個人的退休答案都不一樣。
-        </Lead>
+        </Lead></Step>
+        </Steps>
       </div>
     </div>
   </Sheet>
@@ -376,14 +417,16 @@ const Agenda: Page = () => (
   <Sheet section="今日帳本 · 180 分鐘">
     <H size={64}>今天的帳，照學習單一頁一頁記</H>
     <div style={{ marginTop: 44, borderTop: `3px double #1E2420` }}>
-      <AgendaRow time="00–12′" code="00" title="開場" desc="你的第一個直覺數字" hands="學習單封面" />
-      <AgendaRow time="12–60′" code="I" title="看懂制度" desc="薪資、新舊制、替代率" hands="第 2 頁 · 實作 01・02" />
-      <AgendaRow time="70–100′" code="II" title="看清現況" desc="現在每月花多少、存多少" hands="第 3 頁 · 實作 03" />
-      <AgendaRow time="100–124′" code="III" title="盤點資產" desc="淨值、財富階梯、負債比、預備金" hands="第 4 頁 · 實作 04" />
-      <AgendaRow time="129–165′" code="IV" title="理財規劃" desc="目標本金、複利、總複習" hands="第 5–6 頁 · 實作 05" />
-      <AgendaRow time="165–180′" code="EX" title="延伸" desc="買大盤、行動承諾、Q&A" hands="第 7 頁" />
+      <Steps>
+        <Step><AgendaRow time="00–12′" code="00" title="開場" desc="你的第一個直覺數字" hands="學習單封面" /></Step>
+        <Step><AgendaRow time="12–60′" code="I" title="看懂制度" desc="薪資、退休金（舊制・新制・公保）" hands="第 2 頁 · 實作 01・02" /></Step>
+        <Step><AgendaRow time="70–98′" code="II" title="看清現況" desc="現在每月花多少、存多少" hands="第 3 頁 · 實作 03" /></Step>
+        <Step><AgendaRow time="98–122′" code="III" title="盤點資產" desc="淨值、財富階梯、負債比、預備金" hands="第 4 頁 · 實作 04" /></Step>
+        <Step><AgendaRow time="127–160′" code="IV" title="理財規劃" desc="目標本金、複利、總複習" hands="第 5–6 頁 · 實作 05" /></Step>
+        <Step><AgendaRow time="160–180′" code="EX" title="延伸" desc="買大盤、行動承諾、Q&A" hands="第 7 頁" /></Step>
+      </Steps>
     </div>
-    <div style={{ marginTop: 28, fontSize: 24, color: muted }}>每一關都是「先講觀念，再翻學習單動手填」｜中場休息：60′（10 分鐘）、124′（5 分鐘）</div>
+    <div style={{ marginTop: 28, fontSize: 24, color: muted }}>每一關都是「先講觀念，再翻學習單動手填」｜中場休息：60′（10 分鐘）、122′（5 分鐘）</div>
   </Sheet>
 );
 
@@ -425,16 +468,14 @@ const Arrow = () => <div style={{ alignSelf: 'center', fontFamily: NUM, fontSize
 const ToolChain: Page = () => (
   <Sheet section="今日工具 · 一條線串起來">
     <H size={64}>五個工具，前一個的答案，是下一個的輸入</H>
-    <div style={{ display: 'flex', gap: 14, marginTop: 64 }}>
-      <ToolCard n="01" name="薪資試算" q="我現在與到頂時的年薪？" out="A 年薪" />
-      <Arrow />
-      <ToolCard n="02" name="退休金試算" q="制度會給我多少？" out="B 月退" />
-      <Arrow />
-      <ToolCard n="03" name="每月收支體檢" q="我現在每月花多少、存多少？" out="C 收支・儲蓄率" />
-      <Arrow />
-      <ToolCard n="04" name="資產總覽" q="我現在有多少家底？" out="E 淨值・負債比" />
-      <Arrow />
-      <ToolCard n="05" name="理財試算器" q="目標多少？每月存多少？" out="F 目標・G 複利" />
+    <div className="sx-row" style={{ display: 'flex', gap: 14, marginTop: 64 }}>
+      <Steps>
+        <Step><ToolCard n="01" name="薪資試算" q="我現在與到頂時的年薪？" out="A 年薪" /></Step>
+        <Step><Arrow /><ToolCard n="02" name="退休金試算" q="制度會給我多少？" out="B 月退" /></Step>
+        <Step><Arrow /><ToolCard n="03" name="每月收支體檢" q="我現在每月花多少、存多少？" out="C 收支・儲蓄率" /></Step>
+        <Step><Arrow /><ToolCard n="04" name="資產總覽" q="我現在有多少家底？" out="E 淨值・負債比" /></Step>
+        <Step><Arrow /><ToolCard n="05" name="理財試算器" q="目標多少？每月存多少？" out="F 目標・G 複利" /></Step>
+      </Steps>
     </div>
     <div style={{ marginTop: 40, fontSize: 28, color: muted }}>
       學習單就是一張 <Mark>A → G</Mark> 的帳本：每做完一個工具，就把數字抄進對應的格子。
@@ -448,9 +489,11 @@ const Ground: Page = () => (
   <Sheet section="開場 · 三個約定">
     <H size={64}>開始算之前，三個約定</H>
     <div style={{ marginTop: 56, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 56 }}>
-      <Pact n="1" t="數字只寫在自己的學習單" d="不用跟任何人分享薪水、存款。小組討論只談方法，不談金額。" />
-      <Pact n="2" t="估算比精算重要" d="先求「差不多對」，比「完全不算」好一百倍。不確定就先填保守值。" />
-      <Pact n="3" t="這不是投資建議" d="今天談的是觀念與工具，沒有明牌、沒有商品推銷。決策請自己負責。" />
+      <Steps>
+        <Step><Pact n="1" t="數字只寫在自己的學習單" d="不用跟任何人分享薪水、存款。小組討論只談方法，不談金額。" /></Step>
+        <Step><Pact n="2" t="估算比精算重要" d="先求「差不多對」，比「完全不算」好一百倍。不確定就先填保守值。" /></Step>
+        <Step><Pact n="3" t="這不是投資建議" d="今天談的是觀念與工具，沒有明牌、沒有商品推銷。決策請自己負責。" /></Step>
+      </Steps>
     </div>
   </Sheet>
 );
@@ -544,16 +587,19 @@ const Milestone = ({ year, t, d, hot }: { year: string; t: string; d: string; ho
 
 const Timeline: Page = () => (
   <Sheet section="I · 制度 · 先看全貌">
+    <Topic t="總覽" />
     <Eyebrow>3 分鐘看懂退撫制度</Eyebrow>
-    <H size={64}>三十年來，退撫制度走了五步</H>
+    <H size={64}>三十年來，教師退撫制度走了五步</H>
     <div style={{ position: 'relative', marginTop: 90 }}>
       <div style={{ position: 'absolute', top: 25, left: 0, right: 0, height: 3, background: rule }} />
-      <div style={{ display: 'flex', gap: 12 }}>
-        <Milestone year="84 年前" t="恩給制" d="退休金由政府全額編列預算支應" />
-        <Milestone year="84/7/1" t="退撫基金制" d="老師與政府共同提撥，確定給付（DB）" />
-        <Milestone year="107/7/1" t="年金改革" d="替代率原訂逐年調降至 118 年" />
-        <Milestone year="112/7/1" t="個人專戶制" d="新進教師改為確定提撥（DC），帳戶隨人走" hot />
-        <Milestone year="113 起" t="替代率停砍" d="修法停在 112 年水準（釋憲審理中）" hot />
+      <div className="sx-row" style={{ display: 'flex', gap: 12 }}>
+        <Steps>
+          <Step><Milestone year="84 年前" t="恩給制" d="退休金由政府全額編列預算支應" /></Step>
+          <Step><Milestone year="84/7/1" t="退撫基金制" d="老師與政府共同提撥，確定給付（DB）" /></Step>
+          <Step><Milestone year="107/7/1" t="年金改革" d="替代率原訂逐年調降至 118 年" /></Step>
+          <Step><Milestone year="112/7/1" t="個人專戶制" d="新進教師改為確定提撥（DC），帳戶隨人走" hot /></Step>
+          <Step><Milestone year="113 起" t="替代率停砍" d="修法停在 112 年水準（釋憲審理中）" hot /></Step>
+        </Steps>
       </div>
     </div>
     <Lead style={{ marginTop: 70, color: 'var(--osd-text)' }}>
@@ -588,27 +634,30 @@ const LeaveRow = ({ k, a, b }: { k: string; a: ReactNode; b: ReactNode }) => (
 
 const EarlyLeave: Page = () => (
   <Sheet section="I · 制度 · 提早離職">
-    <H size={60}>如果提早離職，錢拿得回來嗎？</H>
+    <Topic t="② 退休金" />
+    <H size={56}>如果提早離職，錢拿得回來嗎？</H>
     <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr 1fr', gap: 16, marginTop: 40 }}>
       <span style={{ fontSize: 24, color: gold }}>任職年資</span>
       <span style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 34 }}>舊制 · 退撫基金制</span>
       <span style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 34, color: red }}>新制 · 個人專戶制</span>
     </div>
-    <LeaveRow
+    <Steps>
+      <Step><LeaveRow
       k="未滿 5 年"
       a={<>可申請發還<strong>自己繳的</strong>本息；政府撥繳部分不發還</>}
       b={<>只能領回<strong>自己提繳的 35%</strong>；政府提撥 65% 不能領</>}
-    />
-    <LeaveRow
+    /></Step>
+      <Step><LeaveRow
       k="滿 5 年"
       a={<>同上；或<strong>保留年資</strong>，日後轉任他職退休時併計</>}
       b={<>政府提撥部分可領回 <strong>50%</strong></>}
-    />
-    <LeaveRow
+    /></Step>
+      <Step><LeaveRow
       k="滿 10 年"
       a={<>同上</>}
       b={<>政府提撥部分 <strong>100%</strong> 全部領回</>}
-    />
+    /></Step>
+    </Steps>
     <div style={{ marginTop: 28, fontSize: 22, color: muted }}>
       講者依相關條例整理，申請期限與細節以《公立學校教職員退休資遣撫卹條例》《個人專戶制條例》及學校人事室說明為準。
     </div>
@@ -643,13 +692,16 @@ const Layer = ({ tag, name, who, h, bg, fg }: { tag: string; name: string; who: 
 );
 
 const ThreeLayers: Page = () => (
-  <Sheet section="I · 制度">
+  <Sheet section="I · 制度 · 先看全貌">
+    <Topic t="總覽" />
     <H size={64}>退休後的錢，來自三層</H>
     <Lead style={{ marginTop: 16 }}>前兩層由制度決定，第三層只有你自己決定。</Lead>
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginTop: 56 }}>
-      <Layer tag="LAYER 3 · 自己" name="個人儲蓄與投資" who="ETF、存款、保險年金 — 今天的重點" h={150} bg={red} fg={cream} />
-      <Layer tag="LAYER 2 · 職業" name="退撫（月退／專戶）" who="舊制：確定給付 DB　新制：確定提撥 DC" h={150} bg="var(--osd-accent)" fg={cream} />
-      <Layer tag="LAYER 1 · 社會保險" name="公保年金" who="樓地板：與生命等長的保底現金流" h={150} bg={paper2} fg="#1E2420" />
+      <Steps>
+        <Step><Layer tag="LAYER 3 · 自己" name="個人儲蓄與投資" who="ETF、存款、保險年金 — 今天的重點" h={150} bg={red} fg={cream} /></Step>
+        <Step><Layer tag="LAYER 2 · 職業" name="退撫（月退／專戶）" who="舊制：確定給付 DB　新制：確定提撥 DC" h={150} bg="var(--osd-accent)" fg={cream} /></Step>
+        <Step><Layer tag="LAYER 1 · 社會保險" name="公保年金" who="樓地板：與生命等長的保底現金流" h={150} bg={paper2} fg="#1E2420" /></Step>
+      </Steps>
     </div>
   </Sheet>
 );
@@ -680,37 +732,70 @@ const PayRow = ({ k, a, b }: { k: string; a: ReactNode; b: ReactNode }) => (
   </div>
 );
 
+const PayPart = ({ t, d, hot }: { t: string; d: string; hot?: boolean }) => (
+  <div style={{ flex: hot ? 1.4 : 1, padding: '26px 30px', background: hot ? 'rgba(180,67,46,0.07)' : '#FBF8F2', border: `1px solid ${hot ? 'rgba(180,67,46,0.35)' : rule}` }}>
+    <div style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 40, color: hot ? red : 'var(--osd-text)' }}>{t}</div>
+    <div style={{ fontSize: 23, color: muted, marginTop: 10, lineHeight: 1.5 }}>{d}</div>
+  </div>
+);
+
+const Plus = () => <div style={{ alignSelf: 'center', fontFamily: NUM, fontSize: 52, color: gold }}>＋</div>;
+
+const PayFact = ({ k, v, d }: { k: string; v: string; d: string }) => (
+  <div style={{ borderTop: `3px double #1E2420`, paddingTop: 22 }}>
+    <div style={{ fontSize: 26, color: gold }}>{k}</div>
+    <div style={{ fontFamily: NUM, fontSize: 60, lineHeight: 1.2, marginTop: 6 }}>{v}</div>
+    <div style={{ fontSize: 24, color: muted, marginTop: 8 }}>{d}</div>
+  </div>
+);
+
+const SalaryPay: Page = () => (
+  <Sheet section="I · 制度 · 薪資">
+    <Topic t="① 薪資" />
+    <Eyebrow>先看薪水單 ①：新舊制一樣的地方</Eyebrow>
+    <H size={58}>薪水算法一樣：本俸＋學術研究費＋加給</H>
+    <div style={{ display: 'flex', gap: 18, marginTop: 40 }}>
+      <PayPart t="本俸" d="依薪點查表，每年考核甲等晉一級" />
+      <Plus />
+      <PayPart t="學術研究費" d="依學歷與薪級，同一張表" />
+      <Plus />
+      <PayPart t="各項加給" d="導師加給、特教加給、行政加給、兼代課等，依個人職務" hot />
+    </div>
+    <div className="sx-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 36, marginTop: 40 }}>
+      <Steps>
+        <Step><PayFact k="年功薪上限" v="學士 625・碩士 650" d="薪點到頂後不再晉級，本俸就停在這裡" /></Step>
+        <Step><PayFact k="年薪 ≈ 月薪 ×" v="14.5～15.5 個月" d="年終 1.5 個月＋考核 1 個月（年功薪到頂 2 個月）" /></Step>
+      </Steps>
+    </div>
+  </Sheet>
+);
+
 const SalaryDiff: Page = () => (
   <Sheet section="I · 制度 · 薪資">
-    <Eyebrow>先看薪水單：舊制、新制差在哪？</Eyebrow>
+    <Topic t="① 薪資" />
+    <Eyebrow>先看薪水單 ②：新舊制不一樣的地方</Eyebrow>
     <H size={58}>薪水一樣算，差在每月扣款</H>
-    <div style={{ display: 'grid', gridTemplateColumns: '480px 1fr', gap: 64, marginTop: 40 }}>
-      <div style={{ background: '#FBF8F2', border: `1px solid ${rule}`, padding: '26px 36px 10px' }}>
-        <div style={{ fontFamily: MONO, fontSize: 20, letterSpacing: '0.16em', color: gold }}>新舊制一樣的地方</div>
-        <SameItem t="月薪 ＝ 本俸 ＋ 學術研究費" d="依薪點查表，每年考核甲等晉一級" />
-        <SameItem t="年功薪上限" d="學士 625、碩士 650" />
-        <SameItem t="年薪 ≈ 月薪 × 14.5" d="年終 1.5 個月＋考核 1 個月" />
+    <div style={{ marginTop: 30 }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '230px 1fr 1fr',
+          gap: 24,
+          paddingBottom: 14,
+          borderBottom: `3px double #1E2420`,
+        }}
+      >
+        <span style={{ fontSize: 24, color: gold }}>每月扣款</span>
+        <span style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 34 }}>舊制 · 退撫基金</span>
+        <span style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 34, color: red }}>新制 · 個人專戶</span>
       </div>
-      <div>
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '230px 1fr 1fr',
-            gap: 24,
-            paddingBottom: 14,
-            borderBottom: `3px double #1E2420`,
-          }}
-        >
-          <span style={{ fontSize: 24, color: gold }}>每月扣款</span>
-          <span style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 34 }}>舊制 · 退撫基金</span>
-          <span style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 34, color: red }}>新制 · 個人專戶</span>
-        </div>
-        <PayRow k="退休金提撥" a="本俸 × 2 × 15% × 35%" b="同左，錢存進自己的專戶" />
-        <PayRow k="自願增提" a="沒有" b={<>可加提，最多本俸 × 2 × 5.25%<br /><span style={{ color: muted, fontSize: 24 }}>工具先設 0%</span></>} />
-        <PayRow k="公保費率" a="7.22%（自付 35%）" b={<>16.33%<br /><span style={{ color: muted, fontSize: 24 }}>退休可領公保年金</span></>} />
-      </div>
+      <Steps>
+        <Step><PayRow k="退休金提撥" a="本俸 × 2 × 15% × 35%" b="同左，錢存進自己的專戶" /></Step>
+        <Step><PayRow k="自願增提" a="沒有" b={<>可加提，最多本俸 × 2 × 5.25%<span style={{ color: muted, fontSize: 24 }}>　工具先設 0%</span></>} /></Step>
+        <Step><PayRow k="公保費率" a="7.22%（自付 35%）" b={<>16.33%<span style={{ color: muted, fontSize: 24 }}>　退休可領公保年金</span></>} /></Step>
+      </Steps>
     </div>
-    <Lead style={{ marginTop: 36, color: 'var(--osd-text)' }}>
+    <Lead style={{ marginTop: 30, color: 'var(--osd-text)' }}>
       以薪點 275 為例：公保每月舊制約 798 元、新制約 1,804 元，新制<Mark>實領約少 1,000 元</Mark>。
     </Lead>
     <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, fontSize: 20, color: muted }}>
@@ -731,6 +816,7 @@ const CompareRow = ({ k, a, b }: { k: string; a: string; b: string }) => (
 
 const OldNew: Page = () => (
   <Sheet section="I · 制度">
+    <Topic t="② 退休金" />
     <Eyebrow>分水嶺 · 112 年 7 月 1 日</Eyebrow>
     <H size={64}>你是哪一制？答案決定你今天怎麼算</H>
     <div style={{ marginTop: 44 }}>
@@ -748,11 +834,13 @@ const OldNew: Page = () => (
           新制 · 確定提撥 DC
         </span>
       </div>
-      <CompareRow k="適用" a="112/6/30 以前任職" b="112/7/1 以後初任" />
-      <CompareRow k="金額怎麼來" a="法定公式，受替代率上限" b="提撥本金 × 投資報酬（複利）" />
-      <CompareRow k="錢放在哪" a="共同基金" b="個人專戶，帳戶隨人走" />
-      <CompareRow k="最大風險" a="政策再調整" b="投資績效與長壽風險" />
-      <CompareRow k="你能做的" a="年資、退休時點、領法" b="自願增提、選投資組合" />
+      <Steps>
+        <Step><CompareRow k="適用" a="112/6/30 以前任職" b="112/7/1 以後初任" /></Step>
+        <Step><CompareRow k="金額怎麼來" a="法定公式，受替代率上限" b="提撥本金 × 投資報酬（複利）" /></Step>
+        <Step><CompareRow k="錢放在哪" a="共同基金" b="個人專戶，帳戶隨人走" /></Step>
+        <Step><CompareRow k="最大風險" a="政策再調整" b="投資績效與長壽風險" /></Step>
+        <Step><CompareRow k="你能做的" a="年資、退休時點、領法" b="自願增提、選投資組合" /></Step>
+      </Steps>
     </div>
   </Sheet>
 );
@@ -761,7 +849,7 @@ const OldNew: Page = () => (
 
 const Formula: Page = () => (
   <Sheet section="I · 制度 · 舊制">
-    <Eyebrow>一條公式，看懂月退天花板</Eyebrow>
+    <Topic t="② 退休金" sub="舊制" />
     <div
       style={{
         padding: '34px 56px',
@@ -781,15 +869,7 @@ const Formula: Page = () => (
       <span style={{ color: gold }}>×</span>
       <span style={{ borderBottom: `4px solid ${red}`, color: red }}>所得替代率</span>
     </div>
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, marginTop: 26, fontSize: 26, lineHeight: 1.6, color: muted }}>
-      <div>
-        <strong style={{ color: 'var(--osd-text)' }}>本俸 × 2：</strong>依薪點查表；分母不是實領，本俸 × 2 通常比實領還高。
-      </div>
-      <div>
-        <strong style={{ color: red }}>所得替代率：</strong>依年資查表，每多 1 年 +1.5%。
-      </div>
-    </div>
-    <div style={{ marginTop: 34 }}>
+    <div style={{ marginTop: 48 }}>
       <div
         style={{
           display: 'grid',
@@ -807,9 +887,11 @@ const Formula: Page = () => (
         <span style={{ textAlign: 'right', paddingRight: 18 }}>30 年</span>
         <span style={{ textAlign: 'right', paddingRight: 18 }}>35 年</span>
       </div>
-      <RateRow y="107 年（年改）" c={['45.0%', '52.5%', '60.0%', '67.5%', '75.0%']} />
-      <RateRow y="現行：112 年度" c={['39.0%', '46.5%', '54.0%', '61.5%', '69.0%']} hot />
-      <RateRow y="原訂 118 年後" c={['30.0%', '37.5%', '45.0%', '52.5%', '60.0%']} gone />
+      <Steps>
+        <Step><RateRow y="107 年（年改）" c={['45.0%', '52.5%', '60.0%', '67.5%', '75.0%']} /></Step>
+        <Step><RateRow y="現行：112 年度" c={['39.0%', '46.5%', '54.0%', '61.5%', '69.0%']} hot /></Step>
+        <Step><RateRow y="原訂 118 年後" c={['30.0%', '37.5%', '45.0%', '52.5%', '60.0%']} gone /></Step>
+      </Steps>
     </div>
     <div style={{ marginTop: 22, fontSize: 22, color: muted }}>
       114 年 12 月立法院三讀停止調降，不論何時退休皆以 112 年度上限計；行政院、考試院已聲請釋憲，以憲法法庭判決及主管機關公告為準。
@@ -897,13 +979,16 @@ const LookStep = ({ n, t, ex }: { n: string; t: string; ex: string }) => (
 
 const RateLookup: Page = () => (
   <Sheet section="I · 制度 · 查表">
-    <H size={60}>所得替代率怎麼查？找到你的年資</H>
+    <Topic t="② 退休金" sub="舊制" />
+    <H size={56}>所得替代率怎麼查？找到你的年資</H>
     <div style={{ display: 'grid', gridTemplateColumns: '580px 1fr', gap: 64, marginTop: 40 }}>
       <div>
         <div style={{ borderTop: `3px double #1E2420` }}>
-          <LookStep n="1" t="算年資：退休年齡 − 初任年齡" ex="例：60 − 25 ＝ 35 年" />
-          <LookStep n="2" t="查表：找到年資那一格" ex="例：35 年 → 69%" />
-          <LookStep n="3" t="算上限：本俸 × 2 × 替代率" ex="例：54,160 × 2 × 69% ＝ 74,741" />
+          <Steps>
+            <Step><LookStep n="1" t="算年資：退休年齡 − 初任年齡" ex="例：60 − 25 ＝ 35 年" /></Step>
+            <Step><LookStep n="2" t="查表：找到年資那一格" ex="例：35 年 → 69%" /></Step>
+            <Step><LookStep n="3" t="算上限：本俸 × 2 × 替代率" ex="例：54,160 × 2 × 69% ＝ 74,741" /></Step>
+          </Steps>
         </div>
         <div style={{ fontSize: 23, color: muted, lineHeight: 1.65, marginTop: 24 }}>
           年資滿 15 年才能領月退；不滿一年的月數按比例加計。
@@ -962,36 +1047,6 @@ const RateLookup: Page = () => (
   </Sheet>
 );
 
-// ─── 12 範例計算 ─────────────────────────────────────────────
-
-const Example: Page = () => (
-  <Sheet section="I · 制度 · 試算範例">
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 760px', gap: 90, height: '100%' }}>
-      <div>
-        <Eyebrow>CASE · 示範老師（虛構，和學習單範例同一人）</Eyebrow>
-        <H size={60}>
-          學士・年功薪 625
-          <br />
-          年資 35 年・現行上限
-        </H>
-        <Lead>
-          25 歲初任、60 歲退休，查表 35 年 → 69%。
-          <br />
-          月退上限約 7.5 萬，這是法定天花板；
-          <br />
-          實際金額以退休金試算工具為準。
-        </Lead>
-      </div>
-      <div style={{ alignSelf: 'center', borderTop: `3px double #1E2420` }}>
-        <LedgerRow label="本俸（薪點 625）" note="114 年待遇表" value="54,160" />
-        <LedgerRow label="× 2" note="本俸加一倍" value="108,320" />
-        <LedgerRow label="× 替代率" note="35 年 · 112 年度上限" value="69%" />
-        <LedgerRow label="月退上限" value="74,741" strong />
-      </div>
-    </div>
-  </Sheet>
-);
-
 // ─── 實作頁（深色）：左邊步驟，右邊是學習單截圖 ─────────────────
 
 const WsStep = ({ n, children }: { n: string; children: ReactNode }) => (
@@ -1032,7 +1087,7 @@ const WsHands = ({
   qr?: string;
   children: ReactNode;
 }) => (
-  <Sheet section={section} dark>
+  <Sheet section={section} dark bg={desk}>
     <div style={{ display: 'grid', gridTemplateColumns: '540px 1fr', gap: 48, height: '100%' }}>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div>
@@ -1061,7 +1116,9 @@ const WsHands = ({
           {title}
         </h2>
         <div style={{ fontSize: 26, color: 'rgba(242,236,225,0.75)', marginTop: 10, lineHeight: 1.45 }}>{goal}</div>
-        <div style={{ marginTop: 16 }}>{children}</div>
+        <div style={{ marginTop: 16 }}>
+          <Steps>{Children.map(children, (c) => <Step>{c}</Step>)}</Steps>
+        </div>
         <div style={{ marginTop: 'auto', display: 'flex', gap: 24, alignItems: 'flex-end' }}>
           <div>
             <img src={map} alt="" style={{ width: 130, display: 'block', border: '1px solid rgba(216,193,151,0.5)' }} />
@@ -1125,7 +1182,7 @@ const H01Salary: Page = () => (
 const H02Pension: Page = () => (
   <WsHands
     tag="HANDS-ON 02"
-    section="實作 02 · 15 分鐘"
+    section="實作 02 · 12 分鐘"
     title="退休金試算"
     goal="舊制、新制擇一填寫"
     page="第 2 頁"
@@ -1143,13 +1200,12 @@ const H02Pension: Page = () => (
 
 // ─── 新制重點 ────────────────────────────────────────────────
 
-const DcLine = ({ t, d, v, hot }: { t: string; d: string; v: string; hot?: boolean }) => (
+const DcLine = ({ t, d }: { t: string; d: string }) => (
   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', padding: '18px 0', borderBottom: `1px solid ${rule}` }}>
     <span>
-      <span style={{ fontSize: 30, fontWeight: 700 }}>{t}</span>
-      <span style={{ display: 'block', fontSize: 23, color: muted, marginTop: 4 }}>{d}</span>
+      <span style={{ fontSize: 32, fontWeight: 700 }}>{t}</span>
+      <span style={{ display: 'block', fontSize: 24, color: muted, marginTop: 6 }}>{d}</span>
     </span>
-    <span style={{ fontFamily: NUM, fontSize: 44, color: hot ? red : 'var(--osd-text)', whiteSpace: 'nowrap' }}>{v}</span>
   </div>
 );
 
@@ -1175,14 +1231,17 @@ const DcMix = ({ t, r, v, d, hot }: { t: string; r: string; v: string; d?: strin
 
 const NewSystem: Page = () => (
   <Sheet section="I · 制度 · 新制">
+    <Topic t="② 退休金" sub="新制" />
     <Eyebrow>給 112/7/1 後初任的年輕同事</Eyebrow>
-    <H size={56}>新制的月退，是你「養」出來的</H>
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, marginTop: 36 }}>
+    <H size={56}>個人專戶，是你「養」出來的</H>
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, marginTop: 28 }}>
       <div>
-        <div style={{ fontFamily: MONO, fontSize: 20, letterSpacing: '0.16em', color: gold }}>① 每月進專戶的錢（以本俸 31,560 為例）</div>
+        <div style={{ fontFamily: MONO, fontSize: 20, letterSpacing: '0.16em', color: gold }}>① 每月進專戶的錢</div>
         <div style={{ borderTop: `3px double #1E2420`, marginTop: 12 }}>
-          <DcLine t="法定提撥 15%" d="本俸 × 2 × 15%，老師出 35%、政府出 65%" v="9,468" />
-          <DcLine t="自願增提 0～5.25%" d="本俸 × 2 × 0～5.25%，老師自己選，全部進專戶" v="0～3,314" hot />
+          <Steps>
+            <Step><DcLine t="法定提撥 15%" d="本俸 × 2 × 15%，老師出 35%、政府出 65%" /></Step>
+            <Step><DcLine t="自願增提 0～5.25%" d="本俸 × 2 × 0～5.25%，老師自己選，全部進專戶" /></Step>
+          </Steps>
         </div>
         <div style={{ fontSize: 24, color: muted, lineHeight: 1.6, marginTop: 20 }}>
           自提越多，實領越少、專戶越多；工具預設 0%，先算基本盤。
@@ -1191,10 +1250,12 @@ const NewSystem: Page = () => (
       <div>
         <div style={{ fontFamily: MONO, fontSize: 20, letterSpacing: '0.16em', color: gold }}>② 專戶怎麼投資：35 年後大約有多少？</div>
         <div style={{ borderTop: `3px double #1E2420`, marginTop: 12 }}>
-          <DcMix t="保守型" r="假設 2%" v="575 萬" />
-          <DcMix t="穩健型" r="假設 4%" v="865 萬" />
-          <DcMix t="積極型" r="假設 6%" v="1,349 萬" />
-          <DcMix t="積極型＋自提 5.25%" r="假設 6%" v="1,821 萬" hot />
+          <Steps>
+            <Step><DcMix t="保守型" r="假設 2%" v="867 萬" /></Step>
+            <Step><DcMix t="穩健型" r="假設 4%" v="1,266 萬" /></Step>
+            <Step><DcMix t="積極型" r="假設 6%" v="1,915 萬" /></Step>
+            <Step><DcMix t="積極型＋自提 5.25%" r="假設 6%" v="2,585 萬" hot /></Step>
+          </Steps>
         </div>
         <div style={{ fontSize: 22, color: muted, lineHeight: 1.6, marginTop: 14 }}>
           另有人生週期型（沒選就用它），年輕偏積極、越近退休越保守。
@@ -1203,6 +1264,54 @@ const NewSystem: Page = () => (
     </div>
     <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, fontSize: 20, color: muted }}>
       範例：25 歲初任、60 歲退休、每月固定提撥、實質報酬為假設值，僅為示意；實際報酬依市場波動，投資選項以退撫基金管理局公告為準。
+    </div>
+  </Sheet>
+);
+
+// ─── 公保：舊制一次給付、新制年金 ─────────────────────────────
+
+const GbCard = ({ tag, t, f, rows, ex, hot }: { tag: string; t: string; f: string; rows: string[]; ex: ReactNode; hot?: boolean }) => (
+  <div style={{ background: '#FBF8F2', border: `1px solid ${hot ? 'rgba(180,67,46,0.45)' : rule}`, padding: '30px 40px', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ fontFamily: MONO, fontSize: 20, letterSpacing: '0.16em', color: hot ? red : gold }}>{tag}</div>
+    <div style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 44, marginTop: 10, color: hot ? red : 'var(--osd-text)' }}>{t}</div>
+    <div style={{ fontSize: 30, fontWeight: 700, marginTop: 16, paddingBottom: 16, borderBottom: `1px solid ${rule}` }}>{f}</div>
+    <div style={{ fontSize: 24, lineHeight: 1.7, color: muted, marginTop: 12 }}>
+      {rows.map((r) => (
+        <div key={r}>· {r}</div>
+      ))}
+    </div>
+    <div style={{ marginTop: 'auto', paddingTop: 16, fontSize: 26 }}>{ex}</div>
+  </div>
+);
+
+const GongBao: Page = () => (
+  <Sheet section="I · 制度 · 公保">
+    <Topic t="② 退休金" sub="公保" />
+    <H size={56}>公保：舊制一次領，新制按月領</H>
+    <div className="sx-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, marginTop: 30, height: 520 }}>
+      <Steps>
+        <Step><GbCard
+        tag="舊制 · 已有月退"
+        t="一次養老給付"
+        f="退休時保俸 × 給付月數"
+        rows={['每滿 1 年給 1.2 個月', '最高 36 個月；放棄優存可到 42 個月', '退休時一次領，不是月領']}
+        ex={<>例：54,160 × 42 個月 ＝ <Mark>約 227 萬</Mark>（學習單範例）</>}
+      /></Step>
+        <Step><GbCard
+        tag="新制 · 112/7/1 後初任"
+        t="養老年金"
+        f="平均保俸 × 1.3% × 年資"
+        rows={['平均保俸：最後 10 年平均', '年資最多算 35 年（45.5%）', '滿 15 年且 65 歲可領；20 年 60 歲、30 年 55 歲', '提早領每年少 4%，最多提早 5 年']}
+        ex={<>例：54,160 × 45.5% ＝ <Mark>每月約 24,640 元</Mark></>}
+        hot
+      /></Step>
+      </Steps>
+    </div>
+    <Lead style={{ marginTop: 26, color: 'var(--osd-text)' }}>
+      新制月退 ≈ <Mark>專戶月領 ＋ 公保年金</Mark>，實作 02 的 B1 兩個都要算進去。
+    </Lead>
+    <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, fontSize: 20, color: muted }}>
+      依《公教人員保險法》第 16 條；保俸為本俸，實際金額以銓敘部、臺灣銀行公保部試算為準。
     </div>
   </Sheet>
 );
@@ -1237,7 +1346,7 @@ const Break1: Page = () => <Break mins="10′" next="看清你現在每個月花
 const SecII: Page = () => (
   <Divider
     no="II"
-    kicker="PART TWO · 70′–100′ · 學習單第 3 頁"
+    kicker="PART TWO · 70′–98′ · 學習單第 3 頁"
     title={
       <>
         先看清楚，
@@ -1251,49 +1360,33 @@ const SecII: Page = () => (
 
 const TwoWays: Page = () => (
   <Sheet section="II · 現況">
-    <H size={64}>退休後要花多少？不必精算，先粗估</H>
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, marginTop: 64 }}>
-      <Ruler
-        tag="常見做法"
-        t="所得替代法"
-        f="退休前月收入 × 70–80%"
-        d="好算，但要先知道自己的月收入，適合當參考值。"
-      />
-      <Ruler
-        tag="今天用這把"
-        t="現況支出法"
-        f="退休後月支出 ≈ 現在的月均支出"
-        d="房貸、車貸、子女教育可能沒了，但醫療、旅遊會增加，一來一往，用現在的支出最有真實感。"
-        hot
-      />
+    <H size={60}>支出花多少？不必精算，先粗估</H>
+    <div style={{ display: 'grid', gridTemplateColumns: '560px 1fr', gap: 48, marginTop: 44 }}>
+      <div style={{ background: 'var(--osd-accent)', color: cream, padding: '44px 48px' }}>
+        <div style={{ fontFamily: MONO, fontSize: 22, letterSpacing: '0.18em', color: goldSoft }}>今天用這把</div>
+        <div style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 56, marginTop: 16 }}>現況支出法</div>
+        <div style={{ fontSize: 32, fontWeight: 500, marginTop: 20, paddingBottom: 22, borderBottom: '1px solid rgba(216,193,151,0.4)' }}>
+          退休後月支出 ≈ 現在的月均支出
+        </div>
+        <div style={{ fontSize: 27, lineHeight: 1.7, marginTop: 22, opacity: 0.85 }}>
+          有些支出會消失、有些會增加，一來一往，用現在的支出最有真實感。
+        </div>
+      </div>
+      <div className="sx-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
+        <Steps>
+          <Step><AdjustCol tag="↓ 消失" color="var(--osd-accent)" items={<>房貸（若已繳清）<br />子女教育費<br />通勤油錢<br />退撫自提、儲蓄</>} /></Step>
+          <Step><AdjustCol tag="→ 差不多" color={gold} items={<>伙食、水電瓦斯<br />電信網路<br />日常用品<br />保險（視保單）</>} /></Step>
+          <Step><AdjustCol tag="↑ 增加" color={red} items={<>醫療與保健<br />旅遊與興趣<br />長照預備金<br />孝親、紅白包</>} /></Step>
+        </Steps>
+      </div>
     </div>
   </Sheet>
 );
 
-const Ruler = ({ tag, t, f, d, hot }: { tag: string; t: string; f: string; d: string; hot?: boolean }) => (
-  <div
-    style={{
-      background: hot ? 'var(--osd-accent)' : '#FBF8F2',
-      color: hot ? cream : 'var(--osd-text)',
-      border: hot ? 'none' : `1px solid ${rule}`,
-      padding: '48px 52px',
-      minHeight: 440,
-    }}
-  >
-    <div style={{ fontFamily: MONO, fontSize: 22, letterSpacing: '0.18em', color: hot ? goldSoft : gold }}>{tag}</div>
-    <div style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 56, marginTop: 20 }}>{t}</div>
-    <div
-      style={{
-        fontSize: 32,
-        marginTop: 24,
-        paddingBottom: 24,
-        borderBottom: `1px solid ${hot ? 'rgba(216,193,151,0.4)' : rule}`,
-        fontWeight: 500,
-      }}
-    >
-      {f}
-    </div>
-    <div style={{ fontSize: 28, lineHeight: 1.65, marginTop: 24, opacity: 0.8 }}>{d}</div>
+const AdjustCol = ({ tag, color, items }: { tag: string; color: string; items: ReactNode }) => (
+  <div style={{ background: '#FBF8F2', padding: '32px 28px', border: `1px solid ${rule}` }}>
+    <div style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 40, color }}>{tag}</div>
+    <div style={{ fontSize: 27, lineHeight: 1.9, marginTop: 16 }}>{items}</div>
   </div>
 );
 
@@ -1329,7 +1422,6 @@ const H03Result: Page = () => (
     <WsStep n="1">抄 C1 收入、C2 支出</WsStep>
     <WsStep n="2">C3 月儲蓄 ＝ C1 − C2</WsStep>
     <WsStep n="3">儲蓄率 ＝ C3 ÷ C1</WsStep>
-    <WsStep n="4">參考：所得替代法 C1 × 0.7</WsStep>
   </WsHands>
 );
 
@@ -1350,72 +1442,13 @@ const H03Gap: Page = () => (
   </WsHands>
 );
 
-const AdjustCol = ({ tag, color, items }: { tag: string; color: string; items: ReactNode }) => (
-  <div style={{ borderTop: `6px solid ${color}`, background: '#FBF8F2', padding: '32px 36px', border: `1px solid ${rule}` }}>
-    <div style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 44, color }}>{tag}</div>
-    <div style={{ fontSize: 30, lineHeight: 1.9, marginTop: 18 }}>{items}</div>
-  </div>
-);
-
-const Adjust: Page = () => (
-  <Sheet section="II · 現況 · 為什麼用現在的支出">
-    <H size={60}>退休後的支出，一來一往</H>
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 36, marginTop: 56 }}>
-      <AdjustCol
-        tag="↓ 消失"
-        color="var(--osd-accent)"
-        items={
-          <>
-            房貸（若已繳清）
-            <br />
-            子女教育費
-            <br />
-            通勤油錢
-            <br />
-            退撫自提、儲蓄
-          </>
-        }
-      />
-      <AdjustCol
-        tag="→ 差不多"
-        color={gold}
-        items={
-          <>
-            伙食、水電瓦斯
-            <br />
-            電信網路
-            <br />
-            日常用品
-            <br />
-            保險（視保單）
-          </>
-        }
-      />
-      <AdjustCol
-        tag="↑ 增加"
-        color={red}
-        items={
-          <>
-            醫療與保健
-            <br />
-            旅遊與興趣
-            <br />
-            長照預備金
-            <br />
-            孝親、紅白包
-          </>
-        }
-      />
-    </div>
-  </Sheet>
-);
 
 // ─── Part III ───────────────────────────────────────────────
 
 const SecIII: Page = () => (
   <Divider
     no="III"
-    kicker="PART THREE · 100′–124′ · 學習單第 4 頁"
+    kicker="PART THREE · 98′–122′ · 學習單第 4 頁"
     title={
       <>
         理財之前，
@@ -1444,10 +1477,12 @@ const Rule4: Page = () => (
         </Lead>
       </div>
       <div style={{ alignSelf: 'center', borderTop: `3px double #1E2420` }}>
-        <LedgerRow label="現在的月均支出" value="40,000" />
-        <LedgerRow label="× 12 個月" value="480,000" />
-        <LedgerRow label="× 25" note="4% 法則" value="12,000,000" />
-        <LedgerRow label="目標本金" value="1,200 萬" strong />
+        <Steps>
+          <Step><LedgerRow label="現在的月均支出" value="40,000" /></Step>
+          <Step><LedgerRow label="× 12 個月" value="480,000" /></Step>
+          <Step><LedgerRow label="× 25" note="4% 法則" value="12,000,000" /></Step>
+          <Step><LedgerRow label="目標本金" value="1,200 萬" strong /></Step>
+        </Steps>
       </div>
     </div>
   </Sheet>
@@ -1468,9 +1503,11 @@ const Compound: Page = () => (
     <H size={60}>存到 1,200 萬，越早開始越便宜</H>
     <div style={{ fontSize: 28, color: muted, marginTop: 14 }}>目標本金 1,200 萬、從零開始；實質報酬 5%、每月複利，僅為示意</div>
     <div style={{ marginTop: 56, borderTop: `3px double #1E2420` }}>
-      <TimeBar yrs="還有 30 年" monthly="每月 14,420" w={168} />
-      <TimeBar yrs="還有 20 年" monthly="每月 29,200" w={340} />
-      <TimeBar yrs="還有 10 年" monthly="每月 77,280" w={900} hot />
+      <Steps>
+        <Step><TimeBar yrs="還有 30 年" monthly="每月 14,420" w={168} /></Step>
+        <Step><TimeBar yrs="還有 20 年" monthly="每月 29,200" w={340} /></Step>
+        <Step><TimeBar yrs="還有 10 年" monthly="每月 77,280" w={900} hot /></Step>
+      </Steps>
     </div>
     <div style={{ marginTop: 48, fontSize: 34 }}>
       晚 20 年開始，每月要付 <Mark>5 倍以上</Mark>。複利不是魔法，是時間的租金。
@@ -1525,12 +1562,14 @@ const WealthLadder: Page = () => (
   <Sheet section="III · 盤點 · 財富階梯">
     <Eyebrow>《財富階梯》尼克．馬朱利（《持續買進》作者）</Eyebrow>
     <H size={56}>淨資產決定你站在哪一階，每階的功課不同</H>
-    <div style={{ display: 'flex', gap: 16, alignItems: 'flex-end', height: 610, marginTop: 20 }}>
-      <Rung n="1" usd="< 1 萬美元" twd="約 30 萬以下" name="月光求生" task="存緊急預備金，避開惡性負債" h={130} bg={paper2} fg="#1E2420" />
-      <Rung n="2" usd="1–10 萬美元" twd="約 30–300 萬" name="初步緩衝" task="投資自己，學核心技能、提升主動收入" h={200} bg={goldSoft} fg="#1E2420" />
-      <Rung n="3" usd="10–100 萬美元" twd="約 300–3,000 萬" name="有感累積" task="用錢滾錢，靠長期投資放大資產" h={270} bg="var(--osd-accent)" fg={cream} />
-      <Rung n="4" usd="100–1,000 萬美元" twd="約 3,000 萬–3 億" name="事業加速" task="靠薪資難躍升，要拓展事業或創業" h={340} bg={green2} fg={cream} />
-      <Rung n="5–6" usd="1,000 萬美元以上" twd="約 3 億以上" name="擴張與守成" task="大型事業、家族企業維持階級" h={410} bg="#1E2420" fg={goldSoft} />
+    <div className="sx-row" style={{ display: 'flex', gap: 16, alignItems: 'flex-end', height: 610, marginTop: 20 }}>
+      <Steps>
+        <Step><Rung n="1" usd="< 1 萬美元" twd="約 30 萬以下" name="月光求生" task="存緊急預備金，避開惡性負債" h={130} bg={paper2} fg="#1E2420" /></Step>
+        <Step><Rung n="2" usd="1–10 萬美元" twd="約 30–300 萬" name="初步緩衝" task="投資自己、提升收入，開始小額定期定額" h={200} bg={goldSoft} fg="#1E2420" /></Step>
+        <Step><Rung n="3" usd="10–100 萬美元" twd="約 300–3,000 萬" name="有感累積" task="用錢滾錢，靠長期投資放大資產" h={270} bg="var(--osd-accent)" fg={cream} /></Step>
+        <Step><Rung n="4" usd="100–1,000 萬美元" twd="約 3,000 萬–3 億" name="事業加速" task="靠薪資難躍升，要拓展事業或創業" h={340} bg={green2} fg={cream} /></Step>
+        <Step><Rung n="5–6" usd="1,000 萬美元以上" twd="約 3 億以上" name="擴張與守成" task="大型事業、家族企業維持階級" h={410} bg="#1E2420" fg={goldSoft} /></Step>
+      </Steps>
     </div>
   </Sheet>
 );
@@ -1547,25 +1586,27 @@ const PrincipleCard = ({ k, t, d, ex }: { k: string; t: string; d: string; ex: R
 const LadderRules: Page = () => (
   <Sheet section="III · 盤點 · 財富階梯">
     <H size={60}>三個原則，看懂自己的這一階</H>
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32, marginTop: 56, height: 560 }}>
-      <PrincipleCard
+    <div className="sx-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32, marginTop: 56, height: 560 }}>
+      <Steps>
+        <Step><PrincipleCard
         k="衡量標準"
         t="看淨資產，不看收入"
         d="資產減負債才是你真正擁有的。月薪高但負債多，不一定站得比較高。"
         ex={<>你的<Mark>總淨值</Mark>，就是你在階梯上的位置。</>}
-      />
-      <PrincipleCard
+      /></Step>
+        <Step><PrincipleCard
         k="萬分之一法則"
         t="小錢不必糾結"
         d="消費低於淨資產的 0.01%，就是不需要反覆計較的「小錢」。"
         ex={<>淨資產 470 萬 × 0.01% ＝ <Mark>470 元</Mark>，這以下的咖啡不用算。</>}
-      />
-      <PrincipleCard
+      /></Step>
+        <Step><PrincipleCard
         k="量力而行"
         t="解決這一階的煩惱"
         d="專注眼前這一階的功課，不提前過超出自己階層的生活。"
-        ex={<>第 3 階的功課：<Mark>用錢滾錢</Mark>，也就是第四關的理財規劃。</>}
-      />
+        ex={<>第 2～3 階的功課：<Mark>用錢滾錢</Mark>，也就是第四關的理財規劃。</>}
+      /></Step>
+      </Steps>
     </div>
   </Sheet>
 );
@@ -1605,23 +1646,27 @@ const NetWorth: Page = () => (
     <Eyebrow>淨值 ＝ 資產 − 負債</Eyebrow>
     <H size={58}>淨值 470 萬，真正動得了的只有 150 萬</H>
     <div style={{ marginTop: 26 }}>
-      <NwRow k="資產" total="970 萬">
+      <Steps>
+        <Step><NwRow k="資產" total="970 萬">
         <NwSeg w={1136} bg={paper2} fg="#1E2420" t="房屋現值" v="800 萬" />
         <NwSeg w={241} bg="var(--osd-accent)" fg={cream} t="存款＋投資" v="170 萬" />
-      </NwRow>
-      <NwRow k="負債" total="500 萬">
+      </NwRow></Step>
+        <Step><NwRow k="負債" total="500 萬">
         <NwSeg w={682} bg="#E7C9BF" fg="#1E2420" t="房貸" v="480 萬" />
         <NwSeg w={28} bg="#D9A89A" fg="#1E2420" t="" v="" />
         <div style={{ alignSelf: 'center', fontSize: 24, color: muted, marginLeft: 12 }}>← 車貸 20 萬</div>
-      </NwRow>
-      <NwRow k="淨值" total="470 萬">
+      </NwRow></Step>
+        <Step><NwRow k="淨值" total="470 萬">
         <NwSeg w={454} bg={paper2} fg="#1E2420" t="房屋淨值" v="320 萬" />
         <NwSeg w={213} bg={red} fg={cream} t="動得了的錢" v="150 萬" />
-      </NwRow>
+      </NwRow></Step>
+      </Steps>
     </div>
-    <Lead style={{ marginTop: 64, color: 'var(--osd-text)' }}>
+    <Steps>
+      <Step><Lead style={{ marginTop: 64, color: 'var(--osd-text)' }}>
       房子不會生出現金流，也不能拿來定期定額；<Mark>不含房子的淨資產</Mark>才是理財的起點。
-    </Lead>
+    </Lead></Step>
+    </Steps>
   </Sheet>
 );
 
@@ -1664,9 +1709,11 @@ const DebtRatio: Page = () => (
         </div>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
-        <DebtKind t="房貸為主" d="有擔保、利率低，剛買房前幾年偏高屬正常。確認每月還款撐得住就好。" />
-        <DebtKind t="信貸、卡債為主" d="沒擔保、利率高。先還清，再談投資。" hot />
-        <DebtKind t="不論哪一種" d="身上先留 6 個月生活費當緊急預備金，遇到意外才不會被迫借錢或賣股。" />
+        <Steps>
+          <Step><DebtKind t="房貸為主" d="有擔保、利率低，剛買房前幾年偏高屬正常。確認每月還款撐得住就好。" /></Step>
+          <Step><DebtKind t="信貸、卡債為主" d="沒擔保、利率高。先還清，再談投資。" hot /></Step>
+          <Step><DebtKind t="不論哪一種" d="身上先留 6 個月生活費當緊急預備金，遇到意外才不會被迫借錢或賣股。" /></Step>
+        </Steps>
       </div>
     </div>
   </Sheet>
@@ -1735,11 +1782,13 @@ const Risk = ({ t, d }: { t: string; d: string }) => (
 const Risks: Page = () => (
   <Sheet section="延伸 · 風險">
     <H size={60}>退休規劃的四個隱形對手</H>
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, marginTop: 56 }}>
-      <Risk t="長壽風險" d="活得比錢久。公保年金與年金型收入是與生命等長的解方。" />
-      <Risk t="通膨風險" d="錢變薄。長期資產需要有成長性，不能全放定存。" />
-      <Risk t="順序風險" d="剛退休就遇大跌。退休前 5 年逐步提高保守資產。" />
-      <Risk t="醫療長照" d="最難估的一項。另外準備一筆，不要跟生活費混用。" />
+    <div className="sx-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, marginTop: 56 }}>
+      <Steps>
+        <Step><Risk t="長壽風險" d="活得比錢久。公保年金與年金型收入是與生命等長的解方。" /></Step>
+        <Step><Risk t="通膨風險" d="錢變薄。長期資產需要有成長性，不能全放定存。" /></Step>
+        <Step><Risk t="順序風險" d="剛退休就遇大跌。退休前 5 年逐步提高保守資產。" /></Step>
+        <Step><Risk t="醫療長照" d="最難估的一項。另外準備一筆，不要跟生活費混用。" /></Step>
+      </Steps>
     </div>
   </Sheet>
 );
@@ -1780,14 +1829,6 @@ const H05Draft: Page = () => (
   </WsHands>
 );
 
-const EqItem = ({ code, t, hot }: { code: string; t: string; hot?: boolean }) => (
-  <div style={{ flex: 1, borderTop: `6px solid ${hot ? red : 'var(--osd-accent)'}`, paddingTop: 24 }}>
-    <div style={{ fontFamily: NUM, fontWeight: 400, fontSize: 96, lineHeight: 1, color: hot ? red : 'var(--osd-text)' }}>
-      {code}
-    </div>
-    <div style={{ fontSize: 30, fontFamily: 'var(--osd-font-body)', fontWeight: 500, marginTop: 16 }}>{t}</div>
-  </div>
-);
 
 const Break2: Page = () => <Break mins="5′" next="假設沒有退休金，你要存多少？（學習單第 5 頁）" />;
 
@@ -1831,7 +1872,7 @@ const HReview2: Page = () => (
 const SecIV: Page = () => (
   <Divider
     no="IV"
-    kicker="PART FOUR · 129′–165′ · 學習單第 5–6 頁"
+    kicker="PART FOUR · 127′–160′ · 學習單第 5–6 頁"
     title={
       <>
         把月退當備案，
@@ -1901,9 +1942,11 @@ const CompoundPower: Page = () => (
         <H size={56}>每月 5,000 元，看複利怎麼長大</H>
         <div style={{ fontSize: 26, color: muted, marginTop: 12 }}>定期定額，假設實質年報酬 5%（每月複利），僅為示意</div>
         <div style={{ display: 'flex', alignItems: 'flex-end', gap: 70, height: 640, marginTop: 10 }}>
-          <StackBar yrs="10 年" principal="60 萬" gain="18 萬" pH={60} gH={18} total="78 萬" />
-          <StackBar yrs="20 年" principal="120 萬" gain="86 萬" pH={120} gH={86} total="206 萬" />
-          <StackBar yrs="30 年" principal="180 萬" gain="236 萬" pH={180} gH={236} total="416 萬" />
+          <Steps>
+            <Step><StackBar yrs="10 年" principal="60 萬" gain="18 萬" pH={60} gH={18} total="78 萬" /></Step>
+            <Step><StackBar yrs="20 年" principal="120 萬" gain="86 萬" pH={120} gH={86} total="206 萬" /></Step>
+            <Step><StackBar yrs="30 年" principal="180 萬" gain="236 萬" pH={180} gH={236} total="416 萬" /></Step>
+          </Steps>
         </div>
       </div>
       <div style={{ alignSelf: 'center', borderLeft: `1px solid ${rule}`, paddingLeft: 56 }}>
@@ -1961,14 +2004,18 @@ const IndexWhy: Page = () => (
     <Eyebrow>買大盤 ＝ 用一檔市值型指數 ETF，買下一整籃大公司</Eyebrow>
     <H size={64}>為什麼買大盤，不買個股？</H>
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 56, marginTop: 64 }}>
-      <IndexCard big="股王" t="個股可能一去不回" d="宏達電曾是 1,300 元的股王，如今不到 100 元。指數會定期換掉變弱的公司，大盤自己會換血。" />
-      <IndexCard big="9 成" t="專家也很難贏大盤" d="美國 15 年統計，約 9 成主動型大型股基金，績效輸給 S&P 500（SPIVA，至 2024 年底）。" />
-      <IndexCard big="0 選股" t="老師沒空盯盤" d="不用研究財報、不用猜高低點；費用低、一次分散，時間留給學生和家人。" />
+      <Steps>
+        <Step><IndexCard big="股王" t="個股可能一去不回" d="宏達電曾是 1,300 元的股王，如今不到 100 元。指數會定期換掉變弱的公司，大盤自己會換血。" /></Step>
+        <Step><IndexCard big="9 成" t="專家也很難贏大盤" d="美國 15 年統計，約 9 成主動型大型股基金，績效輸給 S&P 500（SPIVA，至 2024 年底）。" /></Step>
+        <Step><IndexCard big="0 選股" t="老師沒空盯盤" d="不用研究財報、不用猜高低點；費用低、一次分散，時間留給學生和家人。" /></Step>
+      </Steps>
     </div>
     <div style={{ marginTop: 56 }}>
-      <CmpRow head k="" a="買個股" b="買大盤" />
-      <CmpRow k="要做的功課" a="研究財報、產業、進出場時機" b="設定扣款，一年檢視一次" />
-      <CmpRow k="最壞的情況" a="押錯一家，可能大跌不回" b="跟著整體市場起伏，不會因一家歸零" />
+      <Steps>
+        <CmpRow head k="" a="買個股" b="買大盤" />
+        <Step><CmpRow k="要做的功課" a="研究財報、產業、進出場時機" b="設定扣款，一年檢視一次" /></Step>
+        <Step><CmpRow k="最壞的情況" a="押錯一家，可能大跌不回" b="跟著整體市場起伏，不會因一家歸零" /></Step>
+      </Steps>
     </div>
   </Sheet>
 );
@@ -2013,9 +2060,11 @@ const EtfCompare: Page = () => (
           <span>2008 海嘯</span>
           <span>幾年翻倍</span>
         </div>
-        <EtfRow t="0050" idx={<>台灣市值前 50 大<br /><small style={{ fontSize: 22, color: muted }}>市值型 · 2003</small></>} ann="≈12.6%" worst="−56%" dbl="≈ 6 年" />
-        <EtfRow t="VOO" idx={<>美國 S&amp;P 500<br /><small style={{ fontSize: 22, color: muted }}>市值型 · 2010（海嘯跌幅以指數計）</small></>} ann="≈15%" worst="−57%" dbl="≈ 5 年" hot />
-        <EtfRow t="0056" idx={<>台灣高股息 50 檔<br /><small style={{ fontSize: 22, color: muted }}>高股息 · 2007</small></>} ann="≈8.2%" worst="−58%" dbl="≈ 9 年" />
+        <Steps>
+          <Step><EtfRow t="0050" idx={<>台灣市值前 50 大<br /><small style={{ fontSize: 22, color: muted }}>市值型 · 2003</small></>} ann="≈12.6%" worst="−56%" dbl="≈ 6 年" /></Step>
+          <Step><EtfRow t="VOO" idx={<>美國 S&amp;P 500<br /><small style={{ fontSize: 22, color: muted }}>市值型 · 2010（海嘯跌幅以指數計）</small></>} ann="≈15%" worst="−57%" dbl="≈ 5 年" hot /></Step>
+          <Step><EtfRow t="0056" idx={<>台灣高股息 50 檔<br /><small style={{ fontSize: 22, color: muted }}>高股息 · 2007</small></>} ann="≈8.2%" worst="−58%" dbl="≈ 9 年" /></Step>
+        </Steps>
         <div style={{ marginTop: 26, fontSize: 28, lineHeight: 1.55 }}>
           0056 配息多，但配息是從淨值裡拿出來的，長期總報酬反而較低；股災時<Mark>高股息一樣跌</Mark>。
         </div>
@@ -2095,59 +2144,18 @@ const DCA: Page = () => (
           <span style={{ textAlign: 'right' }}>價格</span>
           <span style={{ textAlign: 'right' }}>買到單位</span>
         </div>
-        <DcaRow m="1 月" price="100" units="30" />
-        <DcaRow m="2 月" price="80" units="37.5" />
-        <DcaRow m="3 月" price="60" units="50" hot />
-        <DcaRow m="4 月" price="100" units="30" />
-        <LedgerRow label="投入 12,000 → 147.5 單位 × 100" value="14,750" strong />
+        <Steps>
+          <Step><DcaRow m="1 月" price="100" units="30" /></Step>
+          <Step><DcaRow m="2 月" price="80" units="37.5" /></Step>
+          <Step><DcaRow m="3 月" price="60" units="50" hot /></Step>
+          <Step><DcaRow m="4 月" price="100" units="30" /></Step>
+          <Step><LedgerRow label="投入 12,000 → 147.5 單位 × 100" value="14,750" strong /></Step>
+        </Steps>
       </div>
     </div>
   </Sheet>
 );
 
-
-const ResCell = ({ k, v, d, hot }: { k: string; v: string; d: string; hot?: boolean }) => (
-  <div style={{ background: '#FBF8F2', border: `${hot ? 3 : 1}px solid ${hot ? red : rule}`, padding: '26px 30px' }}>
-    <div style={{ fontSize: 26, color: muted }}>{k}</div>
-    <div style={{ fontFamily: NUM, fontSize: 68, lineHeight: 1.1, marginTop: 6, color: hot ? red : 'var(--osd-text)' }}>{v}</div>
-    <div style={{ fontSize: 22, color: muted, marginTop: 6 }}>{d}</div>
-  </div>
-);
-
-const ToolResult: Page = () => (
-  <Sheet section="IV · 理財 · 讀懂結果">
-    <Eyebrow>範例：32 歲開始，每月 2 萬，實質 5%，60 歲退休</Eyebrow>
-    <H size={60}>工具結果這樣讀：本金 ＋ 複利 ＝ 退休時累積</H>
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 620px', gap: 56, marginTop: 64 }}>
-      <div>
-        <div style={{ background: 'var(--osd-accent)', color: cream, padding: '28px 36px' }}>
-          <div style={{ fontSize: 26, color: goldSoft }}>退休時預估累積資產</div>
-          <div style={{ fontFamily: NUM, fontSize: 110, lineHeight: 1.1 }}>約 1,460.8 萬</div>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 18, marginTop: 18 }}>
-          <ResCell k="投入年數" v="28 年" d="退休年齡 − 目前年齡" />
-          <ResCell k="本金總投入" v="672 萬" d="2 萬 × 12 × 28" />
-          <ResCell k="複利貢獻" v="788.8 萬" d="時間幫你賺的" hot />
-        </div>
-        <div style={{ display: 'flex', height: 56, marginTop: 26 }}>
-          <div style={{ width: '46%', background: 'var(--osd-accent)', color: cream, fontSize: 24, display: 'flex', alignItems: 'center', paddingLeft: 20 }}>本金 46%</div>
-          <div style={{ width: '54%', background: red, color: cream, fontSize: 24, display: 'flex', alignItems: 'center', paddingLeft: 20 }}>複利 54%</div>
-        </div>
-      </div>
-      <div style={{ border: `3px solid ${red}`, background: '#fff', padding: '34px 40px', alignSelf: 'start' }}>
-        <div style={{ fontSize: 26, fontWeight: 700, color: red, letterSpacing: '0.06em' }}>早開始 vs 晚 10 年</div>
-        <div style={{ borderTop: `3px double #1E2420`, marginTop: 18 }}>
-          <LedgerRow label="現在開始（28 年）" value="1,460.8 萬" />
-          <LedgerRow label="晚 10 年（18 年）" value="698.4 萬" />
-          <LedgerRow label="晚 10 年少了" value="約 762 萬" strong />
-        </div>
-        <div style={{ fontSize: 28, lineHeight: 1.6, marginTop: 22 }}>
-          只晚 10 年，少掉的比一半還多：<Mark>複利最值錢的，是最後那幾年</Mark>。
-        </div>
-      </div>
-    </div>
-  </Sheet>
-);
 
 const H05Result: Page = () => (
   <WsHands
@@ -2171,7 +2179,7 @@ const H05Result: Page = () => (
 const SecEx: Page = () => (
   <Divider
     no="EX"
-    kicker="EXTRA · 165′–178′ · 學習單第 7 頁"
+    kicker="EXTRA · 160′–180′ · 學習單第 7 頁"
     title={
       <>
         不選股，
@@ -2186,16 +2194,18 @@ const SecEx: Page = () => (
 const HowStart: Page = () => (
   <Sheet section="延伸 · 開始">
     <H size={60}>從今天到第一筆扣款，四步</H>
-    <div style={{ display: 'flex', gap: 14, marginTop: 64 }}>
-      <Flow n="1" t="先留預備金" d="6 個月生活費放存款，投資的錢才不會被迫賣" />
-      <Arrow />
-      <Flow n="2" t="開證券戶" d="線上開戶約 15 分鐘，順便綁定扣款帳戶" />
-      <Arrow />
-      <Flow n="3" t="選一檔大盤" d="市值型指數 ETF，一檔就夠，不用收集" hot />
-      <Arrow />
-      <Flow n="4" t="設定扣款" d="發薪日後扣款，一年只檢視一次" />
+    <div className="sx-row" style={{ display: 'flex', gap: 14, marginTop: 64 }}>
+      <Steps>
+        <Step><Flow n="1" t="先留預備金" d="6 個月生活費放存款，投資的錢才不會被迫賣" /></Step>
+        <Step><Arrow /><Flow n="2" t="開證券戶" d="線上開戶約 15 分鐘，順便綁定扣款帳戶" /></Step>
+        <Step><Arrow /><Flow n="3" t="選一檔大盤" d="市值型指數 ETF，一檔就夠，不用收集" hot /></Step>
+        <Step><Arrow /><Flow n="4" t="設定扣款" d="發薪日後扣款，一年只檢視一次" /></Step>
+      </Steps>
     </div>
-    <div style={{ marginTop: 44, fontSize: 24, color: muted }}>
+    <Lead style={{ marginTop: 56, fontSize: 40, color: 'var(--osd-text)' }}>
+      你不需要很會投資，只需要<Mark>很早開始、很久不停</Mark>。
+    </Lead>
+    <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, fontSize: 22, color: muted }}>
       講者自己的做法，僅供參考、非投資建議；標的請自行研究費用率、規模與追蹤指數。
     </div>
   </Sheet>
@@ -2226,58 +2236,22 @@ const QA = ({ q, a }: { q: string; a: string }) => (
 );
 
 const Myths: Page = () => (
-  <Sheet section="延伸 · 常見問題" dark>
+  <Sheet section="延伸 · 風險" dark>
     <div style={{ fontFamily: MONO, fontSize: 24, letterSpacing: '0.2em', color: goldSoft }}>FAQ · 老師最常問的三句話</div>
     <h2 style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: 68, margin: '20px 0 0' }}>
       紀律，比時機重要
     </h2>
     <div style={{ marginTop: 36 }}>
-      <QA q="現在是高點，要不要等？" a="沒人猜得準。定期定額的意義，就是不用猜。" />
-      <QA q="大跌了，要不要停扣？" a="跌的時候正在買便宜貨。停扣，才是真的虧。" />
-      <QA q="錢不多，有差嗎？" a="3,000 元也可以開始。先養成習慣，再慢慢加碼。" />
+      <Steps>
+        <Step><QA q="現在是高點，要不要等？" a="沒人猜得準。定期定額的意義，就是不用猜。" /></Step>
+        <Step><QA q="大跌了，要不要停扣？" a="跌的時候正在買便宜貨。停扣，才是真的虧。" /></Step>
+        <Step><QA q="錢不多，有差嗎？" a="3,000 元也可以開始。先養成習慣，再慢慢加碼。" /></Step>
+      </Steps>
     </div>
-  </Sheet>
-);
-
-const Summary: Page = () => (
-  <Sheet section="結語 · 今天的一句話">
-    <Eyebrow>今天的一句話</Eyebrow>
-    <div
-      style={{
-        marginTop: 60,
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)',
-        gap: 36,
-      }}
-    >
-      <EqItem code="定期定額" t="用紀律取代猜測" />
-      <EqItem code="買大盤" t="用分散取代選股" />
-      <EqItem code="複利" t="用時間取代本金" hot />
-    </div>
-    <Lead style={{ marginTop: 90, fontSize: 40, color: 'var(--osd-text)' }}>
-      你不需要很會投資，只需要<Mark>很早開始、很久不停</Mark>。
-    </Lead>
   </Sheet>
 );
 
 // ─── 結尾 ───────────────────────────────────────────────────
-
-const HThink: Page = () => (
-  <WsHands
-    tag="EXTRA"
-    section="延伸 · 想一想 · 2 分鐘"
-    title="72 法則與想一想"
-    goal="寫在第 7 頁表格最後一欄與右下角"
-    page="第 7 頁"
-    shot={wsP7Think}
-    map={wsP7ThinkMap}
-  >
-    <WsStep n="1">72 ÷ 年化報酬 ≈ 翻倍年數</WsStep>
-    <WsStep n="2">填表格最後一欄三格</WsStep>
-    <WsStep n="3">想一想①：為什麼只用 5%？</WsStep>
-    <WsStep n="4">想一想②③：寫下自己的答案</WsStep>
-  </WsHands>
-);
 
 const HAction: Page = () => (
   <WsHands
@@ -2334,6 +2308,22 @@ const Closing: Page = () => (
 
 // ─── 講者備註（每頁建議時間與口白） ──────────────────────────
 
+const EASE_OUT = 'cubic-bezier(0, 0, 0.2, 1)';
+const EASE_IN = 'cubic-bezier(0.4, 0, 1, 1)';
+
+export const transition: SlideTransition = {
+  duration: 220,
+  exit: { duration: 140, easing: EASE_IN, keyframes: [{ opacity: 1, transform: 'translateY(0)' }, { opacity: 0, transform: 'translateY(-4px)' }] },
+  enter: { duration: 220, delay: 80, easing: EASE_OUT, keyframes: [{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'translateY(0)' }] },
+};
+
+const breath: SlideTransition = {
+  duration: 460,
+  exit: { duration: 180, easing: EASE_IN, keyframes: [{ opacity: 1 }, { opacity: 0 }] },
+  enter: { duration: 260, delay: 300, easing: EASE_OUT, keyframes: [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'translateY(0)' }] },
+};
+for (const pg of [Cover, SecI, SecII, SecIII, SecIV, SecEx, Closing]) pg.transition = breath;
+
 export const notes = [
   // Cover
   '【0′–1′】自我介紹 1 分鐘。強調：今天不賣商品、不報明牌，是陪大家把自己的數字算出來。右邊是引路人 IG 與官網的 QR Code，歡迎課後追蹤。發學習單、確認手機可上網。',
@@ -2349,102 +2339,96 @@ export const notes = [
   '【10′–12′】三個約定，特別是第一條：小組只談方法不談金額，讓大家安心。',
   // SecI
   '【12′】進入第一關（學習單第 2 頁）。先講薪水、算薪水；再講退休金、算退休金。',
-  // Timeline
-  '【12′–15′】五個時間點。請老師在心裡定位自己哪一年初任：84 年前恩給制、84/7/1 後退撫基金制、112/7/1 後個人專戶制。最後一點：替代率已停在 112 年水準，但釋憲仍在審理。',
-  // SalaryDiff
-  '【15′–18′】先看薪水單：新舊制月薪算法一樣（本俸＋學術研究費，年薪約 14.5 個月），差在每月扣款。退休金提撥都是本俸 × 2 × 15% × 35%，新制錢存進自己的專戶，還可自願增提（工具先設 0%）；公保費率舊制 7.22%、新制全額年金 16.33%，因為新制退休可領公保年金。以薪點 275 為例，新制實領約少 1,000 元。費率細節以人事室為準。',
-  // H01Salary
-  '【18′–28′】實作 01（學習單第 2 頁上半）。先掃 QR Code 並加入書籤；新制老師自願提繳先設 0%。A1 現在的我、A2 年功薪到頂的我，A3 ＝ A2 − A1。右邊藍字是示範老師的填法；不知道薪級的老師看薪資單。',
   // ThreeLayers
-  '【28′–30′】接著換退休金主題。三層架構：公保是樓地板、退撫是主體、第三層自己補。今天的第四關就是第三層。',
+  '【12′–14′】先看全貌：退休後的錢來自三層。公保是樓地板、退撫是主體、第三層自己補，今天的第四關就是第三層。',
+  // Timeline
+  '【14′–17′】五個時間點。請老師在心裡定位自己哪一年初任：84 年前恩給制、84/7/1 後退撫基金制、112/7/1 後個人專戶制。最後一點：替代率已停在 112 年水準，但釋憲仍在審理。接下來先談薪水，再談退休金。',
+  // SalaryPay
+  '【17′–19′】① 薪資（標籤從這頁開始）。新舊制月薪算法一樣：本俸＋學術研究費，再加上導師、特教、行政加給或兼代課等（依個人職務）。年功薪上限學士 625、碩士 650；年薪約月薪 × 14.5，年功薪到頂時考核 2 個月，約 × 15.5。',
+  // SalaryDiff
+  '【19′–22′】差在每月扣款：退休金提撥都是本俸 × 2 × 15% × 35%，新制錢存進自己的專戶，還可自願增提（工具先設 0%）；公保費率舊制 7.22%、新制全額年金 16.33%，因為新制退休可領公保年金。以薪點 275 為例，新制實領約少 1,000 元。費率細節以人事室為準。',
+  // H01Salary
+  '【22′–32′】實作 01（學習單第 2 頁上半）。先掃 QR Code 並加入書籤；新制老師自願提繳先設 0%。A1 現在的我、A2 年功薪到頂的我，A3 ＝ A2 − A1。右邊藍字是示範老師的填法；不知道薪級的老師看薪資單。',
   // OldNew
-  '【30′–32′】請舉手：112/7/1 以後初任的有幾位？新制老師等一下有專屬說明，學習單第 2 頁的 B1 也有新制欄位。',
-  // EarlyLeave
-  '【32′–34′】年輕老師最常問「如果我不教了，錢拿得回來嗎？」新制前 10 年離開，政府提撥部分會打折。細節（申請期限、是否可暫不領取）請洽人事室。',
-  // NewSystem
-  '【34′–38′】新制（112/7/1 後初任）：每月法定提撥本俸 × 2 × 15%（老師 35%、政府 65%），另可自願增提 0～5.25%（本俸 31,560 約每月 0～3,314 元），全部進個人專戶。專戶可選保守、穩健、積極、人生週期四種組合，沒選就是人生週期型。右邊是示意：25 歲到 60 歲、每月 9,468，實質報酬 2%／4%／6% 約 575／865／1,349 萬；再加自提 5.25% 且 6% 約 1,821 萬。重點是選擇和時間，報酬為假設、非保證。',
+  '【32′–34′】② 退休金（標籤換色）。請舉手：112/7/1 以後初任的有幾位？先分清楚自己是哪一制：舊制看公式與查表，新制看專戶與公保。',
   // Formula
-  '【38′–41′】舊制月退上限＝本俸 × 2 × 所得替代率。分母是本俸 × 2，不是實領。下方表格：114 年 12 月修法停止調降，不論何時退休都用 112 年度（35 年 69%）；原訂 118 年要砍到 60%。行政院、考試院已聲請釋憲，提醒關注判決。',
+  '【34′–37′】舊制月退上限＝本俸 × 2 × 所得替代率。分母是本俸 × 2，不是實領；本俸 × 2 通常比實領還高。下方表格：114 年 12 月修法停止調降，不論何時退休都用 112 年度（35 年 69%）；原訂 118 年要砍到 60%。行政院、考試院已聲請釋憲，提醒關注判決。',
   // RateLookup
-  '【41′–43′】帶大家查一次表：年資＝預計退休年齡－初任年齡，找到那一格就是替代率，每多 1 年 +1.5%。請老師用自己的年資查一次，記在心裡就好。月退需年資滿 15 年；超過 35 年每年再 +0.5%，最多算到 40 年。',
-  // Example
-  '【43′–45′】和學習單範例是同一位示範老師：學士、25 歲初任、60 歲退休、年資 35 年。本俸依 114 年待遇表（薪點 625 為 54,160）。54,160 × 2 × 69% ＝ 74,741，這是法定上限，實際以退休金試算工具為準。',
+  '【37′–39′】帶大家查一次表：年資＝預計退休年齡－初任年齡，找到那一格就是替代率，每多 1 年 +1.5%。請老師用自己的年資查一次，記在心裡就好。月退需年資滿 15 年；超過 35 年每年再 +0.5%，最多算到 40 年。示範老師：學士、25 歲初任、60 歲退休、年資 35 年，本俸 54,160 × 2 × 69% ＝ 74,741，這是法定上限，實際以退休金試算工具為準。',
+  // NewSystem
+  '【39′–43′】新制（112/7/1 後初任）：每月法定提撥本俸 × 2 × 15%（老師 35%、政府 65%），另可自願增提 0～5.25%，全部進個人專戶。專戶可選保守、穩健、積極、人生週期四種組合，沒選就是人生週期型。右邊是 35 年後的示意：保守 2% 約 867 萬、穩健 4% 約 1,266 萬、積極 6% 約 1,915 萬，再加自提 5.25% 約 2,585 萬。報酬為假設、非保證。',
+  // GongBao
+  '【43′–46′】公保也分兩種。舊制老師已有月退，公保是一次養老給付：退休時保俸 × 月數，每年 1.2 個月，最高 36 個月（放棄優存可到 42 個月），示範老師 54,160 × 42 ≈ 227 萬。新制老師領公保養老年金：最後 10 年平均保俸 × 1.3% × 年資，最多算 35 年（45.5%），示範 54,160 × 45.5% ≈ 每月 24,640 元；滿 15 年 65 歲、20 年 60 歲、30 年 55 歲可領，提早領每年少 4%。新制月退要把專戶月領和公保年金加起來。細節以銓敘部、臺銀公保部試算為準。',
+  // EarlyLeave
+  '【46′–48′】年輕老師最常問「如果我不教了，錢拿得回來嗎？」新制前 10 年離開，政府提撥部分會打折。細節（申請期限、是否可暫不領取）請洽人事室。',
   // H02Pension
-  '【45′–60′】實作 02（第 2 頁下半，約 15 分鐘）。舊制、新制擇一：舊制填月退與公保一次給付；新制填專戶月領（預設領 30 年、自提 0%、實質報酬 3%）＋公保年金。提醒 121 年過渡期後 58 歲起支，提前 1 年少 4%、最多提早 5 年少 20%。最後 3 分鐘小組討論「影響最大的變數」。',
+  '【48′–60′】實作 02（第 2 頁下半，約 12 分鐘）。舊制、新制擇一：舊制填月退與公保一次給付；新制填專戶月領（預設領 30 年、自提 0%、實質報酬 3%）＋公保年金。提醒 121 年過渡期後 58 歲起支，提前 1 年少 4%、最多提早 5 年少 20%。最後 3 分鐘小組討論「影響最大的變數」。',
   // Break1
   '【60′–70′】休息 10 分鐘。',
   // SecII
   '【70′】進入第二關（學習單第 3 頁）：先不談退休，先把「現在」算清楚。',
   // TwoWays
-  '【70′–73′】兩把尺：所得替代法（月收入 × 70–80%）當參考；今天主要用現況支出法，直接拿現在的月均支出當退休後月支出。',
+  '【70′–74′】現況支出法：直接拿現在的月均支出當退休後月支出。右邊三欄一欄一欄帶：房貸、子女教育可能消失，伙食水電差不多，醫療、旅遊、長照會增加，一來一往。全部用今天的錢算，通膨已從報酬率扣掉，所以第四關用實質報酬 5%。',
   // H03Input
-  '【73′–85′】實作 03 ①②（學習單第 3 頁上半，約 12 分鐘）。收入 ⓐⓑⓒ、支出三層 ⓓⓔⓕ：左邊小格打草稿，右邊合計照順序輸入工具。黃色標「整年」的填一整年總額，工具會自動分攤到每月。沒記帳就看薪資單、信用卡帳單估整數。',
+  '【74′–86′】實作 03 ①②（學習單第 3 頁上半，約 12 分鐘）。收入 ⓐⓑⓒ、支出三層 ⓓⓔⓕ：左邊小格打草稿，右邊合計照順序輸入工具。黃色標「整年」的填一整年總額，工具會自動分攤到每月。沒記帳就看薪資單、信用卡帳單估整數。',
   // H03Result
-  '【85′–91′】實作 03 ③（第 3 頁「你的收支體檢」）。抄回 C1 月均收入、C2 月均支出；C3 月儲蓄 ＝ C1 − C2，儲蓄率 ＝ C3 ÷ C1（和工具的儲蓄率對一下）；參考所得替代法 C1 × 0.7。',
-  // Adjust
-  '【91′–94′】接著談退休後：為什麼可以直接用現在的支出 C2 當退休後支出？房貸、子女教育可能消失，但醫療、旅遊、長照會增加，一來一往。今天全部用「今天的錢」算，通膨已從報酬率扣掉，所以第四關用實質報酬 5%。',
+  '【86′–92′】實作 03 ③（第 3 頁「你的收支體檢」）。抄回 C1 月均收入、C2 月均支出；C3 月儲蓄 ＝ C1 − C2，儲蓄率 ＝ C3 ÷ C1（和工具的儲蓄率對一下）。',
   // H03Gap
-  '【94′–100′】實作 03 D（第 3 頁最下面）。D 退休後每月餘裕＝月退－月支出：大於 0 代表月退就夠生活；小於 0 代表差額要自己補。先把 B1（翻回第 2 頁）和 C2 的數字再寫一次，再相減。最後翻回封面，把 C2 填進「有根據」，和開場的憑感覺比一比。可請 1–2 位分享 D 是正是負（不說金額）。不論正負，第四關都把月退當備案。',
+  '【92′–98′】實作 03 D（第 3 頁最下面）。D 退休後每月餘裕＝月退－月支出：大於 0 代表月退就夠生活；小於 0 代表差額要自己補。先把 B1（翻回第 2 頁）和 C2 的數字再寫一次，再相減。最後翻回封面，把 C2 填進「有根據」，和開場的憑感覺比一比。可請 1–2 位分享 D 是正是負（不說金額）。不論正負，第四關都把月退當備案。',
   // SecIII
-  '【100′】進入第三關（學習單第 4 頁）：理財之前先盤點。',
-  // NetWorth
-  '【100′–103′】範例帳本：資產 970 萬、負債 500 萬、淨值 470 萬；但淨值裡 320 萬是房屋淨值，真正動得了的只有 150 萬。不含房子的淨資產才是理財的起點。',
+  '【98′】進入第三關（學習單第 4 頁）：理財之前先盤點。',
   // WealthLadder
-  '【103′–105′】盤點之前先給一把尺：《財富階梯》（尼克．馬朱利）用淨資產分六階（第 5、6 階合併呈現），每階功課不同。等一下算出 E1，就能對照自己在第幾階。台幣以約 30 元換算。',
+  '【98′–100′】盤點之前先給一把尺：《財富階梯》（尼克．馬朱利）用淨資產分六階（第 5、6 階合併呈現），每階功課不同。等一下算出 E1，就能對照自己在第幾階。台幣以約 30 元換算。',
   // LadderRules
-  '【105′–107′】三原則：用淨資產衡量、萬分之一法則（淨資產 × 0.01% 以下的消費不必糾結）、量力而行。學習單第 4 頁「資產總覽」下方有對照格。',
-  // H04Input
-  '【107′–113′】實作 04 ①②（學習單第 4 頁上半）。資產 4 格寫現在市值、負債 3 格寫還沒還的本金（房貸寫餘額，不是月付），順序和工具一模一樣。',
-  // H04Result
-  '【113′–116′】實作 04 ③（第 4 頁「你的資產總覽」）。抄回 E1 總淨值與四個小格：總資產、總負債、不含房子的淨資產、房屋淨值；再用 E1 對照財富階梯寫下第幾階，並算萬分之一（E1 × 0.0001）。',
+  '【100′–102′】三原則：用淨資產衡量、萬分之一法則（淨資產 × 0.01% 以下的消費不必糾結）、量力而行。學習單第 4 頁「資產總覽」下方有對照格。',
   // DebtRatio
-  '【116′–119′】負債比＝總負債 ÷ 總資產。唸出工具範例（78%、房貸為主）的說明：剛買房前幾年偏高屬正常，看現金流撐不撐得住。信貸、卡債為主則先還清再投資。',
+  '【102′–105′】負債比＝總負債 ÷ 總資產。唸出工具範例（78%、房貸為主）的說明：剛買房前幾年偏高屬正常，看現金流撐不撐得住。信貸、卡債為主則先還清再投資。',
+  // NetWorth
+  '【105′–108′】範例帳本：資產 970 萬、負債 500 萬、淨值 470 萬；但淨值裡 320 萬是房屋淨值，真正動得了的只有 150 萬。不含房子的淨資產才是理財的起點。',
+  // H04Input
+  '【108′–114′】實作 04 ①②（學習單第 4 頁上半）。資產 4 格寫現在市值、負債 3 格寫還沒還的本金（房貸寫餘額，不是月付），順序和工具一模一樣。',
+  // H04Result
+  '【114′–117′】實作 04 ③（第 4 頁「你的資產總覽」）。抄回 E1 總淨值與四個小格：總資產、總負債、不含房子的淨資產、房屋淨值；再用 E1 對照財富階梯寫下第幾階，並算萬分之一（E1 × 0.0001）。',
   // H04Ratio
-  '【119′–124′】實作 04 ④（第 4 頁下半）。記下負債比與工具標示的類型；緊急預備金 ＝ C2 × 6，看現金與存款夠不夠，不夠就先補預備金再投資。',
+  '【117′–122′】實作 04 ④（第 4 頁下半）。記下負債比與工具標示的類型；緊急預備金 ＝ C2 × 6，看現金與存款夠不夠，不夠就先補預備金再投資。',
   // Break2
-  '【124′–129′】休息 5 分鐘。',
+  '【122′–127′】休息 5 分鐘。',
   // SecIV
-  '【129′】進入第四關（學習單第 5–6 頁）：假設沒有退休金，把月退當備案。再次聲明：觀念分享，非投資建議。',
+  '【127′】進入第四關（學習單第 5–6 頁）：假設沒有退休金，把月退當備案。再次聲明：觀念分享，非投資建議。',
   // Rule4
-  '【129′–132′】第四關先講觀念、再動手。4% 法則：目標本金＝現在月支出 × 12 × 25。範例月支出 4 萬 → 1,200 萬。',
+  '【127′–130′】第四關先講觀念、再動手。4% 法則：目標本金＝現在月支出 × 12 × 25。範例月支出 4 萬 → 1,200 萬。',
   // Compound
-  '【132′–135′】存到 1,200 萬（實質 5%）從零開始：30 年每月約 1.4 萬，10 年要 7.7 萬，差 5 倍以上。重點是時間。',
+  '【130′–133′】存到 1,200 萬（實質 5%）從零開始：30 年每月約 1.4 萬，10 年要 7.7 萬，差 5 倍以上。重點是時間。',
   // CompoundPower
-  '【135′–138′】先讓大家猜每月 5,000、30 年後有多少，再揭曉 416 萬：本金 180 萬，其餘 236 萬是複利。帶 72 法則：5% 約 14 年翻一倍。',
-  // ToolResult
-  '【138′–141′】動手前先看工具結果怎麼讀：每月 2 萬、28 年、5% → 1,460.8 萬＝本金 672 萬＋複利 788.8 萬；晚 10 年開始只剩約 698 萬，少了約 762 萬。',
+  '【133′–136′】先讓大家猜每月 5,000、30 年後有多少，再揭曉 416 萬：本金 180 萬，其餘 236 萬是複利。帶 72 法則：5% 約 14 年翻一倍。',
   // H05Setup
-  '【141′–146′】觀念講完，開始實作 05 ①（學習單第 5 頁上半）。先算 F1 ＝ C2 × 12 × 25。打開理財試算器「理財規劃」分頁，照順序填五格：目前年齡、預計退休年齡、初始本金（可留空）、每月投入、報酬率 5%。',
+  '【136′–141′】觀念講完，開始實作 05 ①（學習單第 5 頁上半）。先算 F1 ＝ C2 × 12 × 25。打開理財試算器「理財規劃」分頁，照順序填五格：目前年齡、預計退休年齡、初始本金（可留空）、每月投入、報酬率 5%。',
   // H05Draft
-  '【146′–152′】實作 05 ②（第 5 頁中間的草稿表）。每月投入先試 5,000，其他不動、只改每月投入，每試一次寫一列。累積達到 F1 就打勾，但每月投入不要超過 C3 月儲蓄。',
+  '【141′–147′】實作 05 ②（第 5 頁中間的草稿表）。每月投入先試 5,000，其他不動、只改每月投入，每試一次寫一列。累積達到 F1 就打勾，但每月投入不要超過 C3 月儲蓄。',
   // H05Result
-  '【152′–157′】實作 05 ③（第 5 頁下半）。先在 F2 上方再抄一次 C3 月儲蓄，這是每月投入的上限；再圈一組付得起的版本，照結果畫面抄 F2、F3、投入年數、本金總投入、G1，往下捲讀 G2。請一兩位分享「晚 10 年」的感受。',
+  '【147′–152′】實作 05 ③（第 5 頁下半）。先在 F2 上方再抄一次 C3 月儲蓄，這是每月投入的上限；再圈一組付得起的版本，照結果畫面抄 F2、F3、投入年數、本金總投入、G1，往下捲讀 G2。請一兩位分享「晚 10 年」的感受。',
   // HReview1
-  '【157′–161′】總複習 ①（學習單第 6 頁上半）。照代號把前面的紅框抄過來：薪水 A、月退 B、每月收支 C 與 D，右欄打勾自我檢核。',
+  '【152′–156′】總複習 ①（學習單第 6 頁上半）。照代號把前面的紅框抄過來：薪水 A、月退 B、每月收支 C 與 D，右欄打勾自我檢核。',
   // HReview2
-  '【161′–165′】總複習 ②（第 6 頁下半）。資產 E、理財 F／G 抄完後，看 F3 是否 ≥ F1；最後用一段話說給自己聽。沒達標的三個槓桿：每月多投入、晚幾年退休、讓月退補上。',
+  '【156′–160′】總複習 ②（第 6 頁下半）。資產 E、理財 F／G 抄完後，看 F3 是否 ≥ F1；最後用一段話說給自己聽。沒達標的三個槓桿：每月多投入、晚幾年退休、讓月退補上。',
   // SecEx
-  '【165′】延伸（學習單第 7 頁）：怎麼開始投資。再次聲明：非投資建議。',
+  '【160′】延伸（學習單第 7 頁）：怎麼開始投資。再次聲明：非投資建議。',
   // IndexWhy
-  '【165′–166′】為什麼買大盤不買個股：個股可能一去不回（宏達電）、專家也很難贏大盤（SPIVA 美國 15 年約 9 成輸給 S&P 500）、老師沒空盯盤。不推薦特定商品。',
+  '【160′–162′】為什麼買大盤不買個股：個股可能一去不回（宏達電）、專家也很難贏大盤（SPIVA 美國 15 年約 9 成輸給 S&P 500）、老師沒空盯盤。不推薦特定商品。',
   // EtfCompare
-  '【166′–168′】0050、VOO 長期年化約 12～15%，0056 約 8%；2008 海嘯三者都跌了五成以上，高股息沒有比較抗跌。帶 72 法則，說明為什麼試算只用 5%。上課前請更新最新數據。',
-  // HThink
-  '【168′–170′】延伸實作（學習單第 7 頁中段）。用 72 法則填表格最後一欄三格（72 ÷ 年化報酬）；「想一想」三題寫下自己的答案，時間不夠可回家再寫。',
+  '【162′–165′】0050、VOO 長期年化約 12～15%，0056 約 8%；2008 海嘯三者都跌了五成以上，高股息沒有比較抗跌。帶 72 法則，說明為什麼試算只用 5%。上課前請更新最新數據。',
   // DCA
-  '【170′–171′】請老師先心算：價格跌到 60 又回 100，到底賺還賠？再揭曉 +23%。',
-  // HowStart
-  '【171′–172′】四步驟，強調先有預備金。一檔大盤就夠。',
-  // Myths
-  '【172′–173′】三個常見問題，可開放 1 題現場提問。',
-  // Risks
-  '【173′–174′】四個風險快速帶過，時間不夠可略過。',
+  '【165′–167′】請老師先心算：價格跌到 60 又回 100，到底賺還賠？再揭曉 +23%。',
   // HAction
-  '【174′–177′】行動承諾寫在學習單第 7 頁最下面：今晚、這個月、今年各一件事，簽名＋日期。',
-  // Summary
-  '【177′–178′】三句話收束。',
+  '【167′–170′】行動承諾寫在學習單第 7 頁最下面：今晚、這個月、今年各一件事，簽名＋日期。',
+  // HowStart
+  '【170′–172′】四步驟，強調先有預備金。一檔大盤就夠。最後一句話收束：你不需要很會投資，只需要很早開始、很久不停。',
+  // Risks
+  '【172′–174′】四個風險快速帶過，時間不夠可略過。',
+  // Myths
+  '【174′–176′】三個常見問題，可開放 1 題現場提問。',
   // Closing
-  '【178′–180′】Q&A。感謝。',
+  '【176′–180′】Q&A。感謝。',
 ];
 
 export const meta: SlideMeta = {
@@ -2460,38 +2444,37 @@ export default [
   ToolChain,
   Ground,
   SecI,
+  ThreeLayers,
   Timeline,
+  SalaryPay,
   SalaryDiff,
   H01Salary,
-  ThreeLayers,
   OldNew,
-  EarlyLeave,
-  NewSystem,
   Formula,
   RateLookup,
-  Example,
+  NewSystem,
+  GongBao,
+  EarlyLeave,
   H02Pension,
   Break1,
   SecII,
   TwoWays,
   H03Input,
   H03Result,
-  Adjust,
   H03Gap,
   SecIII,
-  NetWorth,
   WealthLadder,
   LadderRules,
+  DebtRatio,
+  NetWorth,
   H04Input,
   H04Result,
-  DebtRatio,
   H04Ratio,
   Break2,
   SecIV,
   Rule4,
   Compound,
   CompoundPower,
-  ToolResult,
   H05Setup,
   H05Draft,
   H05Result,
@@ -2500,12 +2483,10 @@ export default [
   SecEx,
   IndexWhy,
   EtfCompare,
-  HThink,
   DCA,
-  HowStart,
-  Myths,
-  Risks,
   HAction,
-  Summary,
+  HowStart,
+  Risks,
+  Myths,
   Closing,
 ] satisfies Page[];

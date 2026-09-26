@@ -370,7 +370,7 @@ p2 = f"""
     {key('C3', '月儲蓄', '＝ C1 − C2', '元', '', '', 'xs')}
   </div>
   <div class="srate">儲蓄率 ＝ {ref('C3')} ÷ {ref('C1')} ＝ <span class="blank">{hv('40.8')}</span> %<small>和工具算出的儲蓄率對一下</small></div>
-  <div class="small" style="margin-top:1mm">沒記帳？看薪資單、信用卡帳單、網銀明細，估不準就取整數。退休後月支出直接用 {ref('C2')} 粗估（房貸車貸可能沒了，醫療旅遊會增加，一來一往）；參考：所得替代法 {ref('C1')} × 0.7 ≈ {w('47,313')} 元。</div>
+  <div class="small" style="margin-top:1mm">沒記帳？看薪資單、信用卡帳單、網銀明細，估不準就取整數。退休後月支出直接用 {ref('C2')} 粗估（房貸車貸可能沒了，醫療旅遊會增加，一來一往）。</div>
 
   <div class="dark" style="margin-top:2.5mm">
     <div class="mono">今天最重要的一個數字</div>
@@ -623,14 +623,6 @@ p_etf = f"""
         例：試算用的 5% → 72 ÷ 5 ≈ <b style="color:var(--goldSoft)">14 年</b>翻一倍<br>
         30 歲放 10 萬 → 44 歲約 20 萬 → 58 歲約 40 萬<br>
         報酬率差一點，翻倍速度差很多：8% 要 9 年，12% 只要 6 年。
-      </div>
-      <div class="panel" style="margin-top:2.5mm">
-        <div class="mono">想一想</div>
-        <div class="note" style="margin-top:1mm">① 過去平均 8～15%，為什麼試算只用 <b>5%</b>？</div>
-        <div style="border-bottom:1px solid var(--rule);height:6mm">{w('扣掉通膨、留給大跌，寧可保守', '')}</div>
-        <div class="note" style="margin-top:1.5mm">② 0056 配息比較多，長期總報酬為什麼反而比 0050 低？<span class="small">（提示：配息是從淨值裡拿出來的；股災時一樣跌）</span></div>
-        <div style="border-bottom:1px solid var(--rule);height:6mm">{w('配息不是多賺，是把淨值換成現金', '')}</div>
-        <div class="note" style="margin-top:1.5mm">③ 我比較適合：□ 台股大盤　□ 美股大盤　{ck(True)} 兩者搭配</div>
       </div>
     </div>
   </div>
